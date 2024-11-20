@@ -1,0 +1,10 @@
+{
+    "id": "muse-typescript",
+    "name": "muse-typescript",
+    "description": "Test project for TypeScript and Muse",
+    "disabled": false,
+    "provider": "javascript",
+    "scope": "",
+    "script": "./dist/app.js",
+    "envvars": {}
+}
