@@ -11,5 +11,5 @@
     "cjsInterop": true,
     "removeNodeProtocol": true,
     "clean": true,
-    "onSuccess": "bash ./scripts/deploy.sh"
+    "onSuccess": "pnpm upload"
 }
