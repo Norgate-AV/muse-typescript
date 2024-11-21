@@ -1,4 +1,4 @@
-import { Event } from "./Event";
+import { TimelineEventCallback } from "./TimelineEventCallback";
 
 export interface Timeline {
     start: (
@@ -9,9 +9,9 @@ export interface Timeline {
 
     stop: () => void;
     pause: () => void;
-    reset: () => void;
+    restart: () => void;
 
     expired: {
-        listen: (event: any) => void;
+        listen: TimelineEventCallback;
     };
 }

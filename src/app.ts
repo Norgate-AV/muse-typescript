@@ -1,5 +1,7 @@
 import { name } from "../program.json";
-import { Timer } from "../lib/@types";
+import * as Muse from "../lib/@types/muse";
+import { Timeline } from "../lib";
+const thread = Java.type("java.lang.Thread");
 
 const sources = [
     {
@@ -54,10 +56,23 @@ function main() {
 
     context.log.info(`Sources: ${JSON.stringify(sources)}`);
 
-    const timer = new Timer();
-    timer.start(() => {
-        context.log.info("Tick");
+    const timeline = new Timeline();
+    timeline.create((event: Muse.TimelineEvent) => {
+        context.log.info(`Timer ID: ${event.id}`);
+        context.log.info(`Timer Path: ${event.path}`);
+        context.log.info(`Timer Sequence: ${event.arguments.sequence}`);
+        context.log.info(`Timer Time: ${event.arguments.time}`);
+        context.log.info(`Timer Repetition: ${event.arguments.repetition}`);
+
+        if (event.arguments.repetition % 10 === 0) {
+            timeline.pause();
+            thread.sleep(5000);
+            timeline.restart();
+        }
     });
+
+    // const netlinx = context.services.get("netlinxClient");
+    // context.log.info(`NetLinx: ${typeof netlinx}`);
 }
 
 context.log.info("Processor Online");

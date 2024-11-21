@@ -1,9 +1,9 @@
-export interface Event {
+export interface BaseEvent {
     path: string;
     id: string;
     arguments: {
-        data: string;
+        data: object;
     };
-    oldValue: Event;
+    oldValue: object;
     source: object;
 }
