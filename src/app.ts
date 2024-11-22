@@ -1,7 +1,7 @@
 import { name } from "../program.json";
 import * as Muse from "../lib/@types/muse";
 import { Timeline } from "../lib";
-const thread = Java.type("java.lang.Thread");
+const Thread = Java.type("java.lang.Thread");
 
 const sources = [
     {
@@ -56,6 +56,14 @@ function main() {
 
     context.log.info(`Sources: ${JSON.stringify(sources)}`);
 
+    // Using the Java API to create a new thread
+    new Thread(() => {
+        while (true) {
+            context.log.info("Hello, from a new thread!");
+            Thread.sleep(3000);
+        }
+    }).start();
+
     const timeline = new Timeline();
     timeline.create((event: Muse.TimelineEvent) => {
         context.log.info(`Timer ID: ${event.id}`);
@@ -66,7 +74,7 @@ function main() {
 
         if (event.arguments.repetition % 10 === 0) {
             timeline.pause();
-            thread.sleep(5000);
+            Thread.sleep(5000);
             timeline.restart();
         }
     });
