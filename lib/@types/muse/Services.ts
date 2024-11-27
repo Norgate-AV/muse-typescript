@@ -1,3 +1,3 @@
 export interface Services {
-    get: <T>(name: string) => T;
+    get: (name: string) => any;
 }
