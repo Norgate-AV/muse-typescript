@@ -34,8 +34,8 @@ fi
 
 echo "Deploying $NAME to $HOST"
 
-scp -r ./dist $USERNAME@$HOST:/mojo/program/$PROGRAM/
-scp program.json $USERNAME@$HOST:/mojo/program/$PROGRAM/
+scp -r $SCRIPT_DIR/../dist $USERNAME@$HOST:/mojo/program/$NAME/
+scp $SCRIPT_DIR/../program.json $USERNAME@$HOST:/mojo/program/$NAME/
 
 # Restart the program
 # ssh $USERNAME@$HOST "program:restart $PROGRAM"    # This kills all current ssh sessions. Need to find a better way to restart the program.

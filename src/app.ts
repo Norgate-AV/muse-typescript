@@ -1,87 +1,43 @@
 import { name } from "../program.json";
-import * as Muse from "../lib/@types/muse";
-import { Timeline } from "../lib";
-const Thread = Java.type("java.lang.Thread");
+import { arrays } from "./arrays";
+import { sources } from "./sources";
+import { timelines } from "./timelines";
+import { threads } from "./threads";
+import { strings } from "./strings";
+// const System = Java.type("java.lang.System");
+import { Enova } from "./Enova";
+import { Switcher } from "../lib/@types";
 
-const sources = [
-    {
-        name: "PC",
-        matrixInput: 1,
-        matrixOutputs: [1, 2],
-        displayInput: "HDMI",
-    },
-    {
-        name: "PS4",
-        matrixInput: 2,
-        matrixOutputs: [1, 2],
-        displayInput: "HDMI",
-    },
-    {
-        name: "Xbox",
-        matrixInput: 3,
-        matrixOutputs: [1, 2],
-        displayInput: "HDMI",
-    },
-    {
-        name: "Switch",
-        matrixInput: 4,
-        matrixOutputs: [1, 2],
-        displayInput: "HDMI",
-    },
-];
+// const platform = context.services.get("platform");
+// const diagnostics = context.services.get("diagnostics");
+// const netlinx = context.services.get("netlinxClient");
+// const session = context.services.get("session");
+// const smtp = context.services.get("smtp");
+// const timeline = context.services.get("timeline");
+
+// const services = [platform, diagnostics, netlinx, session, smtp, timeline];
 
 function main() {
     context.log.info(`Hello, ${name}!`);
 
-    const array = [1, 2, 3, 4, 5];
-    context.log.info(`Array: ${array}`);
+    arrays();
+    sources();
+    // timelines();
+    // threads();
+    strings();
 
-    for (const value of array) {
-        context.log.info(`Value: ${value}`);
-    }
+    // for (const service of services) {
+    //     context.log.info(JSON.stringify(service));
+    // }
 
-    array.push(6);
-    context.log.info(`Array: [${array}]`);
+    // System.out.println("Goodbye from Java land!");
 
-    for (const source of sources) {
-        context.log.info(`Source: ${source.name}`);
-        context.log.info(`Matrix Input: ${source.matrixInput}`);
-        context.log.info(`Matrix Outputs: [${source.matrixOutputs}]`);
-        context.log.info(`Display Input: ${source.displayInput}`);
-    }
+    const enova: Switcher = new Enova();
 
-    context.log.info(
-        `Sources: ${sources.map((source) => source.name).join(", ")}`
-    );
-
-    context.log.info(`Sources: ${JSON.stringify(sources)}`);
-
-    // Using the Java API to create a new thread
-    new Thread(() => {
-        while (true) {
-            context.log.info("Hello, from a new thread!");
-            Thread.sleep(3000);
-        }
-    }).start();
-
-    const timeline = new Timeline();
-    timeline.create((event: Muse.TimelineEvent) => {
-        context.log.info(`Timer ID: ${event.id}`);
-        context.log.info(`Timer Path: ${event.path}`);
-        context.log.info(`Timer Sequence: ${event.arguments.sequence}`);
-        context.log.info(`Timer Time: ${event.arguments.time}`);
-        context.log.info(`Timer Repetition: ${event.arguments.repetition}`);
-
-        if (event.arguments.repetition % 10 === 0) {
-            timeline.pause();
-            Thread.sleep(5000);
-            timeline.restart();
-        }
-    });
-
-    // const netlinx = context.services.get("netlinxClient");
-    // context.log.info(`NetLinx: ${typeof netlinx}`);
+    enova.switch(1, 2, 1);
 }
+
+// function hello(args: Array<number>) {}
 
 context.log.info("Processor Online");
 main();
