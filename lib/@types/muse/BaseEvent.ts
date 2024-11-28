@@ -1,4 +1,4 @@
-export interface BaseEvent {
+export type BaseEvent = {
     path: string;
     id: string;
     arguments: {
@@ -6,4 +6,4 @@ export interface BaseEvent {
     };
     oldValue: object;
     source: object;
-}
+};

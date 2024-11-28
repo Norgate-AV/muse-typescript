@@ -1,4 +1,4 @@
-export interface Button {
+export type TPButton = {
     name?: string;
     address?: {
         port: number;
@@ -14,4 +14,4 @@ export interface Button {
     };
     enabled?: boolean;
     hidden?: boolean;
-}
+};

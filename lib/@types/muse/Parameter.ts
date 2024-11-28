@@ -1,4 +1,4 @@
-export interface Parameter {
+export type Parameter = {
     value: string;
     normalized: number;
     min: number;
@@ -6,4 +6,4 @@ export interface Parameter {
     defaultValue: string;
     type: string;
     enums: Array<string>;
-}
+};

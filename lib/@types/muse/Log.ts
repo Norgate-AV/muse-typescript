@@ -1,8 +1,8 @@
 export interface Log {
     level: "TRACE" | "DEBUG" | "INFO" | "WARNING" | "ERROR";
-    trace: (...args: any) => void;
-    debug: (...args: any) => void;
-    info: (...args: any) => void;
-    warning: (...args: any) => void;
-    error: (...args: any) => void;
+    trace: (msg: string) => void;
+    debug: (msg: string) => void;
+    info: (msg: string) => void;
+    warning: (msg: string) => void;
+    error: (msg: string) => void;
 }

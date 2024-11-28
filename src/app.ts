@@ -1,76 +1,84 @@
-import { Platform } from "../lib/@types/muse/platform";
+import { ICSPDriver, ParameterUpdate, TimelineService } from "../lib/@types";
 import { Source, sources } from "./sources";
+import { state } from "./store";
 
 /**
  * Devices
  */
 
-const tp = context.devices.get("AMX-10001");
-const platform = context.services.get("platform");
+const tp = context.devices.get<ICSPDriver>("AMX-10001");
 
-const state = {
-    selectedSource: null as Source | null,
-    currentSource: null as Source | null,
-};
+/**
+ * Functions
+ */
+function selectSource(event: ParameterUpdate<boolean>): void {
+    if (!event.value) {
+        return;
+    }
 
-function selectSource(source: Source) {
+    const [source] = sources.filter(
+        (source) => source.button.channel.code.toString() === event.id
+    );
+
+    if (!source) {
+        context.log.info("Source not found");
+        return;
+    }
+
     state.selectedSource = source;
+    context.log.info("Selected Source: " + source?.name);
 
     sendSource(source);
 }
 
-function sendSource(source: Source) {
+function sendSource(source: Source): void {
     state.currentSource = source;
+    context.log.info(`Sending ${source.name} to Display`);
 }
 
-function tpOnline(_) {
-    context.log.info("TP online");
+function tpOnlineEventCallback(): void {
+    context.log.info(`TP Online: ${tp.isOnline()}`);
+    context.log.info(`TP Offline: ${tp.isOffline()}`);
+
+    registerSourceButtonEvents(sources);
+    tp.port[1].button[1].watch(touchToStart);
+
+    tpFeedbackSetup();
 
     tp.port[1].send_command("@PPX");
     tp.port[1].send_command("ADBEEP");
+    tp.port[1].send_command("PAGE-Logo");
 }
 
-tp.online(tpOnline);
-for (const prop in tp.port) {
-    context.log.info(prop);
+function registerSourceButtonEvents(sources: Array<Source>): void {
+    for (const source of sources) {
+        const { port, code } = source.button.channel;
+        context.log.info(
+            `Registering ${source.name} on port ${port} code ${code}`
+        );
+        tp.port[port].button[code].watch(selectSource);
+    }
 }
 
-// context.log.info(`TP Container: ${tp.configuration.device.container}`);
-// context.log.info(`TP Protocol: ${tp.configuration.device.ptotocolversion}`);
-// context.log.info(`TP Venue: ${tp.configuration.device.venue}`);
-// context.log.info(`TP Serial Number: ${tp.configuration.device.serialnumber}`);
-// context.log.info(
-//     `TP Software Version: ${tp.configuration.device.softwareversion}`
-// );
-// context.log.info(`TP Description: ${tp.configuration.device.description}`);
-// context.log.info(`TP Version: ${tp.configuration.device.version}`);
-// context.log.info(`TP Manufacturer: ${tp.configuration.device.manufacturer}`);
-// context.log.info(`TP Classname: ${tp.configuration.device.classname}`);
-// context.log.info(`TP Device State: ${tp.configuration.device.devicestate}`);
-// context.log.info(`TP Name: ${tp.configuration.device.name}`);
-// context.log.info(
-//     `TP Descriptor Location: ${tp.configuration.device.descriptorlocation}`
-// );
-// context.log.info(`TP GUID: ${tp.configuration.device.guid}`);
-// context.log.info(`TP Location: ${tp.configuration.device.location}`);
-// context.log.info(`TP Model: ${tp.configuration.device.model}`);
-// context.log.info(`TP Family: ${tp.configuration.device.family}`);
+function touchToStart(event: ParameterUpdate<boolean>): void {
+    tp.port[1].send_command("PAGE-Main");
+}
 
-// for (const prop in platform) {
-//     context.log.info(prop);
-// }
+function tpFeedbackSetup(): void {
+    const tpFeedback = context.services.get<TimelineService>("timeline");
+    tpFeedback.expired.listen(tpFeedbackHandler);
+    tpFeedback.start([100], false, -1);
+}
 
-// context.log.info(`TP Configuration: ${tp.configuration}`);
-// context.log.info(`TP Port: ${tp.port}`);
+function tpFeedbackHandler(): void {
+    for (const source of sources) {
+        const { port, code } = source.button.channel;
+        tp.port[port].channel[code] =
+            state.selectedSource.button.channel.code === code;
+    }
+}
 
-// context.log.info(`Platform Venue: ${platform.venue}`);
-// context.log.info(`Platform Serial Number: ${platform.serialnumber}`);
-// context.log.info(`Platform Device State: ${platform.devicestate}`);
-// context.log.info(`Platform Name: ${platform.name}`);
-// context.log.info(`Platform Description: ${platform.description}`);
-// context.log.info(`Platform Location: ${platform.location}`);
-// context.log.info(`Platform Model: ${platform.model}`);
-// context.log.info(`Platform Label: ${platform.label}`);
-// context.log.info(`Platform Family: ${platform.family}`);
-// context.log.info(`Platform Version: ${platform.version}`);
-// context.log.info(`Platform Manufacturer: ${platform.manufacturer}`);
+/**
+ * Event Listeners
+ */
+tp.online(tpOnlineEventCallback);

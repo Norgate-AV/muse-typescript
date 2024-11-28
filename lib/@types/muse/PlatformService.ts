@@ -1,4 +1,4 @@
-export interface Platform {
+export type PlatformService = {
     venue: string;
     serialnumber: string;
     devicestate: string;
@@ -10,4 +10,4 @@ export interface Platform {
     family: string;
     version: string;
     manufacturer: string;
-}
+};

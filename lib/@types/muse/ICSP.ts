@@ -1,31 +1,73 @@
-export interface ICSP {
-    configuration: Readonly<ICSPConfiguration>;
-    port:
-}
+import { ParameterUpdate } from "./ParameterUpdate";
 
-export interface ICSPConfiguration {
-    device: Readonly<ISCPDevice>;
-}
+export type ICSPDriver = {
+    configuration: ICSPConfiguration;
+    port: Array<ICSPPort>;
+    online: (callback: ICSPOnlineOfflineCallback) => void;
+    offline: (callback: ICSPOnlineOfflineCallback) => void;
+    isOnline: () => boolean;
+    isOffline: () => boolean;
+};
 
-export interface ISCPDevice {
+type ICSPOnlineOfflineCallback = () => void;
+
+export type ICSPConfiguration = {
+    device: ISCPDevice;
+};
+
+export type ISCPDevice = {
     classname: string;
-    container: string;
-    description: string;
-    descriptorlocation: string;
-    devicestate: string;
-    family: string;
-    guid: string;
-    location: string;
-    manufacturer: string;
-    model: string;
-    name: string;
-    protocolversion: string;
-    serialnumber: string;
-    softwareversion: string;
-    venue: string;
-    version: string;
-}
+    container: Readonly<string>;
+    description: Readonly<string>;
+    descriptorlocation: Readonly<string>;
+    devicestate: Readonly<string>;
+    family: Readonly<string>;
+    guid: Readonly<string>;
+    location: Readonly<string>;
+    manufacturer: Readonly<string>;
+    model: Readonly<string>;
+    name: Readonly<string>;
+    protocolversion: Readonly<string>;
+    serialnumber: Readonly<string>;
+    softwareversion: Readonly<string>;
+    venue: Readonly<string>;
+    version: Readonly<string>;
+};
 
-export interface ISCPPort {
+export type ICSPEvent = {
+    data: string;
+};
 
-}
+export type ICSPCustomEvent = ICSPEvent & {
+    encode: string;
+    flag: number;
+    value1: number;
+    value2: number;
+    value3: number;
+    id: number;
+    type: number;
+};
+
+export type ICSPEventCallback = (event: ICSPEvent) => void;
+export type ICSPCustomEventCallback = (event: ICSPCustomEvent) => void;
+export type ICSPParameterUpdateCallback = (
+    event: ParameterUpdate<boolean>
+) => void;
+
+export type ICSPPort = {
+    button: Array<Readonly<ICSPButton>>;
+    channel: Array<ICSPChannel>;
+    command: (callback: ICSPEventCallback) => void;
+    custom: (callback: ICSPCustomEventCallback) => void;
+    level: Array<ICSPLevel>;
+    send_command: (data: string) => void;
+    send_string: (data: string) => void;
+    string: (callback: ICSPEventCallback) => void;
+};
+
+export type ICSPButton = {
+    watch: (callback: ICSPParameterUpdateCallback) => void;
+};
+
+export type ICSPChannel = boolean;
+export type ICSPLevel = number;
