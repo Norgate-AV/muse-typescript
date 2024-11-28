@@ -1,5 +1,5 @@
-import * as Muse from "../lib/@types/muse";
-import { Timeline } from "../lib";
+import * as Muse from "./@types/muse";
+import { Timeline } from "./lib";
 
 const Thread = Java.type("java.lang.Thread");
 

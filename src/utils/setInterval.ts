@@ -1,4 +1,4 @@
-import { TimelineService } from "../../lib/@types/muse";
+import { TimelineService } from "../@types/muse";
 
 export function setInterval(
     callback: (...args: any) => void,

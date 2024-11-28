@@ -8,11 +8,11 @@
         "forceConsistentCasingInFileNames": true,
         "noUncheckedIndexedAccess": true,
         "resolveJsonModule": true,
-        "typeRoots": ["lib/@types", "node_modules/@types"],
+        "typeRoots": ["src/@types", "node_modules/@types"],
         "allowSyntheticDefaultImports": true,
         "noEmit": true
         // "noUnusedLocals": true,
         // "noUnusedParameters": true,
     },
-    "include": ["src/**/*", "lib/**/*", "config/**/*", "index.d.ts"]
+    "include": ["src/**/*", "src/lib/**/*", "config/**/*", "index.d.ts"]
 }

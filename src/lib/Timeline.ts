@@ -1,4 +1,4 @@
-import * as Muse from "./@types/muse";
+import * as Muse from "../@types/muse";
 
 export class Timeline {
     private readonly timeline: Muse.Timeline = context.services.get("timeline");

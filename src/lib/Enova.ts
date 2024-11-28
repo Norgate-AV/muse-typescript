@@ -1,5 +1,5 @@
-import { Timeline } from "../lib";
-import type { Switcher, Thing, TimelineEvent } from "../lib/@types";
+import { Timeline } from ".";
+import type { Switcher, Thing, TimelineEvent } from "../@types";
 
 // type Props = {
 //     context: Thing;

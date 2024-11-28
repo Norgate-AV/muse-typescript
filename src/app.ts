@@ -1,9 +1,10 @@
-import { ICSPDriver, ParameterUpdate, TimelineService } from "../lib/@types";
+import { ICSPDriver, ParameterUpdate, TimelineService } from "./@types";
 import { Source, sources } from "./sources";
 import { state } from "./store";
 import { getConfig } from "./utils/getConfig";
 import { version } from "../package.json";
-import { setInterval } from "./utils/setInterval";
+import { Pages, Page } from "./pages";
+import { Popups } from "./popups";
 
 /**
  * Devices
@@ -11,21 +12,6 @@ import { setInterval } from "./utils/setInterval";
 
 // MT-1002
 const tp = context.devices.get<ICSPDriver>("AMX-10001");
-
-// EXB-MP1
-const io = context.devices.get<ICSPDriver>("AMX-7001").port[2];
-
-setInterval(() => {
-    context.log.info("Toggling IO");
-    context.log.info(`IO 1: ${io.channel[1]}`);
-    context.log.info(`IO 2: ${io.channel[2]}`);
-
-    context.log.info(`${typeof io.channel[1]}`);
-
-    for (const prop in io.channel[1]) {
-        context.log.info(`${prop}`);
-    }
-}, 5000);
 
 /**
  * Functions
@@ -45,9 +31,12 @@ function selectSource(event: ParameterUpdate<boolean>): void {
     }
 
     state.selectedSource = source;
+    state.requiredPopup = source.popup;
     context.log.info("Selected Source: " + source?.name);
 
     sendSource(source);
+
+    tpRefresh();
 }
 
 function sendSource(source: Source): void {
@@ -56,14 +45,80 @@ function sendSource(source: Source): void {
 }
 
 function tpOnlineEventCallback(): void {
-    context.log.info(`TP Online: ${tp.isOnline()}`);
-    context.log.info(`TP Offline: ${tp.isOffline()}`);
+    context.log.info(`Touch Panel Online`);
 
     registerSourceButtonEvents(sources);
     tp.port[1].button[1].watch(touchToStart);
+    tp.port[1].button[2].watch(handleShutDownButtonEvent);
+    tp.port[1].button[3].watch(handleShutDownOkButtonEvent);
 
-    // tpFeedbackSetup();
+    tpFeedbackSetup();
+    tpReset();
+}
 
+function registerSourceButtonEvents(sources: Array<Source>): void {
+    for (const source of sources) {
+        const { port, code } = source.button.channel;
+        context.log.info(
+            `Registering ${source.name} on port ${port} code ${code}`
+        );
+        tp.port[port].button[code].watch(selectSource);
+    }
+}
+
+function touchToStart(event: ParameterUpdate<boolean>): void {
+    setPage(Pages.Main);
+}
+
+function tpFeedbackSetup(): void {
+    const tpFeedback = context.services.get<TimelineService>("timeline");
+    tpFeedback.expired.listen(tpFeedbackHandler);
+    tpFeedback.start([100], false, -1);
+}
+
+function tpFeedbackHandler(): void {
+    for (const source of sources) {
+        const { port, code } = source.button?.channel;
+        if (!state.selectedSource) {
+            tp.port[port].channel[code] = false;
+            continue;
+        }
+
+        tp.port[port].channel[code] =
+            state.selectedSource.button?.channel.code === code;
+    }
+}
+
+function handleShutDownButtonEvent(event: ParameterUpdate<boolean>): void {
+    if (!event.value) {
+        return;
+    }
+
+    tp.port[1].send_command("@PPN-Dialogs - Shut Down");
+}
+
+function handleShutDownOkButtonEvent(event: ParameterUpdate<boolean>): void {
+    if (!event.value) {
+        return;
+    }
+
+    shutDown();
+}
+
+function shutDown(): void {
+    state.selectedSource = null;
+    state.currentSource = null;
+    state.requiredPopup = Popups.Off;
+
+    setPage(Pages.Logo);
+}
+
+function setPage(page: Page): void {
+    state.requiredPage = page;
+    tpRefresh();
+}
+
+function tpReset(): void {
     const [config, error] = getConfig();
     if (error !== null) {
         context.log.error(`Error reading config: ${error}`);
@@ -84,34 +139,27 @@ function tpOnlineEventCallback(): void {
 
     tp.port[1].send_command("@PPX");
     tp.port[1].send_command("ADBEEP");
-    tp.port[1].send_command("PAGE-Logo");
+
+    tpRefresh();
 }
 
-function registerSourceButtonEvents(sources: Array<Source>): void {
-    for (const source of sources) {
-        const { port, code } = source.button.channel;
-        context.log.info(
-            `Registering ${source.name} on port ${port} code ${code}`
-        );
-        tp.port[port].button[code].watch(selectSource);
-    }
-}
+function tpRefresh() {
+    tp.port[1].send_command("@PPF-Dialogs - Audio");
+    tp.port[1].send_command(`PAGE-${state.requiredPage}`);
 
-function touchToStart(event: ParameterUpdate<boolean>): void {
-    tp.port[1].send_command("PAGE-Main");
-}
-
-function tpFeedbackSetup(): void {
-    const tpFeedback = context.services.get<TimelineService>("timeline");
-    tpFeedback.expired.listen(tpFeedbackHandler);
-    tpFeedback.start([100], false, -1);
-}
-
-function tpFeedbackHandler(): void {
-    for (const source of sources) {
-        const { port, code } = source.button.channel;
-        tp.port[port].channel[code] =
-            state.selectedSource.button.channel.code === code;
+    switch (state.requiredPage) {
+        case Pages.Main: {
+            tp.port[1].send_command(
+                `@PPN-${state.requiredPopup};${state.requiredPage}`
+            );
+            break;
+        }
+        case Pages.Logo: {
+            tp.port[1].send_command(
+                `@PPN-${state.requiredPopup};${Pages.Main}`
+            );
+            break;
+        }
     }
 }
 

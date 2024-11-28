@@ -1,8 +1,10 @@
-import { TPButton } from "../lib/@types/amx";
+import { TPButton } from "./@types/amx";
+import { Popup, Popups } from "./popups";
 
 export type Source = {
     name: string;
     button?: TPButton;
+    popup?: Popup;
 };
 
 export const sources: Array<Source> = [
@@ -18,6 +20,7 @@ export const sources: Array<Source> = [
                 code: 33,
             },
         },
+        popup: Popups.PC,
     },
     {
         name: "Laptops",
@@ -31,6 +34,7 @@ export const sources: Array<Source> = [
                 code: 31,
             },
         },
+        popup: Popups.Laptop,
     },
     {
         name: "Visualiser",
@@ -44,6 +48,7 @@ export const sources: Array<Source> = [
                 code: 32,
             },
         },
+        popup: Popups.Visualiser,
     },
     {
         name: "BYOD",
@@ -57,5 +62,6 @@ export const sources: Array<Source> = [
                 code: 34,
             },
         },
+        popup: Popups.BYOD,
     },
 ];

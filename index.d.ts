@@ -1,4 +1,4 @@
-import { Thing } from "./lib/@types/muse";
+import { Thing } from "./src/@types/muse";
 
 declare global {
     var Java: any;
