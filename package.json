@@ -17,11 +17,11 @@
         "upload": "bash ./scripts/deploy.sh"
     },
     "devDependencies": {
-        "@swc/core": "^1.9.2",
-        "@types/node": "^22.9.1",
+        "@swc/core": "^1.9.3",
+        "@types/node": "^22.10.0",
         "dotenv": "^16.4.5",
         "terser": "^5.36.0",
         "tsup": "^8.3.5",
-        "typescript": "^5.6.3"
+        "typescript": "^5.7.2"
     }
 }
