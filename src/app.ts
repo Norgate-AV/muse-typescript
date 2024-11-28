@@ -1,12 +1,31 @@
 import { ICSPDriver, ParameterUpdate, TimelineService } from "../lib/@types";
 import { Source, sources } from "./sources";
 import { state } from "./store";
+import { getConfig } from "./utils/getConfig";
+import { version } from "../package.json";
+import { setInterval } from "./utils/setInterval";
 
 /**
  * Devices
  */
 
+// MT-1002
 const tp = context.devices.get<ICSPDriver>("AMX-10001");
+
+// EXB-MP1
+const io = context.devices.get<ICSPDriver>("AMX-7001").port[2];
+
+setInterval(() => {
+    context.log.info("Toggling IO");
+    context.log.info(`IO 1: ${io.channel[1]}`);
+    context.log.info(`IO 2: ${io.channel[2]}`);
+
+    context.log.info(`${typeof io.channel[1]}`);
+
+    for (const prop in io.channel[1]) {
+        context.log.info(`${prop}`);
+    }
+}, 5000);
 
 /**
  * Functions
@@ -43,9 +62,25 @@ function tpOnlineEventCallback(): void {
     registerSourceButtonEvents(sources);
     tp.port[1].button[1].watch(touchToStart);
 
-    tpFeedbackSetup();
+    // tpFeedbackSetup();
 
-    writeToFile();
+    const [config, error] = getConfig();
+    if (error !== null) {
+        context.log.error(`Error reading config: ${error}`);
+    }
+
+    tp.port[1].send_command(`^TXT-1,0,${config.name}`);
+
+    const programInfo = {
+        name: config.name,
+        version,
+        compiled: new Date().toISOString(),
+        getInfo: function () {
+            return `${this.name} v${this.version} compiled on ${this.compiled}`;
+        },
+    };
+
+    tp.port[1].send_command(`^TXT-100,0,${programInfo.getInfo()}`);
 
     tp.port[1].send_command("@PPX");
     tp.port[1].send_command("ADBEEP");
@@ -77,42 +112,6 @@ function tpFeedbackHandler(): void {
         const { port, code } = source.button.channel;
         tp.port[port].channel[code] =
             state.selectedSource.button.channel.code === code;
-    }
-}
-
-function writeToFile(): void {
-    const File = Java.type("java.io.File");
-    const Files = Java.type("java.nio.file.Files");
-    const Paths = Java.type("java.nio.file.Paths");
-    const FileWriter = Java.type("java.io.FileWriter");
-    const System = Java.type("java.lang.System");
-
-    const path = Paths.get("/mnt/data/mojo/mojo/program/muse-typescript");
-    const entities = Files.list(Paths.get(`${path}`));
-
-    context.log.info(`CWD: ${System.getProperty("user.dir")}`);
-    context.log.info(`Home: ${System.getProperty("user.home")}`);
-
-    entities.forEach((entity) => {
-        context.log.info(entity.toString());
-    });
-
-    try {
-        const file = new File(`${path}/file.txt`);
-        if (file.createNewFile()) {
-            context.log.info("File created: " + file.getName());
-        } else {
-            context.log.info("File already exists.");
-        }
-
-        const writer = new FileWriter(`${path}/file.txt`);
-        writer.write("Hello, World!\n");
-        writer.close();
-
-        const data = Files.readAllLines(Paths.get(`${path}/file.txt`));
-        context.log.info(data);
-    } catch (error: any) {
-        context.log.error(error);
     }
 }
 

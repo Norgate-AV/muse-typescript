@@ -69,5 +69,5 @@ export type ICSPButton = {
     watch: (callback: ICSPParameterUpdateCallback) => void;
 };
 
-export type ICSPChannel = boolean;
+export type ICSPChannel = object;
 export type ICSPLevel = number;
