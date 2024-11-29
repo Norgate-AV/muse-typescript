@@ -13,6 +13,7 @@
 9. `ttop`
 10. `tmux` Breaks terminal session. Can't exit using regular tmux keybinds.
 11. `ls` but must use `shell:ls` for it to work as you would expect.
+12. `env` lists all current environment variables.
 
 It seems other commands can be run using `shell:exec`
 

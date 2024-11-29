@@ -6,5 +6,7 @@
     "provider": "javascript",
     "scope": "",
     "script": "./dist/app.js",
-    "envvars": {}
+    "envvars": {
+        "PROGRAM_DIR": "/mnt/data/mojo/mojo/program"
+    }
 }
