@@ -17,8 +17,14 @@ function readFile(file: string): [string | null, Error | null] {
     const Paths = Java.type("java.nio.file.Paths");
 
     try {
-        const data = Files.readAllLines(Paths.get(file));
-        return [data, null];
+        const data: Array<string> = Files.readAllLines(Paths.get(file));
+
+        let result = "";
+        for (const line in data) {
+            result += data[line];
+        }
+
+        return [result, null];
     } catch (error: any) {
         return ["", new Error(error)];
     }
@@ -58,6 +64,11 @@ function getHomeDir(): string {
     return System.getProperty("user.home");
 }
 
+function getProgramDir(): string {
+    const System = Java.type("java.lang.System");
+    return `${System.getProperty("karaf.mojo")}/program`;
+}
+
 function getCwd(): string {
     const System = Java.type("java.lang.System");
     return System.getProperty("user.dir");
@@ -67,6 +78,7 @@ export default {
     createFile,
     getCwd,
     getHomeDir,
+    getProgramDir,
     readDir,
     readFile,
     writeFile,

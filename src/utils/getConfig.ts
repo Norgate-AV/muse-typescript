@@ -4,16 +4,18 @@ export type Config = {
     name?: string;
 };
 
-export function getConfig(): [Config | null, Error | null] {
+export function getConfig(path: string): [Config | null, Error | null] {
     const String = Java.type("java.lang.String");
 
     const [data, error] = fs.readFile(
-        "/mnt/data/mojo/mojo/program/muse-typescript/config.json"
+        `${fs.getProgramDir()}/muse-typescript/${path}`,
     );
 
     if (error !== null) {
         return [null, error];
     }
 
-    return [JSON.parse(String.join("\n", data)), null];
+    // data
+    // return [JSON.parse(String.join("\n", data)), null];
+    return [JSON.parse(data), null];
 }

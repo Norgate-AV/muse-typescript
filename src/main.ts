@@ -160,15 +160,13 @@ function setPage(page: Page): void {
 }
 
 function tpReset(): void {
-    const [config, error] = getConfig();
+    const [config, error] = getConfig("./config/config.json");
     if (error !== null) {
         context.log.error(`Error reading config: ${error}`);
     }
 
-    tp.port[1].send_command(`^TXT-1,0,${config.name}`);
-
     const programInfo = {
-        name: config.name,
+        name: config ? config.name : "Unknown",
         version,
         compiled: new Date().toISOString(),
         getInfo: function () {
@@ -176,6 +174,7 @@ function tpReset(): void {
         },
     };
 
+    tp.port[1].send_command(`^TXT-1,0,${programInfo.name}`);
     tp.port[1].send_command(`^TXT-100,0,${programInfo.getInfo()}`);
 
     tp.port[1].send_command("@PPX");
