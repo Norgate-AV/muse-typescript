@@ -1,4 +1,4 @@
-export default {
+export const Snapi = {
     PLAY: 1,
     STOP: 2,
     PAUSE: 3,
@@ -41,3 +41,7 @@ export default {
     POWER_ON: 255,
     POWER_FB: 255,
 } as const;
+
+export default Snapi;
+
+// export type Snapi = typeof Snapi;

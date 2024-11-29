@@ -1,7 +1,5 @@
-import * as Muse from "../@types/muse";
-
 export class Timeline {
-    private readonly timeline: Muse.Timeline = context.services.get("timeline");
+    private readonly service: Muse.TimelineService;
     private readonly intervals: Array<number>;
     private readonly relative: boolean;
 
@@ -12,34 +10,47 @@ export class Timeline {
     // etc
     private readonly repeat: number;
 
+    // Events
+    public onExpired: Array<Muse.TimelineEventCallback> = [];
+
     constructor({
+        service,
         intervals = [1000],
         relative = false,
         repeat = -1,
     }: {
+        service: Muse.TimelineService;
         intervals?: Array<number>;
         relative?: boolean;
         repeat?: number;
-    } = {}) {
+    }) {
+        this.service = service;
         this.intervals = intervals;
         this.relative = relative;
         this.repeat = repeat;
+
+        this.service.expired.listen((event) => {
+            this.onExpired.forEach((cb) => cb(event));
+        });
     }
 
-    public create(callback: Muse.TimelineEventCallback): void {
-        this.timeline.expired.listen(callback);
-        this.timeline.start(this.intervals, this.relative, this.repeat);
+    public create(): this {
+        this.service.start(this.intervals, this.relative, this.repeat);
+        return this;
     }
 
-    public kill(): void {
-        this.timeline.stop();
+    public kill(): this {
+        this.service.stop();
+        return this;
     }
 
-    public pause(): void {
-        this.timeline.pause();
+    public pause(): this {
+        this.service.pause();
+        return this;
     }
 
-    public restart(): void {
-        this.timeline.restart();
+    public restart(): this {
+        this.service.restart();
+        return this;
     }
 }

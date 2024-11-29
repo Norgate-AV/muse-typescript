@@ -1,30 +1,34 @@
-declare namespace Muse {
-    interface Thing {
-        devices: Devices;
-        log: ((...args: any) => void) & Log;
-        services: Services;
-    }
+declare global {
+    var context: Muse.Thing;
+}
 
-    interface Devices {
-        get: (name: string) => string;
+declare namespace Muse {
+    export type Thing = {
+        devices: Devices;
+        log: ((msg: string) => void) & Log;
+        services: Services;
+    };
+
+    export type Devices = {
+        get: <T = any>(name: string) => T;
         has: (name: string) => boolean;
         ids: () => Array<string>;
-    }
+    };
 
-    interface Log {
+    export type Log = {
         level: "TRACE" | "DEBUG" | "INFO" | "WARNING" | "ERROR";
-        trace: (...args: any) => void;
-        debug: (...args: any) => void;
-        info: (...args: any) => void;
-        warning: (...args: any) => void;
-        error: (...args: any) => void;
-    }
+        trace: (msg: string) => void;
+        debug: (msg: string) => void;
+        info: (msg: string) => void;
+        warning: (msg: string) => void;
+        error: (msg: string) => void;
+    };
 
-    interface Services {
-        get: (name: string) => any;
-    }
+    export type Services = {
+        get: <T = any>(name: string) => T;
+    };
 
-    interface Timeline {
+    export type TimelineService = {
         start: (
             intervals: Array<number>,
             relative: boolean,
@@ -36,22 +40,22 @@ declare namespace Muse {
         restart: () => void;
 
         expired: {
-            listen: TimelineEventCallback;
+            listen: (callback: TimelineEventCallback) => void;
         };
-    }
+    };
 
-    type TimelineEventCallback = (event: any) => void;
+    export type TimelineEventCallback = (event?: TimelineEvent) => void;
 
-    interface TimelineEvent extends BaseEvent {
+    export type TimelineEvent = BaseEvent & {
         arguments: {
             data: object;
             sequence: number;
             time: number;
             repetition: number;
         };
-    }
+    };
 
-    interface BaseEvent {
+    export type BaseEvent = {
         path: string;
         id: string;
         arguments: {
@@ -59,5 +63,111 @@ declare namespace Muse {
         };
         oldValue: object;
         source: object;
-    }
+    };
+
+    export type PlatformService = {
+        venue: string;
+        serialnumber: string;
+        devicestate: string;
+        name: string;
+        description: string;
+        location: string;
+        model: string;
+        label: string;
+        family: string;
+        version: string;
+        manufacturer: string;
+    };
+
+    export type ICSPDriver = {
+        configuration: ICSPConfiguration;
+        port: Array<ICSPPort>;
+        online: (callback: ICSPOnlineOfflineCallback) => void;
+        offline: (callback: ICSPOnlineOfflineCallback) => void;
+        isOnline: () => boolean;
+        isOffline: () => boolean;
+    };
+
+    type ICSPOnlineOfflineCallback = () => void;
+
+    export type ICSPConfiguration = {
+        device: ISCPDevice;
+    };
+
+    export type ISCPDevice = {
+        classname: string;
+        container: Readonly<string>;
+        description: Readonly<string>;
+        descriptorlocation: Readonly<string>;
+        devicestate: Readonly<string>;
+        family: Readonly<string>;
+        guid: Readonly<string>;
+        location: Readonly<string>;
+        manufacturer: Readonly<string>;
+        model: Readonly<string>;
+        name: Readonly<string>;
+        protocolversion: Readonly<string>;
+        serialnumber: Readonly<string>;
+        softwareversion: Readonly<string>;
+        venue: Readonly<string>;
+        version: Readonly<string>;
+    };
+
+    export type ICSPEvent = {
+        data: string;
+    };
+
+    export type ICSPCustomEvent = ICSPEvent & {
+        encode: string;
+        flag: number;
+        value1: number;
+        value2: number;
+        value3: number;
+        id: number;
+        type: number;
+    };
+
+    export type ICSPEventCallback = (event: ICSPEvent) => void;
+    export type ICSPCustomEventCallback = (event: ICSPCustomEvent) => void;
+    export type ICSPParameterUpdateCallback = (
+        event: ParameterUpdate<boolean>
+    ) => void;
+
+    export type ICSPPort = {
+        button: Array<Readonly<ICSPButton>>;
+        channel: Array<ICSPChannel>;
+        command: (callback: ICSPEventCallback) => void;
+        custom: (callback: ICSPCustomEventCallback) => void;
+        level: Array<ICSPLevel>;
+        send_command: (data: string) => void;
+        send_string: (data: string) => void;
+        string: (callback: ICSPEventCallback) => void;
+    };
+
+    export type ICSPButton = {
+        watch: (callback: ICSPParameterUpdateCallback) => void;
+    };
+
+    export type ICSPChannel = boolean;
+    export type ICSPLevel = number;
+
+    export type Parameter = {
+        value: string;
+        normalized: number;
+        min: number;
+        max: number;
+        defaultValue: string;
+        type: string;
+        enums: Array<string>;
+    };
+
+    export type ParameterUpdate<T = any> = {
+        path: string;
+        id: string;
+        value: T;
+        newValue: T;
+        oldValue: T;
+        normalized: number;
+        source: object;
+    };
 }

@@ -1,3 +1,3 @@
 export type Services = {
-    get: <T>(name: string) => T;
+    get: <T = any>(name: string) => T;
 };
