@@ -13,6 +13,8 @@ type State = {
     currentVolume: number;
     currentMute: boolean;
 
+    currentAVMute: boolean;
+
     // config: Config | null;
 };
 
@@ -25,6 +27,8 @@ export const state: State = {
 
     currentVolume: 0,
     currentMute: false,
+
+    currentAVMute: false,
 
     // config: null,
 };

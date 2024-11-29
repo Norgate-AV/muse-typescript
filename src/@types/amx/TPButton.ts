@@ -14,4 +14,14 @@ export type TPButton = {
     };
     enabled?: boolean;
     hidden?: boolean;
+    size?: {
+        width: number;
+        height: number;
+    };
+    position?: {
+        x: number;
+        y: number;
+    };
+    icon?: string;
+    bitmap?: string;
 };

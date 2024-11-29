@@ -32,7 +32,7 @@ declare namespace Muse {
         start: (
             intervals: Array<number>,
             relative: boolean,
-            repeat: number
+            repeat: number,
         ) => void;
 
         stop: () => void;
@@ -40,7 +40,7 @@ declare namespace Muse {
         restart: () => void;
 
         expired: {
-            listen: (callback: TimelineEventCallback) => void;
+            listen: (callback: Muse.TimelineEventCallback) => void;
         };
     };
 
@@ -130,7 +130,7 @@ declare namespace Muse {
     export type ICSPEventCallback = (event: ICSPEvent) => void;
     export type ICSPCustomEventCallback = (event: ICSPCustomEvent) => void;
     export type ICSPParameterUpdateCallback = (
-        event: ParameterUpdate<boolean>
+        event: ParameterUpdate<boolean>,
     ) => void;
 
     export type ICSPPort = {

@@ -5,6 +5,7 @@ import { version } from "../package.json";
 import { Pages, Page } from "./pages";
 import { Popups } from "./popups";
 import { Snapi } from "./lib/SNAPI";
+import { Channels } from "./channels";
 
 /**
  * Devices
@@ -16,7 +17,9 @@ const tp = context.devices.get<Muse.ICSPDriver>("AMX-10001");
 /**
  * Functions
  */
-function selectSource(event: Muse.ParameterUpdate<boolean>): void {
+function handleSelectSourceButtonEvent(
+    event: Muse.ParameterUpdate<boolean>,
+): void {
     if (!event.value) {
         return;
     }
@@ -32,7 +35,6 @@ function selectSource(event: Muse.ParameterUpdate<boolean>): void {
 
     state.selectedSource = source;
     state.requiredPopup = source.popup;
-    context.log.info("Selected Source: " + source?.name);
 
     sendSource(source);
 
@@ -48,30 +50,58 @@ function tpOnlineEventCallback(): void {
     context.log.info(`Touch Panel Online`);
 
     registerSourceButtonEvents(sources);
-    tp.port[1].button[1].watch(touchToStart);
-    tp.port[1].button[2].watch(handleShutDownButtonEvent);
-    tp.port[1].button[3].watch(handleShutDownOkButtonEvent);
+
+    tp.port[1].button[Channels.TOUCH_TO_START].watch(
+        handleTouchToStartButtonEvent,
+    );
+    tp.port[1].button[Channels.SHUT_DOWN].watch(handleShutDownButtonEvent);
+    tp.port[1].button[Channels.SHUT_DOWN_OK].watch(handleShutDownOkButtonEvent);
 
     tp.port[2].button[Snapi.VOL_UP].watch(handleVolumeButtonEvent);
     tp.port[2].button[Snapi.VOL_DN].watch(handleVolumeButtonEvent);
     tp.port[2].button[Snapi.VOL_MUTE].watch(handleVolumeButtonEvent);
+
+    tp.port[1].button[Channels.AV_MUTE].watch(handleAVMuteButtonEvent);
+    tp.port[1].button[Channels.RESET_AUDIO].watch(handleAudioResetButtonEvent);
+
+    registerDocCamButtonEvents();
+    showDocCamButtons(false);
 
     tpFeedbackSetup();
     updateVolume(state.currentVolume);
     tpReset();
 }
 
+function registerDocCamButtonEvents(): void {
+    tp.port[8].button[Snapi.ZOOM_IN].watch(handleDocCamButtonEvent);
+    tp.port[8].button[Snapi.ZOOM_OUT].watch(handleDocCamButtonEvent);
+    tp.port[8].button[Snapi.FOCUS_FAR].watch(handleDocCamButtonEvent);
+    tp.port[8].button[Snapi.FOCUS_NEAR].watch(handleDocCamButtonEvent);
+    tp.port[8].button[Snapi.AUTO_FOCUS].watch(handleDocCamButtonEvent);
+}
+
 function registerSourceButtonEvents(sources: Array<Source>): void {
     for (const source of sources) {
         const { port, code } = source.button.channel;
-        context.log.info(
-            `Registering ${source.name} on port ${port} code ${code}`,
-        );
-        tp.port[port].button[code].watch(selectSource);
+        tp.port[port].button[code].watch(handleSelectSourceButtonEvent);
     }
 }
 
-function touchToStart(event: Muse.ParameterUpdate<boolean>): void {
+function handleDocCamButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
+    if (!event.value) {
+        return;
+    }
+
+    context.log.info(`Doc Cam Button ${event.id} pressed`);
+}
+
+function handleTouchToStartButtonEvent(
+    event: Muse.ParameterUpdate<boolean>,
+): void {
+    if (event.value) {
+        return;
+    }
+
     setPage(Pages.Main);
 }
 
@@ -93,6 +123,7 @@ function tpFeedbackHandler(): void {
             state.selectedSource.button?.channel.code === code;
     }
 
+    tp.port[1].channel[Channels.AV_MUTE] = state.currentAVMute;
     tp.port[2].channel[Snapi.VOL_MUTE] = state.currentMute;
 }
 
@@ -178,6 +209,24 @@ function tpRefresh() {
  */
 tp.online(tpOnlineEventCallback);
 
+function handleAVMuteButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
+    if (!event.value) {
+        return;
+    }
+
+    state.currentAVMute = !state.currentAVMute;
+}
+
+function handleAudioResetButtonEvent(
+    event: Muse.ParameterUpdate<boolean>,
+): void {
+    if (!event.value) {
+        return;
+    }
+
+    audioReset();
+}
+
 function updateVolume(volume: number): void {
     tp.port[2].level[1] = volume;
 }
@@ -185,36 +234,32 @@ function updateVolume(volume: number): void {
 function handleVolumeButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
     switch (parseInt(event.id)) {
         case Snapi.VOL_UP: {
-            if (event.value) {
-                context.log.info("Volume Up Pressed");
-
-                if (state.currentVolume >= 255) {
-                    return;
-                }
-
-                state.currentMute = false;
-                state.currentVolume++;
-                updateVolume(state.currentVolume);
-            } else {
-                context.log.info("Volume Up Released");
+            if (!event.value) {
+                return;
             }
+
+            if (state.currentVolume >= 255) {
+                return;
+            }
+
+            state.currentMute = false;
+            state.currentVolume++;
+            updateVolume(state.currentVolume);
 
             break;
         }
         case Snapi.VOL_DN: {
-            if (event.value) {
-                context.log.info("Volume Down Pressed");
-
-                if (state.currentVolume <= 0) {
-                    return;
-                }
-
-                state.currentMute = false;
-                state.currentVolume--;
-                updateVolume(state.currentVolume);
-            } else {
-                context.log.info("Volume Down Released");
+            if (!event.value) {
+                return;
             }
+
+            if (state.currentVolume <= 0) {
+                return;
+            }
+
+            state.currentMute = false;
+            state.currentVolume--;
+            updateVolume(state.currentVolume);
 
             break;
         }
@@ -223,7 +268,6 @@ function handleVolumeButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
                 return;
             }
 
-            context.log.info("Volume Mute");
             state.currentMute = !state.currentMute;
 
             if (state.currentMute) {
@@ -237,11 +281,24 @@ function handleVolumeButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
     }
 }
 
+function showDocCamButtons(state: boolean) {
+    tp.port[8].send_command(`^SHO-${Snapi.ZOOM_IN},${state ? 1 : 0}`);
+    tp.port[8].send_command(`^SHO-${Snapi.ZOOM_OUT},${state ? 1 : 0}`);
+    tp.port[8].send_command(`^SHO-${Snapi.FOCUS_FAR},${state ? 1 : 0}`);
+    tp.port[8].send_command(`^SHO-${Snapi.FOCUS_NEAR},${state ? 1 : 0}`);
+    tp.port[8].send_command(`^SHO-${Snapi.AUTO_FOCUS},${state ? 1 : 0}`);
+}
+
 function audioReset() {
     state.currentVolume = 127;
     state.currentMute = false;
     updateVolume(state.currentVolume);
 }
 
-context.log.info("Program Started");
-audioReset();
+function main() {
+    context.log.info("Program Started");
+    audioReset();
+}
+
+// Start the program
+main();

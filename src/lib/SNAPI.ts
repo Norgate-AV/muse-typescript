@@ -18,6 +18,13 @@ export const Snapi = {
     PWR_ON: 27,
     PWR_OFF: 28,
 
+    ZOOM_OUT: 158,
+    ZOOM_IN: 159,
+    FOCUS_NEAR: 160,
+    FOCUS_FAR: 161,
+
+    AUTO_FOCUS: 172,
+
     FRAME_FWD: 185,
     FRAME_REV: 186,
     SLOW_FWD: 188,
