@@ -1,5 +1,4 @@
-import * as Muse from "./@types/muse";
-import { Timeline } from "./lib";
+import { Timeline } from "../lib";
 
 const Thread = Java.type("java.lang.Thread");
 
@@ -10,8 +9,11 @@ export function timelines(): void {
     log.info("Have it pause every 10 repetitions and restart after 5 seconds");
     log.info("Use the Java Thread API to sleep the main thread");
 
-    const timeline = new Timeline();
-    timeline.create((event: Muse.TimelineEvent) => {
+    const timeline = new Timeline({
+        service: context.services.get("timeline"),
+    });
+
+    timeline.onExpired.push((event: Muse.TimelineEvent) => {
         log.info(`Timer ID: ${event.id}`);
         log.info(`Timer Path: ${event.path}`);
         log.info(`Timer Sequence: ${event.arguments.sequence}`);
@@ -24,4 +26,6 @@ export function timelines(): void {
             timeline.restart();
         }
     });
+
+    timeline.create();
 }

@@ -1,4 +1,4 @@
-import { TPButton } from "./@types/amx";
+import { TPButton } from "./@types";
 import { Popup, Popups } from "./popups";
 
 export type Source = {

@@ -1,10 +1,8 @@
-import { TimelineService } from "../@types/muse";
-
 export function setInterval(
     callback: (...args: any) => void,
     interval: number = 1,
     ...args: any
-): TimelineService {
+): Muse.TimelineService {
     // const Thread = Java.type("java.lang.Thread");
     // const thread = new Thread(() => {
     //     while (true) {
@@ -15,7 +13,7 @@ export function setInterval(
     // });
     // thread.start();
 
-    const timeline = context.services.get<TimelineService>("timeline");
+    const timeline = context.services.get<Muse.TimelineService>("timeline");
 
     timeline.expired.listen(() => {
         callback(...args);

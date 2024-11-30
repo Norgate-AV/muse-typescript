@@ -15,7 +15,5 @@ export function getConfig(path: string): [Config | null, Error | null] {
         return [null, error];
     }
 
-    // data
-    // return [JSON.parse(String.join("\n", data)), null];
     return [JSON.parse(data), null];
 }

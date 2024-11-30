@@ -1,4 +1,5 @@
 import { Source, sources } from "./sources";
+// import { Muse } from "./@types/muse/Muse";
 import { state } from "./store";
 import { getConfig } from "./utils/getConfig";
 import { version } from "../package.json";
@@ -6,6 +7,7 @@ import { Pages, Page } from "./pages";
 import { Popups } from "./popups";
 import { Snapi } from "./lib/SNAPI";
 import { Channels } from "./channels";
+import App from "./App";
 
 /**
  * Devices
@@ -125,6 +127,7 @@ function tpFeedbackHandler(): void {
 
     tp.port[1].channel[Channels.AV_MUTE] = state.currentAVMute;
     tp.port[2].channel[Snapi.VOL_MUTE] = state.currentMute;
+    // tp.port[2].level[1]
 }
 
 function handleShutDownButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
@@ -295,6 +298,8 @@ function audioReset() {
 }
 
 function main() {
+    new App({ context }).init();
+
     context.log.info("Program Started");
     audioReset();
 }

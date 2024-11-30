@@ -1,6 +1,2 @@
-import { Thing } from "./src/@types/muse";
-
-declare global {
-    var Java: any;
-    var context: Thing;
-}
+/// <reference path="./src/@types/muse/index.d.ts" />
+/// <reference path="./src/@types/java/index.d.ts" />
