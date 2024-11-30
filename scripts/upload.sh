@@ -27,7 +27,6 @@ fi
 
 NAME=$(echo $PROGRAM | jq -r ".name")
 FILES=$(cat package.json 2>/dev/null | jq -r ".files[]")
-echo "Files: $FILES"
 
 if [ -z "$NAME" ]; then
     echo "Error: program name not found in program.json"

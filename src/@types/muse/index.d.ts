@@ -2,6 +2,7 @@ export {};
 
 declare global {
     export var context: Muse.Thing;
+    // export var console: Muse.Log = context.log;
 
     namespace Muse {
         export type Thing = {

@@ -1,4 +1,4 @@
-import { ValueOf } from "./@types";
+import { ValueOf } from "../@types";
 
 export type Popup = ValueOf<typeof Popups>;
 

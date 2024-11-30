@@ -1,6 +1,6 @@
-import { Page, Pages } from "../pages";
-import { Popup, Popups } from "../popups";
-import { Source } from "../sources";
+import { Page, Pages } from "../ui/pages";
+import { Popup, Popups } from "../ui/popups";
+import { Source } from "../ui/sources";
 // import { Config } from "../utils/getConfig";
 
 type State = {
@@ -18,7 +18,7 @@ type State = {
     // config: Config | null;
 };
 
-export const state: State = {
+let state: State = {
     selectedSource: null,
     currentSource: null,
 
@@ -29,9 +29,17 @@ export const state: State = {
     currentMute: false,
 
     currentAVMute: false,
-
-    // config: null,
 };
+
+export function getState(): Readonly<State> {
+    return state;
+}
+
+export function setState(callback: (state: State) => State): void {
+    state = callback(state);
+}
+
+export type GlobalState = ReturnType<typeof getState>;
 
 // const store = createStore({
 //     reducer: {},
