@@ -26,6 +26,8 @@ if [ $? -ne 0 ]; then
 fi
 
 NAME=$(echo $PROGRAM | jq -r ".name")
+FILES=$(cat package.json 2>/dev/null | jq -r ".files")
+echo "Files: $FILES"
 
 if [ -z "$NAME" ]; then
     echo "Error: program name not found in program.json"
@@ -34,8 +36,8 @@ fi
 
 echo "Deploying $NAME to $HOST"
 
-scp -r $SCRIPT_DIR/../dist $USERNAME@$HOST:/mojo/program/$NAME/
-scp $SCRIPT_DIR/../program.json $USERNAME@$HOST:/mojo/program/$NAME/
+# scp -r $SCRIPT_DIR/../dist $USERNAME@$HOST:/mojo/program/$NAME/
+# scp $SCRIPT_DIR/../program.json $USERNAME@$HOST:/mojo/program/$NAME/
 
 # Restart the program
 # ssh $USERNAME@$HOST "program:restart $PROGRAM"    # This kills all current ssh sessions. Need to find a better way to restart the program.

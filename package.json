@@ -10,11 +10,18 @@
         "amx",
         "harman"
     ],
-    "main": "dist/app.js",
+    "main": "dist/main.js",
+    "files": [
+        "config",
+        "dist",
+        "LICENSE",
+        "program.json"
+    ],
     "scripts": {
+        "prebuild": "pnpm lint",
         "build": "tsup",
         "lint": "tsc",
-        "upload": "bash ./scripts/deploy.sh"
+        "upload": "bash ./scripts/upload.sh"
     },
     "devDependencies": {
         "@swc/core": "^1.9.3",

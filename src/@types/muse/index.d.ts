@@ -20,11 +20,11 @@ declare global {
 
         export type Log = {
             level: "TRACE" | "DEBUG" | "INFO" | "WARNING" | "ERROR";
-            trace: (msg: string) => void;
-            debug: (msg: string) => void;
-            info: (msg: string) => void;
-            warning: (msg: string) => void;
-            error: (msg: string) => void;
+            trace: (msg: any) => void;
+            debug: (msg: any) => void;
+            info: (msg: any) => void;
+            warning: (msg: any) => void;
+            error: (msg: any) => void;
         };
 
         export type Services = {
