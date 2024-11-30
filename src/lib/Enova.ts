@@ -1,9 +1,5 @@
-import { Timeline } from ".";
-import type { Switcher, Thing, TimelineEvent } from "../@types";
-
-// type Props = {
-//     context: Thing;
-// }
+import { Timeline } from "./Timeline";
+import type { Switcher } from "../@types";
 
 const MAX_OUTPUT = 16;
 const MAX_LEVELS = 3;
@@ -15,12 +11,13 @@ const levels = new Map<number, string>([
 ]);
 
 export class Enova implements Switcher {
-    private engine: Timeline = new Timeline({ intervals: [100] });
+    private engine: Timeline;
     private busy: boolean = false;
     private output: number[][];
     private pending: boolean[][];
 
-    constructor() {
+    constructor({ timeline }: { timeline: Muse.TimelineService }) {
+        this.engine = new Timeline({ service: timeline, intervals: [100] });
         this.init();
     }
 
@@ -89,10 +86,12 @@ export class Enova implements Switcher {
         ];
 
         context.log.info("Enova initialized");
-        this.engine.create(this.tick);
+
+        this.engine.onExpired.push(this.tick);
+        this.engine.create();
     }
 
-    private tick(_: TimelineEvent): void {
+    private tick(_: Muse.TimelineEvent): void {
         if (this.busy) {
             return;
         }
@@ -105,7 +104,7 @@ export class Enova implements Switcher {
                     }
 
                     context.log.info(
-                        `Switching ${this.output[j][i]} to ${i + 1}`
+                        `Switching ${this.output[j][i]} to ${i + 1}`,
                     );
                     // this.pending[j][i] = false;
                     // this.busy = true;
@@ -120,7 +119,7 @@ export class Enova implements Switcher {
 
     public switch(input: number, output: number, level: number): void {
         context.log.info(
-            `Switching ${input} to ${output}: ${levels.get(level)}`
+            `Switching ${input} to ${output}: ${levels.get(level)}`,
         );
 
         try {

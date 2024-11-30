@@ -1,11 +1,10 @@
 import { Source, sources } from "./sources";
-// import { Muse } from "./@types/muse/Muse";
 import { state } from "./store";
-import { getConfig } from "./utils/getConfig";
+import { getConfig } from "./utils";
 import { version } from "../package.json";
 import { Pages, Page } from "./pages";
 import { Popups } from "./popups";
-import { Snapi } from "./lib/SNAPI";
+import { Snapi } from "./lib";
 import { Channels } from "./channels";
 import App from "./App";
 
@@ -298,7 +297,11 @@ function audioReset() {
 }
 
 function main() {
-    new App({ context }).init();
+    const app = new App({ context }).init();
+
+    if (!app) {
+        throw new Error("App failed to initialize");
+    }
 
     context.log.info("Program Started");
     audioReset();
