@@ -1,18 +1,13 @@
+import { DeviceRegistrationStatus } from "../@types/muse/DeviceRegistrationStatus";
+
 interface TouchPanelOptions {
-    // context: Muse.Context;
     id?: string;
     port?: number;
 }
 
-enum DeviceRegistrationStatus {
-    Success,
-    Failure,
-}
-
 class TouchPanel {
-    // private context: Muse.Context;
     private readonly _id: string;
-    private readonly port: number;
+    private readonly _port: number;
 
     private device: Muse.ICSPDriver;
 
@@ -29,10 +24,13 @@ class TouchPanel {
         return this._id;
     }
 
+    public get port(): number {
+        return this._port;
+    }
+
     constructor({ id = "AMX-10001", port = 1 }: TouchPanelOptions) {
-        // this.context = context;
         this._id = id;
-        this.port = port;
+        this._port = port;
     }
 
     public register(): DeviceRegistrationStatus {
@@ -53,7 +51,6 @@ class TouchPanel {
         const { button: buttons } = device.port[port];
 
         for (const button in buttons) {
-            context.log.info(`Registering listener for button ${button}`);
             buttons[parseInt(button)].watch((event) => this.buttonEvent(event));
         }
 
@@ -73,6 +70,10 @@ class TouchPanel {
     private offlineEvent(): void {
         context.log.info(`Touch Panel ${this.id} Offline`);
         this.onOfflineEvent.forEach((callback) => callback());
+    }
+
+    public sendCommand(command: string): void {
+        this.device.port[this.port].send_command(command);
     }
 }
 
