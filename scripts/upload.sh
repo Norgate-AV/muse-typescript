@@ -26,7 +26,7 @@ if [ $? -ne 0 ]; then
 fi
 
 NAME=$(echo $PROGRAM | jq -r ".name")
-FILES=$(cat package.json 2>/dev/null | jq -r ".files")
+FILES=$(cat package.json 2>/dev/null | jq -r ".files[]")
 echo "Files: $FILES"
 
 if [ -z "$NAME" ]; then
@@ -36,6 +36,10 @@ fi
 
 echo "Deploying $NAME to $HOST"
 
+for file in $FILES; do
+    # echo "Uploading $file"
+    scp -r $SCRIPT_DIR/../$file $USERNAME@$HOST:/mojo/program/$NAME/
+done
 # scp -r $SCRIPT_DIR/../dist $USERNAME@$HOST:/mojo/program/$NAME/
 # scp $SCRIPT_DIR/../program.json $USERNAME@$HOST:/mojo/program/$NAME/
 
