@@ -1,16 +1,15 @@
 import ControlSystem, { ControlSystemOptions } from "./lib/ControlSystem";
 import TouchPanel from "./lib/TouchPanel";
-import type { GlobalState as State } from "./store";
 import { DeviceRegistrationStatus } from "./@types/muse/DeviceRegistrationStatus";
 import TouchPanelCommand from "./lib/TouchPanelCommand";
 import UIManager from "./lib/UIManager";
+import { sources } from "./ui/sources";
 
 interface AppOptions extends ControlSystemOptions {}
 
 class App extends ControlSystem {
     private panel: TouchPanel;
     private ui: UIManager;
-    private state: State;
 
     constructor(options: AppOptions = {}) {
         super(options);
@@ -19,7 +18,9 @@ class App extends ControlSystem {
     public init(): this {
         this.panel = new TouchPanel({ id: "AMX-10001" });
         this.panel.onOnlineEvent.push(() => this.handlePanelOnlineEvent());
-        this.panel.onButtonEvent.push(this.handlePanelButtonEvent);
+        this.panel.onButtonEvent.push((event) =>
+            this.handlePanelButtonEvent(event),
+        );
 
         if (this.panel.register() !== DeviceRegistrationStatus.Success) {
             context.log.error(
@@ -29,7 +30,7 @@ class App extends ControlSystem {
 
         this.ui = new UIManager({
             panel: this.panel,
-            initialPage: { name: "Main" },
+            initialPage: { name: "Logo" },
         });
 
         return this;
@@ -56,12 +57,55 @@ class App extends ControlSystem {
             return;
         }
 
-        context.log.info(`Button Event: ${matches[0]}`);
-        context.log.info(`Button Event: ${matches[1]}`);
+        const channel = parseInt(matches[1]);
 
-        switch (parseInt(matches[1])) {
+        switch (channel) {
+            // Touch To Start
             case 1: {
-                this.ui.setPage("Main");
+                if (!event.value) {
+                    return;
+                }
+
+                this.ui.showPage("Main");
+                break;
+            }
+
+            // Power Button
+            case 2: {
+                if (!event.value) {
+                    return;
+                }
+
+                this.ui.showPopup({ name: "Dialogs - Shut Down" });
+                break;
+            }
+
+            // Source Buttons
+            case 31:
+            case 32:
+            case 33:
+            case 34: {
+                if (!event.value) {
+                    return;
+                }
+
+                const [source] = sources.filter(
+                    (source) => source.button.channel.code === channel,
+                );
+
+                this.ui.showPopup({ name: `${source.popup}` });
+
+                for (const source of sources) {
+                    const { code } = source.button?.channel;
+
+                    // if (!getState().selectedSource) {
+                    //     tp.port[port].channel[code] = false;
+                    //     continue;
+                    // }
+
+                    this.panel.channel[code] = channel === code;
+                }
+
                 break;
             }
         }

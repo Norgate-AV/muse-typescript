@@ -2,50 +2,9 @@
 // import { getState, setState } from "./store";
 // import { getConfig } from "./lib/utils";
 // import { version } from "../package.json";
-// import { Pages, Page } from "./ui/pages";
-// import { Popups } from "./ui/popups";
 // import { Snapi } from "./lib";
 // import { Channels } from "./ui/channels";
 import App from "./App";
-
-/**
- * Devices
- */
-
-// MT-1002
-// const tp = context.devices.get<Muse.ICSPDriver>("AMX-10001");
-
-/**
- * Functions
- */
-// function handleSelectSourceButtonEvent(
-//     event: Muse.ParameterUpdate<boolean>,
-// ): void {
-//     if (!event.value) {
-//         return;
-//     }
-
-//     const [source] = sources.filter(
-//         (source) => source.button.channel.code.toString() === event.id,
-//     );
-
-//     if (!source) {
-//         context.log.info("Source not found");
-//         return;
-//     }
-
-//     setState((state) => {
-//         return {
-//             ...state,
-//             selectedSource: source,
-//             requiredPopup: source.popup,
-//         };
-//     });
-
-//     sendSource(source);
-
-//     tpRefresh();
-// }
 
 // function sendSource(source: Source): void {
 //     setState((state) => {
@@ -351,7 +310,6 @@ function main() {
     }
 
     context.log.info("Program Started");
-    // audioReset();
 }
 
 // Start the program

@@ -28,6 +28,10 @@ class TouchPanel {
         return this._port;
     }
 
+    public get channel(): Array<boolean> {
+        return this.device.port[this.port].channel;
+    }
+
     constructor({ id = "AMX-10001", port = 1 }: TouchPanelOptions) {
         this._id = id;
         this._port = port;
