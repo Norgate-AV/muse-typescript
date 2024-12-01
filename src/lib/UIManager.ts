@@ -21,6 +21,7 @@ class UIManager {
     constructor({ panel }: UIManagerOptions) {
         this.panel = panel;
         this.panel.onOnlineEvent.push(() => this.handlePanelOnlineEvent());
+        this.reset().refresh();
         context.log.info("UI Manager Initialized");
     }
 
