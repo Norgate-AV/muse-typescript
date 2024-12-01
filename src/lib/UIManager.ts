@@ -38,7 +38,6 @@ class UIManager {
     }
 
     private reset(): this {
-        context.log.info("Resetting UI");
         return this;
     }
 }

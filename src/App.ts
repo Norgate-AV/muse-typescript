@@ -9,6 +9,7 @@ interface AppOptions extends ControlSystemOptions {}
 
 class App extends ControlSystem {
     private panel: TouchPanel;
+    private ui: UIManager;
     private state: State;
 
     constructor(options: AppOptions = {}) {
@@ -26,9 +27,9 @@ class App extends ControlSystem {
             );
         }
 
-        const ui = new UIManager({
+        this.ui = new UIManager({
             panel: this.panel,
-            initialPage: { name: "Logo" },
+            initialPage: { name: "Main" },
         });
 
         return this;
@@ -44,12 +45,7 @@ class App extends ControlSystem {
         context.log.info(`Button Old Value: ${event.oldValue}`);
         context.log.info(`Button New Value: ${event.value}`);
 
-        const pattern = /^port\/1\/button\/(3(1|2|3|4))$/g;
-        // const pattern = new RegExp(
-        //     "^\\/port\\/1\\/button\\/(3(1|2|3|4))",
-        //     "gm",
-        // );
-        // const matches = event.path.match(pattern);
+        const pattern = /^\w+\/\d\/button\/(\d+)$/g;
         const matches = pattern.exec(event.path);
 
         if (!matches) {
@@ -60,8 +56,14 @@ class App extends ControlSystem {
             return;
         }
 
-        for (const match of matches) {
-            context.log.info(`Match: ${match}`);
+        context.log.info(`Button Event: ${matches[0]}`);
+        context.log.info(`Button Event: ${matches[1]}`);
+
+        switch (parseInt(matches[1])) {
+            case 1: {
+                this.ui.setPage("Main");
+                break;
+            }
         }
 
         // context.log.info(`Source Button Event: ${match[1]}, ${match[0]}`);

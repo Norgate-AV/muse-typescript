@@ -20,7 +20,7 @@
     "scripts": {
         "prebuild": "pnpm lint",
         "build": "tsup",
-        "lint": "tsc",
+        "lint": "tsc --noEmit",
         "upload": "bash ./scripts/upload.sh"
     },
     "devDependencies": {

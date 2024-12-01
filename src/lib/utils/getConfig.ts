@@ -5,7 +5,7 @@ export type Config = {
 };
 
 export function getConfig(path: string): [Config | null, Error | null] {
-    const String = Java.type("java.lang.String");
+    // const String = Java.type<java.lang.String>("java.lang.String");
 
     const [data, error] = fs.readFile(
         `${fs.getProgramDir()}/muse-typescript/${path}`,

@@ -2,24 +2,23 @@ export {};
 
 declare global {
     export var context: Muse.Thing;
-    // export var console: Muse.Log = context.log;
 
     namespace Muse {
-        export type Thing = {
+        type Thing = {
             devices: Devices;
             log: ((msg: string) => void) & Log;
             services: Services;
         };
 
-        export type Context = Thing;
+        type Context = Thing;
 
-        export type Devices = {
+        type Devices = {
             get: <T = any>(name: string) => T;
             has: (name: string) => boolean;
             ids: () => Array<string>;
         };
 
-        export type Log = {
+        type Log = {
             level: "TRACE" | "DEBUG" | "INFO" | "WARNING" | "ERROR";
             trace: (msg: any) => void;
             debug: (msg: any) => void;
@@ -28,11 +27,11 @@ declare global {
             error: (msg: any) => void;
         };
 
-        export type Services = {
+        type Services = {
             get: <T = any>(name: string) => T;
         };
 
-        export type TimelineService = {
+        type TimelineService = {
             start: (
                 intervals: Array<number>,
                 relative: boolean,
@@ -48,9 +47,9 @@ declare global {
             };
         };
 
-        export type TimelineEventCallback = (event?: TimelineEvent) => void;
+        type TimelineEventCallback = (event?: TimelineEvent) => void;
 
-        export type TimelineEvent = BaseEvent & {
+        type TimelineEvent = BaseEvent & {
             arguments: {
                 data: object;
                 sequence: number;
@@ -59,7 +58,7 @@ declare global {
             };
         };
 
-        export type BaseEvent = {
+        type BaseEvent = {
             path: string;
             id: string;
             arguments: {
@@ -69,7 +68,7 @@ declare global {
             source: object;
         };
 
-        export type PlatformService = {
+        type PlatformService = {
             venue: string;
             serialnumber: string;
             devicestate: string;
@@ -83,7 +82,7 @@ declare global {
             manufacturer: string;
         };
 
-        export type ICSPDriver = {
+        type ICSPDriver = {
             configuration: ICSPConfiguration;
             port: Array<ICSPPort>;
             online: (callback: ICSPOnlineOfflineCallback) => void;
@@ -92,13 +91,13 @@ declare global {
             isOffline: () => boolean;
         };
 
-        export type ICSPOnlineOfflineCallback = () => void;
+        type ICSPOnlineOfflineCallback = () => void;
 
-        export type ICSPConfiguration = {
+        type ICSPConfiguration = {
             device: ISCPDevice;
         };
 
-        export type ISCPDevice = {
+        type ISCPDevice = {
             classname: Readonly<string>;
             container: Readonly<string>;
             description: Readonly<string>;
@@ -117,11 +116,11 @@ declare global {
             version: Readonly<string>;
         };
 
-        export type ICSPEvent = {
+        type ICSPEvent = {
             data: string;
         };
 
-        export type ICSPCustomEvent = ICSPEvent & {
+        type ICSPCustomEvent = ICSPEvent & {
             encode: string;
             flag: number;
             value1: number;
@@ -131,13 +130,13 @@ declare global {
             type: number;
         };
 
-        export type ICSPEventCallback = (event: ICSPEvent) => void;
-        export type ICSPCustomEventCallback = (event: ICSPCustomEvent) => void;
-        export type ICSPParameterUpdateCallback<T = any> = (
+        type ICSPEventCallback = (event: ICSPEvent) => void;
+        type ICSPCustomEventCallback = (event: ICSPCustomEvent) => void;
+        type ICSPParameterUpdateCallback<T = any> = (
             event: ParameterUpdate<T>,
         ) => void;
 
-        export type ICSPPort = {
+        type ICSPPort = {
             button: Array<Readonly<ICSPButton>>;
             channel: Array<boolean>;
             command: (callback: ICSPEventCallback) => void;
@@ -148,19 +147,19 @@ declare global {
             string: (callback: ICSPEventCallback) => void;
         };
 
-        export type ICSPButton = {
+        type ICSPButton = {
             watch: (callback: ICSPParameterUpdateCallback<boolean>) => void;
         };
 
-        export type ICSPChannel = {
+        type ICSPChannel = {
             watch: (callback: ICSPParameterUpdateCallback<boolean>) => void;
         };
 
-        export type ICSPLevel = {
+        type ICSPLevel = {
             watch: (callback: ICSPParameterUpdateCallback<number>) => void;
         };
 
-        export type Parameter = {
+        type Parameter = {
             value: string;
             normalized: number;
             min: number;
@@ -170,7 +169,7 @@ declare global {
             enums: Array<string>;
         };
 
-        export type ParameterUpdate<T = any> = {
+        type ParameterUpdate<T = any> = {
             path: string;
             id: string;
             value: T;
