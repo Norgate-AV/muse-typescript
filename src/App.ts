@@ -3,6 +3,7 @@ import TouchPanel from "./lib/TouchPanel";
 import type { GlobalState as State } from "./store";
 import { DeviceRegistrationStatus } from "./@types/muse/DeviceRegistrationStatus";
 import TouchPanelCommand from "./lib/TouchPanelCommand";
+import UIManager from "./lib/UIManager";
 
 interface AppOptions extends ControlSystemOptions {}
 
@@ -24,6 +25,9 @@ class App extends ControlSystem {
             );
         }
 
+        const ui = new UIManager({ panel: this.panel });
+        ui.setPage("Logo");
+
         return this;
     }
 
@@ -37,14 +41,15 @@ class App extends ControlSystem {
         context.log.info(`Button Old Value: ${event.oldValue}`);
         context.log.info(`Button New Value: ${event.value}`);
 
-        const pattern = /^port\/1\/button\/(3(1|2|3|4))$/gm;
+        const pattern = /^port\/1\/button\/(3(1|2|3|4))$/g;
         // const pattern = new RegExp(
         //     "^\\/port\\/1\\/button\\/(3(1|2|3|4))",
         //     "gm",
         // );
-        const match = event.path.match(pattern);
+        // const matches = event.path.match(pattern);
+        const matches = pattern.exec(event.path);
 
-        if (!match) {
+        if (!matches) {
             context.log.info(
                 `Button Event: ${event.path} does not match pattern`,
             );
@@ -52,7 +57,11 @@ class App extends ControlSystem {
             return;
         }
 
-        context.log.info(`Source Button Event: ${match[1]}, ${match[0]}`);
+        for (const match of matches) {
+            context.log.info(`Match: ${match}`);
+        }
+
+        // context.log.info(`Source Button Event: ${match[1]}, ${match[0]}`);
 
         // if (event.path.match(/^\/port\/1\/button\/3(1|2|3|4)$/gm)) {
         //     // Source Buttons

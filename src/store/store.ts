@@ -1,4 +1,4 @@
-import { Page, Pages } from "../ui/pages";
+import { Page, Pages } from "../ui/Pages";
 import { Popup, Popups } from "../ui/popups";
 import { Source } from "../ui/sources";
 // import { Config } from "../utils/getConfig";

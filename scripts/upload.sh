@@ -18,29 +18,28 @@ if [ -z "$USERNAME" ]; then
     exit 1
 fi
 
-PROGRAM=$(cat program.json 2>/dev/null)
+program_file=$(cat $SCRIPT_DIR/../program.json 2>/dev/null)
 
 if [ $? -ne 0 ]; then
     echo "Error: program.json file not found"
     exit 1
 fi
 
-NAME=$(echo $PROGRAM | jq -r ".name")
-FILES=$(cat package.json 2>/dev/null | jq -r ".files[]")
+name=$(echo $program_file | jq -r ".name")
+files=$(echo $program_file | jq -r ".files[]" | xargs -n1 realpath)
 
-if [ -z "$NAME" ]; then
-    echo "Error: program name not found in program.json"
+if [ -z "$name" ]; then
+    echo "Error: name not found in program.json"
     exit 1
 fi
 
-echo "Deploying $NAME to $HOST"
+if [ -z "$files" ]; then
+    echo "Error: files not found in program.json"
+    exit 1
+fi
 
-for file in $FILES; do
-    # echo "Uploading $file"
-    scp -r $SCRIPT_DIR/../$file $USERNAME@$HOST:/mojo/program/$NAME/
-done
-# scp -r $SCRIPT_DIR/../dist $USERNAME@$HOST:/mojo/program/$NAME/
-# scp $SCRIPT_DIR/../program.json $USERNAME@$HOST:/mojo/program/$NAME/
+echo "Transferring files to $HOST"
+scp -r $files $USERNAME@$HOST:/mojo/program/$name/
 
-# Restart the program
-# ssh $USERNAME@$HOST "program:restart $PROGRAM"    # This kills all current ssh sessions. Need to find a better way to restart the program.
+echo -e "\nRestarting program..."
+ssh $USERNAME@$HOST "program:restart $name"
