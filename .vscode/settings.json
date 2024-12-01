@@ -8,5 +8,11 @@
     "files.autoSave": "onFocusChange",
     "[shellscript]": {
         "editor.defaultFormatter": "foxundermoon.shell-format"
-    }
+    },
+    "json.schemas": [
+        {
+            "url": "./museprogram.schema.json",
+            "fileMatch": ["program.json"]
+        }
+    ]
 }

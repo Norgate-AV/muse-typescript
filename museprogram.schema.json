@@ -1,5 +1,66 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "museprogram",
-    "version": 1.1
+    "title": "Muse Program Manifest",
+    "description": "JSON schema for Muse program manifest",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "The unique identifier for the program"
+        },
+        "name": {
+            "type": "string",
+            "description": "The name of the program"
+        },
+        "version": {
+            "type": "string",
+            "description": "The version of the program"
+        },
+        "description": {
+            "type": "string",
+            "description": "A description of the program"
+        },
+        "disabled": {
+            "type": "boolean",
+            "description": "A flag to determine if the project should run if loaded"
+        },
+        "provider": {
+            "type": "string",
+            "description": "Scripting language for the project",
+            "enum": ["groovy", "javascript", "python"]
+        },
+        "scope": {
+            "type": "string",
+            "description": "Future use: logically divide devices and scripts into group"
+        },
+        "script": {
+            "type": "string",
+            "description": "The name of the script to use as a starting point"
+        },
+        "envvars": {
+            "type": "object",
+            "description": "Environment variables for the program",
+            "additionalProperties": {
+                "type": "string"
+            }
+        },
+        "files": {
+            "type": "array",
+            "description": "List of files to include in the program",
+            "items": {
+                "type": "string"
+            },
+            "uniqueItems": true
+        },
+        "plugins": {
+            "type": "array",
+            "description": "List of plugins to include in the program",
+            "items": {
+                "type": "string"
+            },
+            "uniqueItems": true
+        }
+    },
+    "required": ["id", "disabled", "provider", "script"]
 }
