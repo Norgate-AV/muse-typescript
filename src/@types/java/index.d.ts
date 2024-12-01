@@ -12,12 +12,22 @@ declare global {
     type bytearray = [char];
 
     namespace Java {
-        export function type<T = any>(t: string): T;
-        export function from<T = any>(list: java.util.List<T>): Array<T>;
+        function type<T = any>(t: string): T;
+        function from<T = any>(list: java.util.List<T>): Array<T>;
+        // function extend<T = any>(obj: T, ...args: any[]): T;
     }
 
-    // declare function print(...args: any[]): void;
-    // declare function load(module: string): void;
+    /**
+     *
+     * @param args
+     */
+    function print(...args: any[]): void;
+
+    /**
+     * Loads an external JavaScript module.
+     * @param module
+     */
+    function load(module: string): void;
 
     namespace java.lang {
         interface Class<T> {}

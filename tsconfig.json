@@ -10,7 +10,8 @@
         "resolveJsonModule": true,
         "typeRoots": ["src/@types/*", "node_modules/@types"],
         "allowSyntheticDefaultImports": true,
-        "noEmit": true
+        "noEmit": true,
+        "allowJs": true
         // "noUnusedLocals": true,
         // "noUnusedParameters": true,
     },

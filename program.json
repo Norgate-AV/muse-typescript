@@ -10,5 +10,6 @@
     "envvars": {
         "PROGRAM_DIR": "/mnt/data/mojo/mojo/program"
     },
-    "files": ["config", "dist", "LICENSE", "program.json"]
+    "files": ["config", "dist", "LICENSE", "program.json"],
+    "plugins": []
 }
