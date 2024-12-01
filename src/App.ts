@@ -19,14 +19,17 @@ class App extends ControlSystem {
         this.panel = new TouchPanel({ id: "AMX-10001" });
         this.panel.onOnlineEvent.push(() => this.handlePanelOnlineEvent());
         this.panel.onButtonEvent.push(this.handlePanelButtonEvent);
+
         if (this.panel.register() !== DeviceRegistrationStatus.Success) {
             context.log.error(
                 `Failed to register Touch Panel ${this.panel.id}`,
             );
         }
 
-        const ui = new UIManager({ panel: this.panel });
-        ui.setPage("Logo");
+        const ui = new UIManager({
+            panel: this.panel,
+            initialPage: { name: "Logo" },
+        });
 
         return this;
     }

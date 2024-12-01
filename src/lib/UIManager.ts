@@ -1,28 +1,23 @@
+import { UIPage } from "./UIPage";
 import type TouchPanel from "./TouchPanel";
 import TouchPanelCommand from "./TouchPanelCommand";
 
 interface UIManagerOptions {
     panel: TouchPanel;
-}
-
-class Page {
-    public readonly name: string;
-
-    constructor(name: string) {
-        this.name = name;
-    }
+    initialPage: UIPage;
 }
 
 class UIManager {
     private readonly panel: TouchPanel;
-    private pages: Record<string, Page> = {};
-    private page: string;
+    private pages: Record<string, UIPage> = {};
+    private page: UIPage;
 
-    constructor({ panel }: UIManagerOptions) {
+    constructor({ panel, initialPage }: UIManagerOptions) {
         this.panel = panel;
         this.panel.onOnlineEvent.push(() => this.handlePanelOnlineEvent());
+        this.page = initialPage;
+
         this.reset().refresh();
-        context.log.info("UI Manager Initialized");
     }
 
     private handlePanelOnlineEvent(): void {
@@ -30,14 +25,14 @@ class UIManager {
     }
 
     public setPage(page: string): this {
-        this.page = page;
+        this.page.name = page;
         return this.refresh();
     }
 
     private refresh(): this {
         const { page, panel } = this;
 
-        panel.sendCommand(TouchPanelCommand.page(page));
+        panel.sendCommand(TouchPanelCommand.page(page.name));
 
         return this;
     }
