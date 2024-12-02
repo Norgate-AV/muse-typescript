@@ -4,12 +4,14 @@ import { DeviceRegistrationStatus } from "./@types/muse/DeviceRegistrationStatus
 import TouchPanelCommand from "./lib/TouchPanelCommand";
 import UIManager from "./lib/UIManager";
 import { sources } from "./ui/sources";
+import UIController from "./lib/UIController";
 
 interface AppOptions extends ControlSystemOptions {}
 
 class App extends ControlSystem {
     private panel: TouchPanel;
     private ui: UIManager;
+    private controller: UIController;
 
     constructor(options: AppOptions = {}) {
         super(options);
