@@ -1,9 +1,23 @@
 export {};
 
 declare global {
-    export var context: Muse.Thing;
+    var context: Muse.Thing;
 
     namespace Muse {
+        type ProgramManifest = {
+            id: string;
+            name?: string;
+            description?: string;
+            version?: string;
+            disabled: boolean;
+            provider: "groovy" | "javascript" | "python";
+            scope?: string;
+            script: string;
+            envvars?: Record<string, string>;
+            files?: Array<string>;
+            plugins?: Array<string>;
+        };
+
         type Thing = {
             devices: Devices;
             log: ((msg: string) => void) & Log;
