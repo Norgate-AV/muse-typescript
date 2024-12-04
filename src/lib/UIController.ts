@@ -1,15 +1,17 @@
 import TouchPanel from "./TouchPanel";
 
 export interface UIControllerOptions {
-    panel: Muse.ICSPDriver;
+    panel: TouchPanel;
 }
 
 export abstract class UIController {
-    public panel: Muse.ICSPDriver;
+    public panel: TouchPanel;
 
     constructor({ panel }: UIControllerOptions) {
         this.panel = panel;
     }
+
+    public abstract init(): void;
 }
 
 export default UIController;

@@ -19,7 +19,10 @@ function dirname(path: string): string {
 }
 
 function extname(path: string): string {
-    return java.nio.file.Paths.get(path).getFileName().toString();
+    const name = basename(path);
+    const index = name.lastIndexOf(".");
+
+    return index === -1 ? "" : name.substring(index);
 }
 
 function isAbsolute(path: string): boolean {

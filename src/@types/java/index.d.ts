@@ -44,30 +44,129 @@ declare global {
             (): void;
         }
 
+        /**
+         * The System class contains several useful class fields and methods. It cannot be instantiated. Among the facilities provided by the System class are standard input, standard output, and error output streams; access to externally defined properties and environment variables; a means of loading files and libraries; and a utility method for quickly copying a portion of an array.
+         */
         class System /* extends Object*/ {
+            /**
+             * The "standard" output stream.
+             */
             static out: java.io.PrintStream;
+
+            /**
+             * The "standard" error output stream.
+             */
             static err: java.io.PrintStream;
+
+            /**
+             * The "standard" input stream.
+             */
             static in: java.io.InputStream;
-            static currentTimeMillis(): long;
-            static nanoTime(): long;
+
+            /**
+             * Copies an array from the specified source array, beginning at the specified position, to the specified position of the destination array.
+             * @param src any
+             * @param srcPos int
+             * @param dest any
+             * @param destPos int
+             * @param length int
+             * @returns void
+             */
             static arraycopy(
-                arg0: any /*java.lang.Object*/,
-                arg1: int,
-                arg2: any /*java.lang.Object*/,
-                arg3: int,
-                arg4: int,
+                src: any /*java.lang.Object*/,
+                srcPos: int,
+                dest: any /*java.lang.Object*/,
+                destPos: int,
+                length: int,
             ): void;
-            static clearProperty(arg0: string): string;
-            static getenv(arg0: string): string;
+
+            /**
+             * Returns the current time in milliseconds.
+             * @returns long
+             */
+            static currentTimeMillis(): long;
+
+            /**
+             * Returns the current value of the running Java Virtual Machine's high-resolution time source, in nanoseconds.
+             * @returns long
+             */
+            static nanoTime(): long;
+
+            /**
+             * Removes the system property indicated by the specified key.
+             * @param key string
+             * @returns string
+             */
+            static clearProperty(key: string): string;
+
+            /**
+             * Gets the value of the specified environment variable.
+             * @param name
+             */
+            static getenv(name: string): string;
+
+            /**
+             * Gets an unmodifiable string map view of the current system environment.
+             * @returns java.util.Map<string, string>
+             */
             static getenv(): java.util.Map<string, string>;
-            static getProperty(arg0: string): string;
-            static getProperty(arg0: string, arg1: string): string;
-            static identityHashCode(arg0: any /*java.lang.Object*/): int;
+
+            /**
+             * Gets the system property indicated by the specified key.
+             * @param key string
+             * @returns string
+             */
+            static getProperty(key: string): string;
+
+            /**
+             * Gets the system property indicated by the specified key.
+             * @param key string
+             * @param def string
+             * @returns string
+             */
+            static getProperty(key: string, def: string): string;
+
+            /**
+             * Returns the same hash code for the given object as would be returned by the default method hashCode(), whether or not the given object's class overrides hashCode().
+             * @param obj any
+             * @returns int
+             */
+            static identityHashCode(obj: any /*java.lang.Object*/): int;
+
+            /**
+             * Returns the system-dependent line separator string.
+             * @returns string
+             */
             static lineSeparator(): string;
-            static load(arg0: string): void;
-            static loadLibrary(arg0: string): void;
-            static mapLibraryName(arg0: string): string;
-            static setProperty(arg0: string, arg1: string): string;
+
+            /**
+             * Loads the native library specified by the filename argument.
+             * @param filename string
+             * @returns void
+             */
+            static load(filename: string): void;
+
+            /**
+             * Loads the native library specified by the libname argument.
+             * @param libname string
+             * @returns void
+             */
+            static loadLibrary(libname: string): void;
+
+            /**
+             * Maps a library name into a platform-specific string representing a native library.
+             * @param libname string
+             * @returns string
+             */
+            static mapLibraryName(libname: string): string;
+
+            /**
+             * Sets the system property indicated by the specified key.
+             * @param key string
+             * @param value string
+             * @returns string
+             */
+            static setProperty(key: string, value: string): string;
         }
 
         class String /* extends Object implements java.io.Serializable, Comparable<any>, CharSequence*/ {

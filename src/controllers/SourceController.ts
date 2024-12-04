@@ -2,8 +2,7 @@ import TouchPanel from "../lib/TouchPanel";
 import UIController, { UIControllerOptions } from "../lib/UIController";
 
 interface SourceControllerOptions extends UIControllerOptions {
-    buttons: UIButton[];
-    func: Function;
+    buttons: Array<UIButton>;
 }
 
 type UIPortCodePair = {
@@ -43,7 +42,7 @@ type UIButtonProperties = {
     };
 };
 
-class UIButton {
+export class UIButton {
     public properties: UIButtonProperties;
 
     constructor(properties: UIButtonProperties) {
@@ -52,29 +51,20 @@ class UIButton {
 }
 
 export class SourceController extends UIController {
-    private buttons: UIButton[];
-    private func: Function;
+    private buttons: Array<UIButton>;
 
-    constructor({ panel, buttons, func }: SourceControllerOptions) {
+    constructor({ panel, buttons }: SourceControllerOptions) {
         super({ panel });
-
         this.buttons = buttons;
-        this.func = func;
-
-        this.subscribeToButtonEvents();
     }
 
-    private subscribeToButtonEvents() {
+    public init() {
         this.buttons.forEach(({ properties }) => {
-            let { port, code } = properties.programming.channel;
-
-            // Ensure that the port and code are numbers at this point
-            port = typeof port === "string" ? parseInt(port) : port;
-            code = typeof code === "string" ? parseInt(code) : code;
-
-            this.panel.port[port].button[code].watch((value) => {
-                this.func(value);
-            });
+            // let { port, code } = properties.programming.channel;
+            // // Ensure that the port and code are numbers at this point
+            // port = typeof port === "string" ? parseInt(port) : port;
+            // code = typeof code === "string" ? parseInt(code) : code;
+            // this.panel.port[port].button[code].watch((event) => {});
         });
     }
 }

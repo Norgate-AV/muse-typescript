@@ -3,15 +3,16 @@ import TouchPanel from "./lib/TouchPanel";
 import { DeviceRegistrationStatus } from "./@types/muse/DeviceRegistrationStatus";
 import TouchPanelCommand from "./lib/TouchPanelCommand";
 import UIManager from "./lib/UIManager";
-import { sources } from "./ui/sources";
+import { Source, sources } from "./ui/sources";
 import UIController from "./lib/UIController";
+import { SourceController, UIButton } from "./controllers";
 
 interface AppOptions extends ControlSystemOptions {}
 
 class App extends ControlSystem {
     private panel: TouchPanel;
     private ui: UIManager;
-    private controller: UIController;
+    private sourceController: UIController;
 
     constructor(options: AppOptions = {}) {
         super(options);
@@ -35,7 +36,44 @@ class App extends ControlSystem {
             initialPage: { name: "Logo" },
         });
 
+        this.sourceController = new SourceController({
+            panel: this.panel,
+            buttons: [
+                new UIButton({
+                    programming: {
+                        address: { port: 1, code: 31 },
+                        channel: { port: 1, code: 31 },
+                    },
+                }),
+                new UIButton({
+                    programming: {
+                        address: { port: 1, code: 32 },
+                        channel: { port: 1, code: 32 },
+                    },
+                }),
+                new UIButton({
+                    programming: {
+                        address: { port: 1, code: 33 },
+                        channel: { port: 1, code: 33 },
+                    },
+                }),
+                new UIButton({
+                    programming: {
+                        address: { port: 1, code: 34 },
+                        channel: { port: 1, code: 34 },
+                    },
+                }),
+            ],
+        });
+
+        // this.sourceController.init(this.onSourceSelect);
+
         return this;
+    }
+
+    private onSourceSelect(source: Source): void {
+        this.ui.showPopup({ name: source.popup });
+        // SourceRouter.sendSource(source);
     }
 
     private handlePanelOnlineEvent(): void {
