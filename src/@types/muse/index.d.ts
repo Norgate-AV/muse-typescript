@@ -1,7 +1,7 @@
 export {};
 
 declare global {
-    var context: Muse.Thing;
+    var context: Muse.Context;
 
     namespace Muse {
         type ProgramManifest = {

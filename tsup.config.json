@@ -1,4 +1,5 @@
 {
+    "name": "tsup",
     "entry": ["src/main.ts"],
     "dts": false,
     "format": ["cjs"],

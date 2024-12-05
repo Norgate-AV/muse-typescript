@@ -1,5 +1,7 @@
 // import App from "./App";
+global._nashornPolyfill = true;
 import path from "./lib/utils/path";
+import "core-js";
 
 function main() {
     // const app = new App().init();
@@ -20,6 +22,13 @@ function main() {
     print(path.normalize(test));
     print(path.relative("/mnt/data/mojo/mojo/program", test));
     print(path.parse(test));
+
+    Array.prototype.includes = function (element: any) {
+        return this.indexOf(element) !== -1;
+    };
+
+    const arr = [1, 2, 3, 4, 5];
+    print(arr.includes(3));
 }
 
 // Start the program
