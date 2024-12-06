@@ -1,6 +1,6 @@
 {
     "name": "tsup",
-    "entry": ["src/main.ts"],
+    "entry": ["src/index.js"],
     "dts": false,
     "format": ["cjs"],
     "target": "es5",
@@ -10,7 +10,7 @@
     "minifySyntax": true,
     "treeshake": true,
     "cjsInterop": true,
-    "removeNodeProtocol": true,
     "clean": true,
-    "onSuccess": "pnpm upload"
+    "onSuccess": "pnpm upload",
+    "noExternal": ["core-js"]
 }

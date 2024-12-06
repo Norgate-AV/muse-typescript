@@ -1,9 +1,10 @@
 // import App from "./App";
-global._nashornPolyfill = true;
-import path from "./lib/utils/path";
-import "core-js";
+// global._nashornPolyfill = true;
+// import path from "./lib/utils/path";
 
-function main() {
+// import "core-js/es";
+
+export default function main() {
     // const app = new App().init();
 
     // if (!app) {
@@ -11,25 +12,28 @@ function main() {
     // }
 
     context.log.info("Program Started");
+    // console.log("Program Started");
 
-    const test = "/mnt/data/mojo/mojo/program/muse-typescript/program.json";
+    print(Array.from("Hello"));
 
-    print(path.exists(test));
-    print(path.basename(test));
-    print(path.dirname(test));
-    print(path.extname(test));
-    print(path.isAbsolute(test));
-    print(path.normalize(test));
-    print(path.relative("/mnt/data/mojo/mojo/program", test));
-    print(path.parse(test));
+    // const test = "/mnt/data/mojo/mojo/program/muse-typescript/program.json";
 
-    Array.prototype.includes = function (element: any) {
-        return this.indexOf(element) !== -1;
-    };
+    // print(path.exists(test));
+    // print(path.basename(test));
+    // print(path.dirname(test));
+    // print(path.extname(test));
+    // print(path.isAbsolute(test));
+    // print(path.normalize(test));
+    // print(path.relative("/mnt/data/mojo/mojo/program", test));
+    // print(path.parse(test));
 
-    const arr = [1, 2, 3, 4, 5];
-    print(arr.includes(3));
+    // Array.prototype.includes = function (element: any) {
+    //     return this.indexOf(element) !== -1;
+    // };
+
+    // const arr = [1, 2, 3, 4, 5];
+    // print(arr.includes(3));
 }
 
 // Start the program
-main();
+// main();
