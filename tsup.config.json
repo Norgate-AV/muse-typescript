@@ -1,6 +1,8 @@
 {
-    "name": "tsup",
-    "entry": ["src/index.js"],
+    "name": "build",
+    "entry": {
+        "main": "src/index.ts"
+    },
     "dts": false,
     "format": ["cjs"],
     "target": "es5",

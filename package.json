@@ -27,6 +27,7 @@
         "@commitlint/cli": "^19.6.0",
         "@commitlint/config-conventional": "^19.6.0",
         "@swc/core": "^1.10.0",
+        "@types/core-js": "^2.5.8",
         "@types/node": "^22.10.1",
         "dotenv": "^16.4.7",
         "husky": "^9.1.7",
