@@ -18,9 +18,9 @@ export class TcpClient {
         this.port = port;
     }
 
-    connect() {
-        const Socket = Java.type<java.net.Socket>("java.net.Socket");
-        const InetSocketAddress = Java.type<java.net.InetSocketAddress>(
+    public connect() {
+        const Socket = Java.type<typeof java.net.Socket>("java.net.Socket");
+        const InetSocketAddress = Java.type<typeof java.net.InetSocketAddress>(
             "java.net.InetSocketAddress",
         );
 
@@ -36,7 +36,7 @@ export class TcpClient {
         outputStream.write(Buffer.from(command));
         outputStream.flush();
 
-        const buffer = new Uint8Array(1024);
+        const buffer = new Array<bytearray>(1024);
         const length = inputStream.read(buffer);
         const response = new TextDecoder().decode(buffer.slice(0, length));
 

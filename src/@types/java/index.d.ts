@@ -891,6 +891,7 @@ declare global {
             constructor();
             constructor(arg0: string, arg1: int);
             close(): void;
+            connect(arg0: java.net.SocketAddress): void;
             getInputStream(): java.io.InputStream;
             getOutputStream(): java.io.OutputStream;
         }
