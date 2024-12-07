@@ -6,6 +6,7 @@ import UIManager from "./lib/UIManager";
 import { Source, sources } from "./ui/sources";
 import UIController from "./lib/UIController";
 import { SourceController, UIButton } from "./controllers";
+import { TcpClient } from "./TcpClient";
 
 interface AppOptions extends ControlSystemOptions {}
 
@@ -67,6 +68,11 @@ class App extends ControlSystem {
         });
 
         // this.sourceController.init(this.onSourceSelect);
+
+        new TcpClient({
+            host: "192.168.10.47",
+            port: 23,
+        }).connect();
 
         return this;
     }

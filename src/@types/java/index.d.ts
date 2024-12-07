@@ -411,6 +411,14 @@ declare global {
             skip(arg0: long): long;
         }
 
+        class OutputStream /* extends Object*/ {
+            close(): void;
+            flush(): void;
+            write(arg0: int): void;
+            write(arg0: bytearray): void;
+            write(arg0: bytearray, arg1: int, arg2: int): void;
+        }
+
         class PrintStream /* extends FilterOutputStream implements Appendable, Closeable*/ {
             print(arg0: boolean): void;
             print(arg0: char): void;
@@ -879,6 +887,63 @@ declare global {
     }
 
     namespace java.net {
+        class Socket /* extends Object*/ {
+            constructor();
+            constructor(arg0: string, arg1: int);
+            close(): void;
+            getInputStream(): java.io.InputStream;
+            getOutputStream(): java.io.OutputStream;
+        }
+
+        class InetAddress /* extends Object*/ {
+            constructor();
+            constructor(arg0: string);
+            constructor(arg0: bytearray);
+            constructor(arg0: string, arg1: bytearray);
+            constructor(arg0: string, arg1: number);
+            static getAllByName(arg0: string): [java.net.InetAddress];
+            static getByAddress(arg0: bytearray): java.net.InetAddress;
+            static getByAddress(
+                arg0: string,
+                arg1: bytearray,
+            ): java.net.InetAddress;
+            static getByName(arg0: string): java.net.InetAddress;
+            static getLocalHost(): java.net.InetAddress;
+            equals(arg0: any /*java.lang.Object*/): boolean;
+            getAddress(): bytearray;
+            getCanonicalHostName(): string;
+            getHostAddress(): string;
+            getHostName(): string;
+            hashCode(): int;
+            isAnyLocalAddress(): boolean;
+            isLinkLocalAddress(): boolean;
+            isLoopbackAddress(): boolean;
+            isMCGlobal(): boolean;
+            isMCLinkLocal(): boolean;
+            isMCNodeLocal(): boolean;
+            isMCOrgLocal(): boolean;
+            isMCSiteLocal(): boolean;
+            isMulticastAddress(): boolean;
+            isSiteLocalAddress(): boolean;
+            toString(): string;
+        }
+
+        class InetSocketAddress /* extends SocketAddress*/ {
+            constructor(arg0: string, arg1: int);
+            constructor(arg0: java.net.InetAddress, arg1: int);
+            equals(arg0: any /*java.lang.Object*/): boolean;
+            getAddress(): java.net.InetAddress;
+            getHostName(): string;
+            getPort(): int;
+            hashCode(): int;
+            isUnresolved(): boolean;
+            toString(): string;
+        }
+
+        class SocketAddress /* extends Object*/ {
+            constructor();
+        }
+
         class URI /* extends Object implements Comparable<URI>, Serializable*/ {
             compareTo(arg0: any /*java.lang.Object*/): int;
             equals(arg0: any /*java.lang.Object*/): boolean;
