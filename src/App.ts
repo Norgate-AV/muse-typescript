@@ -72,7 +72,7 @@ class App extends ControlSystem {
         new TcpClient({
             host: "192.168.10.47",
             port: 23,
-        }).connect();
+        }).send("get connection\r\n");
 
         return this;
     }

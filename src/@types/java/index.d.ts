@@ -419,6 +419,30 @@ declare global {
             write(arg0: bytearray, arg1: int, arg2: int): void;
         }
 
+        class BufferedInputStream /* extends FilterInputStream*/ {
+            constructor(arg0: InputStream);
+            constructor(arg0: InputStream, arg1: int);
+            available(): int;
+            close(): void;
+            mark(arg0: int): void;
+            markSupported(): boolean;
+            read(): int;
+            read(arg0: bytearray): int;
+            read(arg0: bytearray, arg1: int, arg2: int): int;
+            reset(): void;
+            skip(arg0: long): long;
+        }
+
+        class BufferedOutputStream /* extends FilterOutputStream*/ {
+            constructor(arg0: OutputStream);
+            constructor(arg0: OutputStream, arg1: int);
+            close(): void;
+            flush(): void;
+            write(arg0: int): void;
+            write(arg0: bytearray): void;
+            write(arg0: bytearray, arg1: int, arg2: int): void;
+        }
+
         class PrintStream /* extends FilterOutputStream implements Appendable, Closeable*/ {
             print(arg0: boolean): void;
             print(arg0: char): void;
@@ -894,6 +918,7 @@ declare global {
             connect(arg0: java.net.SocketAddress): void;
             getInputStream(): java.io.InputStream;
             getOutputStream(): java.io.OutputStream;
+            isConnected(): boolean;
         }
 
         class InetAddress /* extends Object*/ {

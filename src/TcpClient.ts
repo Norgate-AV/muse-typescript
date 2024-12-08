@@ -1,3 +1,12 @@
+const Socket = Java.type<typeof java.net.Socket>("java.net.Socket");
+const BufferedInputStream = Java.type<typeof java.io.BufferedInputStream>(
+    "java.io.BufferedInputStream",
+);
+const BufferedOutputStream = Java.type<typeof java.io.BufferedOutputStream>(
+    "java.io.BufferedOutputStream",
+);
+const Thread = Java.type<typeof java.lang.Thread>("java.lang.Thread");
+
 class Buffer {
     static from(array: string): Uint8Array {
         return new Uint8Array(array.split("").map((c) => c.charCodeAt(0)));
@@ -9,37 +18,101 @@ export interface TcpClientOptions {
     port: number;
 }
 
+// @ts-ignore
+string.prototype.getBytes = function () {
+    return this.split("").map((c: string) => c.charCodeAt(0));
+};
+
 export class TcpClient {
+    private socket: java.net.Socket | null = null;
+    private reader: java.io.BufferedInputStream | null = null;
+    private writer: java.io.BufferedOutputStream | null = null;
+
     private readonly host: string;
     private readonly port: number;
 
     constructor({ host, port }: TcpClientOptions) {
         this.host = host;
         this.port = port;
+
+        try {
+            this.socket = new Socket(this.host, this.port);
+            this.reader = new BufferedInputStream(this.socket.getInputStream());
+            this.writer = new BufferedOutputStream(
+                this.socket.getOutputStream(),
+            );
+            this.listen();
+        } catch (error: any) {
+            this.close();
+        }
     }
 
-    public connect() {
-        const Socket = Java.type<typeof java.net.Socket>("java.net.Socket");
-        const InetSocketAddress = Java.type<typeof java.net.InetSocketAddress>(
-            "java.net.InetSocketAddress",
-        );
+    private close(): void {
+        context.log.info(`Closing connection to ${this.host}:${this.port}`);
 
-        const socket = new Socket();
-        const address = new InetSocketAddress(this.host, this.port);
+        try {
+            if (this.reader) {
+                this.reader.close();
+            }
 
-        socket.connect(address);
+            if (this.writer) {
+                this.writer.close();
+            }
 
-        const inputStream = socket.getInputStream();
-        const outputStream = socket.getOutputStream();
+            if (this.socket) {
+                this.socket.close();
+            }
+        } catch (error: any) {
+            context.log.error(error);
+        }
+    }
 
-        const command = "get connection\n";
-        outputStream.write(Buffer.from(command));
-        outputStream.flush();
+    private getBytes(message: string): Array<number> {
+        return message.split("").map((c) => c.charCodeAt(0));
+    }
 
-        const buffer = new Array<bytearray>(1024);
-        const length = inputStream.read(buffer);
-        const response = new TextDecoder().decode(buffer.slice(0, length));
+    public send(message: string): void {
+        if (!this.socket || !this.writer) {
+            throw new Error("Connection is not established");
+        }
 
-        context.log(response);
+        try {
+            const buffer = message.getBytes();
+            // @ts-ignore
+            this.writer.write(buffer);
+            this.writer.flush();
+        } catch (error: any) {
+            context.log.error(error);
+            this.close();
+        }
+    }
+
+    private listen(): void {
+        new Thread(() => {
+            while (this.socket.isConnected()) {
+                try {
+                    const available = this.reader.available();
+                    if (available === 0) {
+                        continue;
+                    }
+
+                    const buffer = new Array<number>(available);
+                    // @ts-ignore
+                    const length = this.reader.read(buffer);
+
+                    if (length === -1) {
+                        this.close();
+                        break;
+                    }
+
+                    const message = new TextDecoder().decode(buffer);
+                    context.log.info(message);
+                } catch (error: any) {
+                    context.log.error(error);
+                    this.close();
+                    break;
+                }
+            }
+        }).start();
     }
 }
