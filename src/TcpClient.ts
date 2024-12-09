@@ -8,11 +8,13 @@ const BufferedOutputStream = Java.type<typeof java.io.BufferedOutputStream>(
 const Thread = Java.type<typeof java.lang.Thread>("java.lang.Thread");
 const String = Java.type<typeof java.lang.String>("java.lang.String");
 
-class Buffer {
-    static from(array: string): Uint8Array {
-        return new Uint8Array(array.split("").map((c) => c.charCodeAt(0)));
-    }
-}
+var Buffer = {
+    prototype: {
+        from: function from(array: string): Uint8Array {
+            return new Uint8Array(array.split("").map((c) => c.charCodeAt(0)));
+        },
+    },
+};
 
 export interface TcpClientOptions {
     host: string;
@@ -73,18 +75,17 @@ export class TcpClient {
     // }
 
     public send(message: string): void {
-        if (!this.socket || !this.writer) {
-            throw new Error("Connection is not established");
-        }
-
-        try {
-            const buffer = new String(message).getBytes();
-            this.writer.write(buffer);
-            this.writer.flush();
-        } catch (error: any) {
-            context.log.error(error);
-            this.close();
-        }
+        // if (!this.socket || !this.writer) {
+        //     throw new Error("Connection is not established");
+        // }
+        // try {
+        //     const buffer =
+        //     this.writer.write(buffer);
+        //     this.writer.flush();
+        // } catch (error: any) {
+        //     context.log.error(error);
+        //     this.close();
+        // }
     }
 
     private listen(): void {
@@ -96,7 +97,7 @@ export class TcpClient {
                         continue;
                     }
 
-                    const buffer = new Array<char>(available);
+                    const buffer = new Array(available);
                     const length = this.reader.read(buffer);
 
                     if (length === -1) {
@@ -106,10 +107,10 @@ export class TcpClient {
 
                     context.log.info(`Received ${length} bytes`);
 
-                    const message = buffer
-                        .map((byte) => byte.toString())
-                        .join("");
-                    context.log.info(message);
+                    // const message = buffer
+                    //     .map((byte) => byte.toString())
+                    //     .join("");
+                    context.log.info(buffer.join(""));
                 } catch (error: any) {
                     context.log.error(error);
                     this.close();

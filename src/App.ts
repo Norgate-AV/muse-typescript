@@ -74,9 +74,9 @@ class App extends ControlSystem {
             port: 23,
         });
 
-        client.send("get connection\r\n");
-        client.send("get device\r\n");
-        client.send("get ip\r\n");
+        // client.send("get connection\r\n");
+        // client.send("get device\r\n");
+        // client.send("get ip\r\n");
 
         return this;
     }
