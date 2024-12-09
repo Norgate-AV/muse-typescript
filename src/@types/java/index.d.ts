@@ -8,8 +8,8 @@ declare global {
     type byte = number;
     type char = string;
 
-    type chararray = [byte];
-    type bytearray = [char];
+    type chararray = Array<char>;
+    type bytearray = Array<byte>;
 
     namespace Java {
         function type<T = any>(t: string): T;
@@ -170,6 +170,8 @@ declare global {
         }
 
         class String /* extends Object implements java.io.Serializable, Comparable<any>, CharSequence*/ {
+            constructor();
+            constructor(arg0: string);
             charAt(arg0: int): any /*char*/;
             chars(): any /*java.util.stream.IntStream*/;
             codePointAt(arg0: int): int;

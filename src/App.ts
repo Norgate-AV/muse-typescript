@@ -69,10 +69,14 @@ class App extends ControlSystem {
 
         // this.sourceController.init(this.onSourceSelect);
 
-        new TcpClient({
+        const client = new TcpClient({
             host: "192.168.10.47",
             port: 23,
-        }).send("get connection\r\n");
+        });
+
+        client.send("get connection\r\n");
+        client.send("get device\r\n");
+        client.send("get ip\r\n");
 
         return this;
     }
