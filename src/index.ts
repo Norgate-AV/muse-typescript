@@ -30,31 +30,65 @@
 // import "core-js/es/typed-array/int32-array";
 // import "core-js/es/typed-array/float32-array";
 // import "core-js/es/typed-array/float64-array";
+// import "core-js/es/weak-map";
+// import "core-js/es/weak-set";
+// import "core-js/es/symbol";
 
 // import { main } from "./main";
 
-// // Start the program
+// if (!globalThis.console) {
+//     // @ts-ignore
+//     globalThis.console = {};
+
+//     // @ts-ignore
+//     globalThis.console.level = context.log.level;
+
+//     // @ts-ignore
+//     globalThis.console.log = context.log.info;
+
+//     // @ts-ignore
+//     globalThis.console.error = context.log.error;
+
+//     // @ts-ignore
+//     globalThis.console.debug = context.log.debug;
+
+//     // @ts-ignore
+//     globalThis.console.info = context.log.info;
+
+//     // @ts-ignore
+//     globalThis.console.warn = context.log.warning;
+
+//     // @ts-ignore
+//     globalThis.console.trace = context.log.trace;
+
+//     // @ts-ignore
+//     // globalThis.console.dir = function (obj: any) {
+//     //     for (const key in obj) {
+//     //         if (typeof obj[key] !== "object") {
+//     //             continue;
+//     //         }
+
+//     //         console.log(`${key}`);
+//     //     }
+//     // };
+// }
+
+// @ts-ignore
+// console.level = "TRACE";
+// console.log("Starting program...");
+// console.info("Program started");
+// console.debug("Debugging program...");
+// console.warn("Warning program...");
+// console.error("Error program...");
+// console.trace("Tracing program...");
+
+// context.log.level = "TRACE";
+// context.log("Starting program...");
+context.log.trace("Starting program...");
+context.log.debug("Starting program...");
+context.log.info("Starting program...");
+context.log.warning("Starting program...");
+context.log.error("Starting program...");
+
+// Start the program
 // main();
-
-const tl1 = context.services.get("timeline");
-const tl2 = context.services.get("timeline");
-
-// print(tl1);
-// print(`tl1: ${tl1.toString()}`);
-// print(`tl2: ${tl2.toString()}`);
-
-// for (const key in tl1) {
-//     print(key);
-// }
-
-// for (const key of Object.keys(tl2)) {
-//     print(key);
-// }
-
-tl1.start([1000], false, -1);
-
-tl1.expired.listen(() => {
-    print(`tl1 expired: ${new Date().toISOString()}`);
-});
-
-tl1.start([2000], false, -1);
