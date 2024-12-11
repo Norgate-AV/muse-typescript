@@ -15,6 +15,7 @@ declare global {
         function type<T = any>(t: string): T;
         function from<T = any>(list: java.util.List<T>): Array<T>;
         // function extend<T = any>(obj: T, ...args: any[]): T;
+        function to(array: Array<any>, type: string): Array<any>;
     }
 
     /**
@@ -172,6 +173,7 @@ declare global {
         class String /* extends Object implements java.io.Serializable, Comparable<any>, CharSequence*/ {
             constructor();
             constructor(arg0: string);
+            constructor(arg0: any /*bytearray*/, arg1: string);
             charAt(arg0: int): any /*char*/;
             chars(): any /*java.util.stream.IntStream*/;
             codePointAt(arg0: int): int;
@@ -264,6 +266,7 @@ declare global {
         class Arrays /* extends java.lang.Object*/ {
             equals(arg0: any /*java.lang.Object*/): boolean;
             toString(): string;
+            static toString(arg0: any /*java.lang.Object*/): string;
         }
 
         interface Iterator<E> {

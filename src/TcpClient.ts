@@ -7,6 +7,7 @@ const BufferedOutputStream = Java.type<typeof java.io.BufferedOutputStream>(
 );
 const Thread = Java.type<typeof java.lang.Thread>("java.lang.Thread");
 const String = Java.type<typeof java.lang.String>("java.lang.String");
+// const Arrays = Java.type<typeof java.util.Arrays>("java.util.Arrays");
 
 var Buffer = {
     prototype: {
@@ -39,7 +40,8 @@ export class TcpClient {
         this.port = port;
 
         try {
-            this.socket = new Socket(this.host, this.port);
+            this.socket = new Socket();
+            this.socket.connect(new java.net.InetSocketAddress(host, port));
             this.reader = new BufferedInputStream(this.socket.getInputStream());
             this.writer = new BufferedOutputStream(
                 this.socket.getOutputStream(),
@@ -50,7 +52,7 @@ export class TcpClient {
         }
     }
 
-    private close(): void {
+    public close(): void {
         context.log.info(`Closing connection to ${this.host}:${this.port}`);
 
         try {
@@ -75,17 +77,17 @@ export class TcpClient {
     // }
 
     public send(message: string): void {
-        // if (!this.socket || !this.writer) {
-        //     throw new Error("Connection is not established");
-        // }
-        // try {
-        //     const buffer =
-        //     this.writer.write(buffer);
-        //     this.writer.flush();
-        // } catch (error: any) {
-        //     context.log.error(error);
-        //     this.close();
-        // }
+        if (!this.socket || !this.writer) {
+            throw new Error("Connection is not established");
+        }
+        try {
+            const buffer = new String(message).getBytes();
+            this.writer.write(buffer);
+            this.writer.flush();
+        } catch (error: any) {
+            context.log.error(error);
+            this.close();
+        }
     }
 
     private listen(): void {
@@ -97,7 +99,7 @@ export class TcpClient {
                         continue;
                     }
 
-                    const buffer = new Array(available);
+                    const buffer = Java.to(new Array(available), "byte[]");
                     const length = this.reader.read(buffer);
 
                     if (length === -1) {
@@ -105,12 +107,13 @@ export class TcpClient {
                         break;
                     }
 
-                    context.log.info(`Received ${length} bytes`);
+                    const message = new String(buffer, "UTF-8");
+                    context.log.info(message);
 
-                    // const message = buffer
-                    //     .map((byte) => byte.toString())
-                    //     .join("");
-                    context.log.info(buffer.join(""));
+                    if (message.contains("Connection closed")) {
+                        this.close();
+                        break;
+                    }
                 } catch (error: any) {
                     context.log.error(error);
                     this.close();

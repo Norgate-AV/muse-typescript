@@ -20,7 +20,7 @@ declare global {
 
         type Thing = {
             devices: Devices;
-            log: ((msg: string) => void) & Log;
+            log: ((msg: any) => void) & Log;
             services: Services;
         };
 
