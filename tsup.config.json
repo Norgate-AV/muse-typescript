@@ -14,5 +14,5 @@
     "cjsInterop": true,
     "clean": true,
     "onSuccess": "pnpm upload",
-    "noExternal": ["core-js"]
+    "noExternal": ["core-js", "lodash"]
 }

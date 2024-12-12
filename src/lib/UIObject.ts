@@ -8,7 +8,7 @@ export abstract class UIObject implements Disposable {
     private type: string = "button";
     private id: UIPortCodePair;
 
-    private readonly _device: Muse.ICSPDriver;
+    private readonly _device: Muse.ICSPDriver | null = null;
 
     public get Device(): Muse.ICSPDriver {
         return this._device;
@@ -19,7 +19,16 @@ export abstract class UIObject implements Disposable {
     }
 
     [Symbol.dispose](): void {
-        // invoke the GC
+        this.dispose();
+    }
+
+    public dispose(): void {
+        if (this.disposed) {
+            return;
+        }
+
+        this.disposed = true;
+        this.unregister();
     }
 
     protected register(): void {
@@ -27,7 +36,15 @@ export abstract class UIObject implements Disposable {
             return;
         }
 
-        this.Device.port[this.id.port][this.type].watch((event) => {});
+        this.registered = true;
+    }
+
+    protected unregister(): void {
+        if (!this.registered) {
+            return;
+        }
+
+        this.registered = false;
     }
 
     protected abstract onChangeEvent(event: any): void;

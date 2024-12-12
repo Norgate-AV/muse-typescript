@@ -33,6 +33,7 @@
 // import "core-js/es/weak-map";
 // import "core-js/es/weak-set";
 // import "core-js/es/symbol";
+// import "lodash";
 
 // import { main } from "./main";
 
@@ -84,11 +85,18 @@
 
 // context.log.level = "TRACE";
 // context.log("Starting program...");
-context.log.trace("Starting program...");
-context.log.debug("Starting program...");
-context.log.info("Starting program...");
-context.log.warning("Starting program...");
-context.log.error("Starting program...");
+// context.log.trace("Starting program...");
+// context.log.debug("Starting program...");
+// context.log.info("Starting program...");
+// context.log.warning("Starting program...");
+// context.log.error("Starting program...");
 
 // Start the program
 // main();
+
+console.log("Hello, world!");
+console.dir({ a: 1, b: 2, c: 3 });
+console.log(process.env);
+// console.log(context);
+// console.dir(context);
+console.dir(process);
