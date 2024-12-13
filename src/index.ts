@@ -94,9 +94,14 @@
 // Start the program
 // main();
 
-console.log("Hello, world!");
-console.dir({ a: 1, b: 2, c: 3 });
-console.log(process.env);
-// console.log(context);
-// console.dir(context);
-console.dir(process);
+// console.log("Hello, world!");
+// console.dir({ a: 1, b: 2, c: 3 });
+// console.log(process.env);
+// // console.log(context);
+// // console.dir(context);
+// console.dir(process);
+
+import { java } from "java";
+
+const System = java.import("java.lang.System");
+System.out.printlnSync("Hello, World!");
