@@ -1,177 +1,118 @@
 import ControlSystem, { ControlSystemOptions } from "./lib/ControlSystem";
-import TouchPanel from "./lib/TouchPanel";
-import { DeviceRegistrationStatus } from "./@types/muse/DeviceRegistrationStatus";
 import TouchPanelCommand from "./lib/TouchPanelCommand";
-import UIManager from "./lib/UIManager";
-import { Source, sources } from "./ui/sources";
-import UIController from "./lib/UIController";
-import { SourceController, UIButton } from "./controllers";
-// import { TcpClient } from "./TcpClient";
+import { UIButton } from "./lib/UIButton";
+
+const SOURCE_LAPTOP = 1;
+const SOURCE_DOC_CAM = 2;
+const SOURCE_PC = 3;
+const SOURCE_BLURAY = 4;
+
+const SourceButtons = [
+    new UIButton(1, 31),
+    new UIButton(1, 32),
+    new UIButton(1, 33),
+    new UIButton(1, 34),
+];
+
+const PAGE_LOGO = 1;
+const PAGE_MAIN = 2;
+
+const PAGE_NAMES = ["Logo", "Main"];
+
+const TouchToStart = new UIButton(1, 1);
+const ShutDown = new UIButton(1, 2);
+const ShutDownOk = new UIButton(1, 3);
 
 interface AppOptions extends ControlSystemOptions {}
 
 class App extends ControlSystem {
-    private panel: TouchPanel;
-    private ui: UIManager;
-    private sourceController: UIController;
+    private panel: Muse.ICSPDriver;
+    private feedback: Muse.TimelineService;
+
+    private currentSource: number;
+
+    private requiredPage: number;
+    private requiredPopup: number;
 
     constructor(options: AppOptions = {}) {
         super(options);
     }
 
     public init(): this {
-        this.panel = new TouchPanel({ id: "AMX-10001" });
-        this.panel.onOnlineEvent.push(() => this.handlePanelOnlineEvent());
-        this.panel.onButtonEvent.push((event) =>
-            this.handlePanelButtonEvent(event),
-        );
+        this.panel = context.devices.get<Muse.ICSPDriver>("AMX-10001");
+        this.panel.online(() => this.onPanelOnlineEvent());
 
-        if (this.panel.register() !== DeviceRegistrationStatus.Success) {
-            context.log.error(
-                `Failed to register Touch Panel ${this.panel.id}`,
-            );
-        }
-
-        this.ui = new UIManager({
-            panel: this.panel,
-            initialPage: { name: "Logo" },
-        });
-
-        this.sourceController = new SourceController({
-            panel: this.panel,
-            buttons: [
-                new UIButton({
-                    programming: {
-                        address: { port: 1, code: 31 },
-                        channel: { port: 1, code: 31 },
-                    },
-                }),
-                new UIButton({
-                    programming: {
-                        address: { port: 1, code: 32 },
-                        channel: { port: 1, code: 32 },
-                    },
-                }),
-                new UIButton({
-                    programming: {
-                        address: { port: 1, code: 33 },
-                        channel: { port: 1, code: 33 },
-                    },
-                }),
-                new UIButton({
-                    programming: {
-                        address: { port: 1, code: 34 },
-                        channel: { port: 1, code: 34 },
-                    },
-                }),
-            ],
-        });
-
-        // this.sourceController.init(this.onSourceSelect);
-
-        // const client = new TcpClient({
-        //     host: "192.168.10.47",
-        //     port: 23,
-        // });
-
-        // client.send("get connection\r\n");
-        // client.send("get device\r\n");
-        // client.send("get ip\r\n");
-
-        // client.close();
+        this.feedback = context.services.get<Muse.TimelineService>("timeline");
+        this.feedback.expired.listen(() => this.onFeedbackEvent());
+        this.feedback.start([100], false, -1);
 
         return this;
     }
 
-    private onSourceSelect(source: Source): void {
-        this.ui.showPopup({ name: source.popup });
-        // SourceRouter.sendSource(source);
+    private onFeedbackEvent(): void {
+        for (let i = 0; i < SourceButtons.length; i++) {
+            const { port, code } = SourceButtons[i];
+            this.panel.port[port].channel[code] = this.currentSource === i + 1;
+        }
     }
 
-    private handlePanelOnlineEvent(): void {
-        this.panel.sendCommand(TouchPanelCommand.closeAllPopups());
-        this.panel.sendCommand(TouchPanelCommand.doubleBeep());
-    }
+    private onPanelOnlineEvent(): void {
+        this.panel.port[1].send_command(TouchPanelCommand.closeAllPopups());
+        this.panel.port[1].send_command(TouchPanelCommand.doubleBeep());
 
-    private handlePanelButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
-        context.log.info(`Button Event: ${event.path}`);
-        context.log.info(`Button Old Value: ${event.oldValue}`);
-        context.log.info(`Button New Value: ${event.value}`);
+        this.panel.port[TouchToStart.port].button[TouchToStart.code].watch(
+            (event) => this.onTouchToStartButtonEvent(event),
+        );
 
-        const pattern = /^\w+\/\d\/button\/(\d+)$/g;
-        const matches = pattern.exec(event.path);
-
-        if (!matches) {
-            context.log.info(
-                `Button Event: ${event.path} does not match pattern`,
+        for (const button of SourceButtons) {
+            this.panel.port[button.port].button[button.code].watch((event) =>
+                this.onSourceButtonEvent(event),
             );
+        }
+    }
 
+    private onSourceButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
+        if (!event.value) {
             return;
         }
 
-        const channel = parseInt(matches[1]);
+        const source =
+            SourceButtons.findIndex(
+                (button) => button.code === parseInt(event.id),
+            ) + 1;
 
-        switch (channel) {
-            // Touch To Start
-            case 1: {
-                if (!event.value) {
-                    return;
-                }
+        this.currentSource = source;
 
-                this.ui.showPage("Main");
-                break;
-            }
-
-            // Power Button
-            case 2: {
-                if (!event.value) {
-                    return;
-                }
-
-                this.ui.showPopup({ name: "Dialogs - Shut Down" });
-                break;
-            }
-
-            // Source Buttons
-            case 31:
-            case 32:
-            case 33:
-            case 34: {
-                if (!event.value) {
-                    return;
-                }
-
-                const [source] = sources.filter(
-                    (source) => source.button.channel.code === channel,
+        switch (source) {
+            case SOURCE_LAPTOP: {
+                this.panel.port[1].send_command(
+                    TouchPanelCommand.popupShow({ name: "Sources - Laptops" }),
                 );
 
-                this.ui.showPopup({ name: `${source.popup}` });
+                break;
+            }
+            case SOURCE_DOC_CAM: {
+                this.panel.port[1].send_command(
+                    TouchPanelCommand.popupShow({ name: "Sources - Doc Cam" }),
+                );
 
-                for (const source of sources) {
-                    const { code } = source.button?.channel;
+                break;
+            }
+            case SOURCE_PC: {
+                this.panel.port[1].send_command(
+                    TouchPanelCommand.popupShow({ name: "Sources - PC" }),
+                );
 
-                    // if (!getState().selectedSource) {
-                    //     tp.port[port].channel[code] = false;
-                    //     continue;
-                    // }
-
-                    this.panel.channel[code] = channel === code;
-                }
+                break;
+            }
+            case SOURCE_BLURAY: {
+                this.panel.port[1].send_command(
+                    TouchPanelCommand.popupShow({ name: "Sources - Blu-Ray" }),
+                );
 
                 break;
             }
         }
-
-        // context.log.info(`Source Button Event: ${match[1]}, ${match[0]}`);
-
-        // if (event.path.match(/^\/port\/1\/button\/3(1|2|3|4)$/gm)) {
-        //     // Source Buttons
-        //     if (!event.value) {
-        //         return;
-        //     }
-
-        //     context.log.info(`Source Button Event: ${event.path}`);
-        // }
     }
 }
 

@@ -6,7 +6,8 @@ const InputStreamReader = Java.type("java.io.InputStreamReader");
 print("Starting the Node.js process...");
 
 const command =
-    "/usr/bin/node /mnt/data/mojo/mojo/program/muse-typescript/dist/main.js arg1 arg2";
+    "/usr/bin/node /mnt/data/mojo/mojo/program/muse-typescript/dist/main.js";
+
 const process = Runtime.getRuntime().exec(command);
 const inputStream = process.getInputStream();
 const errorStream = process.getErrorStream();

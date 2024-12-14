@@ -1,9 +1,15 @@
 import { UIObject } from "./UIObject";
 
-export class UIButton extends UIObject {
-    // stopwatch = new Stopwatch();
+export class UIButton {
+    public port: number;
+    public code: number;
 
-    protected onChangeEvent(event: any): void {
-        throw new Error("Method not implemented.");
+    constructor(port: number, code: number) {
+        this.port = port;
+        this.code = code;
+    }
+
+    public static create(port: number, code: number): UIButton {
+        return new UIButton(port, code);
     }
 }
