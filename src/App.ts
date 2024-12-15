@@ -1,27 +1,18 @@
 import ControlSystem, { ControlSystemOptions } from "./lib/ControlSystem";
 import TouchPanelCommand from "./lib/TouchPanelCommand";
 import { UIButton } from "./lib/UIButton";
+import Channels from "./Channels";
+import { LogoPage } from "./LogoPage";
 
 const SOURCE_LAPTOP = 1;
 const SOURCE_DOC_CAM = 2;
 const SOURCE_PC = 3;
 const SOURCE_BLURAY = 4;
 
-const SourceButtons = [
-    new UIButton(1, 31),
-    new UIButton(1, 32),
-    new UIButton(1, 33),
-    new UIButton(1, 34),
-];
-
-const PAGE_LOGO = 1;
-const PAGE_MAIN = 2;
+const PAGE_LOGO = 0;
+const PAGE_MAIN = 1;
 
 const PAGE_NAMES = ["Logo", "Main"];
-
-const TouchToStart = new UIButton(1, 1);
-const ShutDown = new UIButton(1, 2);
-const ShutDownOk = new UIButton(1, 3);
 
 interface AppOptions extends ControlSystemOptions {}
 
@@ -29,10 +20,10 @@ class App extends ControlSystem {
     private panel: Muse.ICSPDriver;
     private feedback: Muse.TimelineService;
 
-    private currentSource: number;
+    private currentSource: number = 0;
 
-    private requiredPage: number;
-    private requiredPopup: number;
+    private requiredPage: number = PAGE_LOGO;
+    private requiredPopup: number = 0;
 
     constructor(options: AppOptions = {}) {
         super(options);
@@ -50,25 +41,46 @@ class App extends ControlSystem {
     }
 
     private onFeedbackEvent(): void {
-        for (let i = 0; i < SourceButtons.length; i++) {
-            const { port, code } = SourceButtons[i];
-            this.panel.port[port].channel[code] = this.currentSource === i + 1;
-        }
+        Object.values(Channels.SOURCE).forEach((channel, index) => {
+            this.panel.port[1].channel[channel] =
+                this.currentSource === index + 1;
+        });
     }
 
     private onPanelOnlineEvent(): void {
-        this.panel.port[1].send_command(TouchPanelCommand.closeAllPopups());
-        this.panel.port[1].send_command(TouchPanelCommand.doubleBeep());
+        this.panel.port[1].button[Channels.TOUCH_TO_START].watch(() => {
+            this.requiredPage = PAGE_MAIN;
+            this.panelRefresh();
+        });
 
-        this.panel.port[TouchToStart.port].button[TouchToStart.code].watch(
-            (event) => this.onTouchToStartButtonEvent(event),
-        );
-
-        for (const button of SourceButtons) {
-            this.panel.port[button.port].button[button.code].watch((event) =>
+        for (const button of Object.values(Channels.SOURCE)) {
+            this.panel.port[1].button[button].watch((event) =>
                 this.onSourceButtonEvent(event),
             );
         }
+
+        const logoPage = new LogoPage();
+
+        this.panelReset();
+    }
+
+    private panelReset(): void {
+        this.panel.port[1].send_command(TouchPanelCommand.closeAllPopups());
+        this.panel.port[1].send_command(TouchPanelCommand.doubleBeep());
+
+        this.panelRefresh();
+    }
+
+    private panelRefresh(): void {
+        // this.panel.port[1].send_command(
+        //     TouchPanelCommand.popupShow({
+        //         name: `Pages - ${PAGE_NAMES[this.requiredPage - 1]}`,
+        //     }),
+        // );
+
+        this.panel.port[1].send_command(
+            TouchPanelCommand.page(PAGE_NAMES[this.requiredPage]),
+        );
     }
 
     private onSourceButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
@@ -77,8 +89,8 @@ class App extends ControlSystem {
         }
 
         const source =
-            SourceButtons.findIndex(
-                (button) => button.code === parseInt(event.id),
+            Object.values(Channels.SOURCE).findIndex(
+                (channel) => channel === parseInt(event.id),
             ) + 1;
 
         this.currentSource = source;

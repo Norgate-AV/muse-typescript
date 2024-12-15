@@ -1,15 +1,13 @@
-import { UIObject } from "./UIObject";
+import { UIButtonProperties } from "./UIButtonProperties";
 
 export class UIButton {
-    public port: number;
-    public code: number;
+    public props: UIButtonProperties;
 
-    constructor(port: number, code: number) {
-        this.port = port;
-        this.code = code;
+    constructor(props: UIButtonProperties) {
+        this.props = props;
     }
 
-    public static create(port: number, code: number): UIButton {
-        return new UIButton(port, code);
+    public static create(props: UIButtonProperties = {}): UIButton {
+        return new UIButton(props);
     }
 }

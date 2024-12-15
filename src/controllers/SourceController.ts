@@ -16,8 +16,8 @@ export class SourceController extends UIController {
     }
 
     public init() {
-        this.buttons.forEach(({ port, code }) => {
-            this.panel.port[port].button[code].watch((event) => {});
-        });
+        // this.buttons.forEach(({ port, code }) => {
+        //     this.panel.port[port].button[code].watch((event) => {});
+        // });
     }
 }

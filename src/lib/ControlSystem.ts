@@ -5,7 +5,6 @@ export interface ControlSystemOptions {}
 export abstract class ControlSystem {
     public services = {
         platform: context.services.get<Muse.PlatformService>("platform"),
-        timeline: context.services.get<Muse.TimelineService>("timeline"),
     };
 
     constructor(options: ControlSystemOptions) {
