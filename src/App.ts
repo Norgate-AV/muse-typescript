@@ -1,24 +1,33 @@
 import ControlSystem, { ControlSystemOptions } from "./lib/ControlSystem";
 import TouchPanelCommand from "./lib/TouchPanelCommand";
-import { UIButton } from "./lib/UIButton";
 import Channels from "./Channels";
-import { LogoPage } from "./LogoPage";
+import { AppConfig } from "./AppConfig";
 
 const SOURCE_LAPTOP = 1;
 const SOURCE_DOC_CAM = 2;
 const SOURCE_PC = 3;
-const SOURCE_BLURAY = 4;
+const SOURCE_BYOD = 4;
 
 const PAGE_LOGO = 0;
 const PAGE_MAIN = 1;
 
 const PAGE_NAMES = ["Logo", "Main"];
 
+const POPUP_NAMES = [
+    "Sources - Off",
+    "Sources - Laptop",
+    "Sources - Doc Cam",
+    "Sources - PC",
+    "Sources - Wireless",
+];
+
 interface AppOptions extends ControlSystemOptions {}
 
 class App extends ControlSystem {
     private panel: Muse.ICSPDriver;
     private feedback: Muse.TimelineService;
+
+    // private config = AppConfig.getInstance();
 
     private currentSource: number = 0;
 
@@ -53,18 +62,33 @@ class App extends ControlSystem {
             this.panelRefresh();
         });
 
+        this.panel.port[1].button[Channels.SHUT_DOWN].watch(() => {
+            this.panel.port[1].send_command(
+                TouchPanelCommand.popupShow({ name: "Dialogs - Shut Down" }),
+            );
+        });
+
+        this.panel.port[1].button[Channels.SHUT_DOWN_OK].watch(() => {
+            this.shutDown();
+        });
+
         for (const button of Object.values(Channels.SOURCE)) {
             this.panel.port[1].button[button].watch((event) =>
                 this.onSourceButtonEvent(event),
             );
         }
 
-        const logoPage = new LogoPage();
-
         this.panelReset();
     }
 
     private panelReset(): void {
+        // this.panel.port[1].send_command(
+        //     TouchPanelCommand.text({
+        //         address: 1,
+        //         text: this.config.name,
+        //     }),
+        // );
+
         this.panel.port[1].send_command(TouchPanelCommand.closeAllPopups());
         this.panel.port[1].send_command(TouchPanelCommand.doubleBeep());
 
@@ -72,15 +96,21 @@ class App extends ControlSystem {
     }
 
     private panelRefresh(): void {
-        // this.panel.port[1].send_command(
-        //     TouchPanelCommand.popupShow({
-        //         name: `Pages - ${PAGE_NAMES[this.requiredPage - 1]}`,
-        //     }),
-        // );
-
         this.panel.port[1].send_command(
             TouchPanelCommand.page(PAGE_NAMES[this.requiredPage]),
         );
+
+        switch (this.requiredPage) {
+            case PAGE_MAIN: {
+                this.panel.port[1].send_command(
+                    TouchPanelCommand.popupShow({
+                        name: POPUP_NAMES[this.requiredPopup],
+                    }),
+                );
+
+                break;
+            }
+        }
     }
 
     private onSourceButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
@@ -94,37 +124,17 @@ class App extends ControlSystem {
             ) + 1;
 
         this.currentSource = source;
+        this.requiredPopup = source;
 
-        switch (source) {
-            case SOURCE_LAPTOP: {
-                this.panel.port[1].send_command(
-                    TouchPanelCommand.popupShow({ name: "Sources - Laptops" }),
-                );
+        this.panelRefresh();
+    }
 
-                break;
-            }
-            case SOURCE_DOC_CAM: {
-                this.panel.port[1].send_command(
-                    TouchPanelCommand.popupShow({ name: "Sources - Doc Cam" }),
-                );
+    private shutDown(): void {
+        this.currentSource = 0;
+        this.requiredPopup = 0;
+        this.requiredPage = PAGE_LOGO;
 
-                break;
-            }
-            case SOURCE_PC: {
-                this.panel.port[1].send_command(
-                    TouchPanelCommand.popupShow({ name: "Sources - PC" }),
-                );
-
-                break;
-            }
-            case SOURCE_BLURAY: {
-                this.panel.port[1].send_command(
-                    TouchPanelCommand.popupShow({ name: "Sources - Blu-Ray" }),
-                );
-
-                break;
-            }
-        }
+        this.panelRefresh();
     }
 }
 

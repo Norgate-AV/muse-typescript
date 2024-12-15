@@ -27,8 +27,8 @@ declare global {
         type Context = Thing;
 
         type Devices = {
-            get: <T = any>(name: string) => T;
-            has: (name: string) => boolean;
+            get: <T = any>(id: string) => T;
+            has: (id: string) => boolean;
             ids: () => Array<string>;
         };
 
