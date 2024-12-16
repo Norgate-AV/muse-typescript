@@ -1,45 +1,45 @@
-import { Page, Pages } from "../ui/Pages";
-import { Popup, Popups } from "../ui/Popups";
-import { Source } from "../ui/sources";
+// import { Page, Pages } from "../ui/Pages";
+// import { Popup, Popups } from "../ui/Popups";
+// import { Source } from "../ui/sources";
 // import { Config } from "../utils/getConfig";
 
-type State = {
-    selectedSource: Source | null;
-    currentSource: Source | null;
+// type State = {
+//     selectedSource: Source | null;
+//     currentSource: Source | null;
 
-    requiredPage: Page;
-    requiredPopup: Popup;
+//     requiredPage: Page;
+//     requiredPopup: Popup;
 
-    currentVolume: number;
-    currentMute: boolean;
+//     currentVolume: number;
+//     currentMute: boolean;
 
-    currentAVMute: boolean;
+//     currentAVMute: boolean;
 
-    // config: Config | null;
-};
+//     // config: Config | null;
+// };
 
-let state: State = {
-    selectedSource: null,
-    currentSource: null,
+// let state: State = {
+//     selectedSource: null,
+//     currentSource: null,
 
-    requiredPage: Pages.Logo,
-    requiredPopup: Popups.Off,
+//     requiredPage: Pages.Logo,
+//     requiredPopup: Popups.Off,
 
-    currentVolume: 0,
-    currentMute: false,
+//     currentVolume: 0,
+//     currentMute: false,
 
-    currentAVMute: false,
-};
+//     currentAVMute: false,
+// };
 
-export function getState(): Readonly<State> {
-    return state;
-}
+// export function getState(): Readonly<State> {
+//     return state;
+// }
 
-export function setState(callback: (state: State) => State): void {
-    state = callback(state);
-}
+// export function setState(callback: (state: State) => State): void {
+//     state = callback(state);
+// }
 
-export type GlobalState = ReturnType<typeof getState>;
+// export type GlobalState = ReturnType<typeof getState>;
 
 // const store = createStore({
 //     reducer: {},

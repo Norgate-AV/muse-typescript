@@ -1,5 +1,3 @@
-import type { ValueOf } from "../@types";
-
 const Commands = {
     CloseAllPopups: "@PPX",
     SingleBeep: "ABEEP",
@@ -12,7 +10,7 @@ const Commands = {
     EnableButton: "^ENA",
 } as const;
 
-class TouchPanelCommand {
+export class TouchPanelCommand {
     public static closeAllPopups(): string {
         return Commands.CloseAllPopups;
     }
@@ -62,7 +60,7 @@ class TouchPanelCommand {
         states = "0",
         text,
     }: {
-        address: string | number;
+        address: number;
         states?: string | number;
         text: string;
     }): string {

@@ -1,9 +1,10 @@
-import MuseControlSystem, {
+import {
+    MuseControlSystem,
     MuseControlSystemOptions,
-} from "./lib/MuseControlSystem";
-import TouchPanelCommand from "./lib/TouchPanelCommand";
-import { Channels } from "./Channels";
-import { Sources } from "./Sources";
+} from "./@types/muse/MuseControlSystem";
+import { TouchPanelCommand, getConfig } from "./lib";
+import { Channels, Sources } from "./ui";
+import { version } from "../program.json";
 
 const PAGE_LOGO = 0;
 const PAGE_MAIN = 1;
@@ -33,6 +34,12 @@ class App extends MuseControlSystem {
     private switcher: any = {};
     private display: any = {};
 
+    private currentAvMute: boolean = false;
+
+    private currentMute: boolean = false;
+    private currentVolume: number = 127;
+    private volumeRamper: Muse.TimelineService;
+
     public constructor(options: AppOptions = {}) {
         super(options);
     }
@@ -45,6 +52,10 @@ class App extends MuseControlSystem {
         this.feedback.expired.listen(() => this.onFeedbackEvent());
         this.feedback.start([100], false, -1);
 
+        this.volumeRamper =
+            context.services.get<Muse.TimelineService>("timeline");
+        this.volumeRamper.expired.listen(() => this.rampVolume());
+
         return this;
     }
 
@@ -53,6 +64,9 @@ class App extends MuseControlSystem {
             this.panel.port[1].channel[channel] =
                 this.selectedSource === index + 1;
         });
+
+        this.panel.port[1].channel[Channels.AV_MUTE] = this.currentAvMute;
+        this.panel.port[2].channel[Channels.VOLUME.VOL_MUTE] = this.currentMute;
     }
 
     private onPanelOnlineEvent(): void {
@@ -83,27 +97,71 @@ class App extends MuseControlSystem {
             this.shutDown();
         });
 
-        for (const button of Object.values(Channels.SOURCE)) {
-            this.panel.port[1].button[button].watch((event) => {
+        for (const source of Sources) {
+            this.panel.port[1].button[source.channel].watch((event) => {
                 if (!event.value) {
                     return;
                 }
 
                 const source =
-                    Object.values(Channels.SOURCE).findIndex(
-                        (channel) => channel === parseInt(event.id),
+                    Sources.findIndex(
+                        (source) => source.channel === parseInt(event.id),
                     ) + 1;
 
                 this.selectSource(source);
             });
         }
 
-        // this.panel.port[1].button[Channels.AV_MUTE].watch(
-        //     handleAVMuteButtonEvent,
-        // );
-        // this.panel.port[1].button[Channels.RESET_AUDIO].watch(
-        //     handleAudioResetButtonEvent,
-        // );
+        this.panel.port[1].button[Channels.AV_MUTE].watch((event) => {
+            if (!event.value) {
+                return;
+            }
+
+            this.setAvMute(!this.currentAvMute);
+        });
+
+        this.panel.port[1].button[Channels.RESET_AUDIO].watch((event) => {
+            if (!event.value) {
+                return;
+            }
+
+            this.audioReset();
+        });
+
+        this.panel.port[2].button[Channels.VOLUME.VOL_UP].watch((event) =>
+            this.volumeButtonEvent(event),
+        );
+        this.panel.port[2].button[Channels.VOLUME.VOL_DN].watch((event) =>
+            this.volumeButtonEvent(event),
+        );
+        this.panel.port[2].button[Channels.VOLUME.VOL_MUTE].watch((event) =>
+            this.volumeButtonEvent(event),
+        );
+
+        const [config, error] = getConfig("./config/config.json");
+        if (error !== null) {
+            context.log.error(`Error reading config: ${error}`);
+        }
+
+        const programInfo = {
+            name: config ? config.name : "Unknown",
+            version,
+            compiled: new Date().toISOString(),
+            getInfo: function () {
+                return `${this.name} v${this.version} compiled on ${this.compiled}`;
+            },
+        };
+
+        this.panel.port[1].send_command(
+            TouchPanelCommand.text({ address: 1, text: programInfo.name }),
+        );
+        this.panel.port[1].send_command(`^TXT-100,0,${programInfo.getInfo()}`);
+        this.panel.port[1].send_command(
+            TouchPanelCommand.text({
+                address: 100,
+                text: programInfo.getInfo(),
+            }),
+        );
 
         this.panelReset();
     }
@@ -112,6 +170,7 @@ class App extends MuseControlSystem {
         this.panel.port[1].send_command(TouchPanelCommand.closeAllPopups());
         this.panel.port[1].send_command(TouchPanelCommand.doubleBeep());
 
+        this.updateVolume(this.currentVolume);
         this.panelRefresh();
     }
 
@@ -122,11 +181,76 @@ class App extends MuseControlSystem {
 
         switch (this.requiredPage) {
             case PAGE_MAIN: {
+                if (this.requiredPopup === null) {
+                    this.panel.port[1].send_command(
+                        TouchPanelCommand.popupShow({
+                            name: POPUP_NAMES[0],
+                        }),
+                    );
+
+                    break;
+                }
+
                 this.panel.port[1].send_command(
                     TouchPanelCommand.popupShow({
                         name: POPUP_NAMES[this.requiredPopup],
                     }),
                 );
+
+                break;
+            }
+        }
+    }
+
+    private rampVolume(): void {
+        const { button } = this.panel.port[2];
+
+        if (button[Channels.VOLUME.VOL_UP].toString() === "true") {
+            if (this.currentVolume >= 255) {
+                return;
+            }
+
+            this.currentVolume++;
+            this.updateVolume(this.currentVolume);
+            return;
+        }
+
+        if (button[Channels.VOLUME.VOL_DN].toString() === "true") {
+            if (this.currentVolume <= 0) {
+                return;
+            }
+
+            this.currentVolume--;
+            this.updateVolume(this.currentVolume);
+            return;
+        }
+    }
+
+    private volumeButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
+        switch (parseInt(event.id)) {
+            case Channels.VOLUME.VOL_UP:
+            case Channels.VOLUME.VOL_DN: {
+                if (!event.value) {
+                    this.volumeRamper.stop();
+                    return;
+                }
+
+                this.volumeRamper.start([50], false, -1);
+
+                break;
+            }
+            case Channels.VOLUME.VOL_MUTE: {
+                if (!event.value) {
+                    return;
+                }
+
+                this.currentMute = !this.currentMute;
+
+                if (this.currentMute) {
+                    this.updateVolume(0);
+                } else {
+                    this.updateVolume(this.currentVolume);
+                }
 
                 break;
             }
@@ -158,304 +282,24 @@ class App extends MuseControlSystem {
         this.switcher.input = 0;
         this.display.powerOff();
 
+        this.audioReset();
         this.panelRefresh();
+    }
+
+    private setAvMute(state: boolean): void {
+        this.currentAvMute = state;
+    }
+
+    private audioReset(): void {
+        this.currentMute = false;
+        this.currentVolume = 127;
+
+        this.updateVolume(this.currentVolume);
+    }
+
+    private updateVolume(volume: number): void {
+        this.panel.port[2].level[1] = volume;
     }
 }
 
 export default App;
-
-// function sendSource(source: Source): void {
-//     setState((state) => {
-//         return {
-//             ...state,
-//             currentSource: source,
-//         };
-//     });
-
-//     context.log.info(`Sending ${source.name} to Display`);
-// }
-
-// function tpOnlineEventCallback(): void {
-//     context.log.info(`Touch Panel Online`);
-
-//     registerSourceButtonEvents(sources);
-
-//     tp.port[1].button[Channels.TOUCH_TO_START].watch(
-//         handleTouchToStartButtonEvent,
-//     );
-//     tp.port[1].button[Channels.SHUT_DOWN].watch(handleShutDownButtonEvent);
-//     tp.port[1].button[Channels.SHUT_DOWN_OK].watch(handleShutDownOkButtonEvent);
-
-//     tp.port[2].button[Snapi.VOL_UP].watch(handleVolumeButtonEvent);
-//     tp.port[2].button[Snapi.VOL_DN].watch(handleVolumeButtonEvent);
-//     tp.port[2].button[Snapi.VOL_MUTE].watch(handleVolumeButtonEvent);
-
-//     tp.port[1].button[Channels.AV_MUTE].watch(handleAVMuteButtonEvent);
-//     tp.port[1].button[Channels.RESET_AUDIO].watch(handleAudioResetButtonEvent);
-
-//     registerDocCamButtonEvents();
-//     showDocCamButtons(false);
-
-//     tpFeedbackSetup();
-//     updateVolume(getState().currentVolume);
-//     tpReset();
-// }
-
-// function registerDocCamButtonEvents(): void {
-//     tp.port[8].button[Snapi.ZOOM_IN].watch(handleDocCamButtonEvent);
-//     tp.port[8].button[Snapi.ZOOM_OUT].watch(handleDocCamButtonEvent);
-//     tp.port[8].button[Snapi.FOCUS_FAR].watch(handleDocCamButtonEvent);
-//     tp.port[8].button[Snapi.FOCUS_NEAR].watch(handleDocCamButtonEvent);
-//     tp.port[8].button[Snapi.AUTO_FOCUS].watch(handleDocCamButtonEvent);
-// }
-
-// function registerSourceButtonEvents(sources: Array<Source>): void {
-//     for (const source of sources) {
-//         const { port, code } = source.button.channel;
-//         tp.port[port].button[code].watch(handleSelectSourceButtonEvent);
-//     }
-// }
-
-// function handleDocCamButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
-//     if (!event.value) {
-//         return;
-//     }
-
-//     context.log.info(`Doc Cam Button ${event.id} pressed`);
-// }
-
-// function handleTouchToStartButtonEvent(
-//     event: Muse.ParameterUpdate<boolean>,
-// ): void {
-//     if (event.value) {
-//         return;
-//     }
-
-//     setPage(Pages.Main);
-// }
-
-// function tpFeedbackSetup(): void {
-//     const tpFeedback = context.services.get<Muse.TimelineService>("timeline");
-//     tpFeedback.expired.listen(tpFeedbackHandler);
-//     tpFeedback.start([100], false, -1);
-// }
-
-// function tpFeedbackHandler(): void {
-//     for (const source of sources) {
-//         const { port, code } = source.button?.channel;
-//         if (!getState().selectedSource) {
-//             tp.port[port].channel[code] = false;
-//             continue;
-//         }
-//         tp.port[port].channel[code] =
-//             getState().selectedSource.button?.channel.code === code;
-//     }
-
-//     tp.port[1].channel[Channels.AV_MUTE] = getState().currentAVMute;
-//     tp.port[2].channel[Snapi.VOL_MUTE] = getState().currentMute;
-//     // tp.port[2].level[1]
-// }
-
-// function handleShutDownButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
-//     if (!event.value) {
-//         return;
-//     }
-
-//     tp.port[1].send_command("@PPN-Dialogs - Shut Down");
-// }
-
-// function handleShutDownOkButtonEvent(
-//     event: Muse.ParameterUpdate<boolean>,
-// ): void {
-//     if (!event.value) {
-//         return;
-//     }
-
-//     shutDown();
-// }
-
-// function shutDown(): void {
-//     setState((state) => {
-//         return {
-//             ...state,
-//             selectedSource: null,
-//             currentSource: null,
-//             requiredPopup: Popups.Off,
-//         };
-//     });
-
-//     setPage(Pages.Logo);
-//     audioReset();
-// }
-
-// function setPage(page: Page): void {
-//     setState((state) => {
-//         return {
-//             ...state,
-//             requiredPage: page,
-//         };
-//     });
-
-//     tpRefresh();
-// }
-
-// function tpReset(): void {
-//     const [config, error] = getConfig("./config/config.json");
-//     if (error !== null) {
-//         context.log.error(`Error reading config: ${error}`);
-//     }
-
-//     const programInfo = {
-//         name: config ? config.name : "Unknown",
-//         version,
-//         compiled: new Date().toISOString(),
-//         getInfo: function () {
-//             return `${this.name} v${this.version} compiled on ${this.compiled}`;
-//         },
-//     };
-
-//     tp.port[1].send_command(`^TXT-1,0,${programInfo.name}`);
-//     tp.port[1].send_command(`^TXT-100,0,${programInfo.getInfo()}`);
-
-//     tp.port[1].send_command("@PPX");
-//     tp.port[1].send_command("ADBEEP");
-
-//     tpRefresh();
-// }
-
-// function tpRefresh() {
-//     const { requiredPage, requiredPopup } = getState();
-
-//     tp.port[1].send_command("@PPF-Dialogs - Audio");
-//     tp.port[1].send_command(`PAGE-${requiredPage}`);
-
-//     switch (requiredPage) {
-//         case Pages.Main: {
-//             tp.port[1].send_command(`@PPN-${requiredPopup};${requiredPage}`);
-//             break;
-//         }
-//         case Pages.Logo: {
-//             tp.port[1].send_command(`@PPN-${requiredPopup};${Pages.Main}`);
-//             break;
-//         }
-//     }
-// }
-
-/**
- * Event Listeners
- */
-// tp.online(tpOnlineEventCallback);
-
-// function handleAVMuteButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
-//     if (!event.value) {
-//         return;
-//     }
-
-//     setState((state) => {
-//         return {
-//             ...state,
-//             currentAVMute: !state.currentAVMute,
-//         };
-//     });
-// }
-
-// function handleAudioResetButtonEvent(
-//     event: Muse.ParameterUpdate<boolean>,
-// ): void {
-//     if (!event.value) {
-//         return;
-//     }
-
-//     audioReset();
-// }
-
-// function updateVolume(volume: number): void {
-//     tp.port[2].level[1] = volume;
-// }
-
-// function handleVolumeButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
-//     switch (parseInt(event.id)) {
-//         case Snapi.VOL_UP: {
-//             if (!event.value) {
-//                 return;
-//             }
-
-//             if (getState().currentVolume >= 255) {
-//                 return;
-//             }
-
-//             setState((state) => {
-//                 return {
-//                     ...state,
-//                     currentMute: false,
-//                     currentVolume: (state.currentVolume += 1),
-//                 };
-//             });
-
-//             updateVolume(getState().currentVolume);
-
-//             break;
-//         }
-//         case Snapi.VOL_DN: {
-//             if (!event.value) {
-//                 return;
-//             }
-
-//             if (getState().currentVolume <= 0) {
-//                 return;
-//             }
-
-//             setState((state) => {
-//                 return {
-//                     ...state,
-//                     currentMute: false,
-//                     currentVolume: (state.currentVolume -= 1),
-//                 };
-//             });
-
-//             updateVolume(getState().currentVolume);
-
-//             break;
-//         }
-//         case Snapi.VOL_MUTE: {
-//             if (!event.value) {
-//                 return;
-//             }
-
-//             setState((state) => {
-//                 return {
-//                     ...state,
-//                     currentMute: !state.currentMute,
-//                 };
-//             });
-
-//             if (getState().currentMute) {
-//                 updateVolume(0);
-//             } else {
-//                 updateVolume(getState().currentVolume);
-//             }
-
-//             break;
-//         }
-//     }
-// }
-
-// function showDocCamButtons(state: boolean) {
-//     tp.port[8].send_command(`^SHO-${Snapi.ZOOM_IN},${state ? 1 : 0}`);
-//     tp.port[8].send_command(`^SHO-${Snapi.ZOOM_OUT},${state ? 1 : 0}`);
-//     tp.port[8].send_command(`^SHO-${Snapi.FOCUS_FAR},${state ? 1 : 0}`);
-//     tp.port[8].send_command(`^SHO-${Snapi.FOCUS_NEAR},${state ? 1 : 0}`);
-//     tp.port[8].send_command(`^SHO-${Snapi.AUTO_FOCUS},${state ? 1 : 0}`);
-// }
-
-// function audioReset() {
-//     setState((state) => {
-//         return {
-//             ...state,
-//             currentVolume: 127,
-//             currentMute: false,
-//         };
-//     });
-
-//     updateVolume(getState().currentVolume);
-// }

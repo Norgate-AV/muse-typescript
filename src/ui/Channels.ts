@@ -1,4 +1,4 @@
-import { Snapi } from "./lib";
+import { Snapi } from "../lib";
 
 export const Channels = {
     TOUCH_TO_START: 1,
@@ -16,9 +16,9 @@ export const Channels = {
         LAPTOP: 31,
         DOC_CAM: 32,
         PC: 33,
-        BLURAY: 34,
+        BYOD: 34,
     },
 
+    RESET_AUDIO: 81,
     AV_MUTE: 131,
-    RESET_AUDIO: 141,
 } as const;

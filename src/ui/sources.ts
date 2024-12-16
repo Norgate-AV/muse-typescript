@@ -1,67 +1,37 @@
-import { TPButton } from "../@types";
-import { Popup, Popups } from "./Popups";
+import { Channels } from "./Channels";
+import { uuid } from "../lib/utils";
 
-export type Source = {
-    name: string;
-    button?: TPButton;
-    popup?: Popup;
-};
-
-export const sources: Array<Source> = [
+export const Sources = [
     {
+        id: uuid(),
+        name: "Laptop",
+        channel: Channels.SOURCE.LAPTOP,
+        popup: "Sources - Laptops",
+        switcherInput: 1,
+        displayInput: "HDMI,1",
+    },
+    {
+        id: uuid(),
+        name: "Doc Cam",
+        channel: Channels.SOURCE.DOC_CAM,
+        popup: "Sources - Doc Cam",
+        switcherInput: 2,
+        displayInput: "HDMI,1",
+    },
+    {
+        id: uuid(),
         name: "PC",
-        button: {
-            address: {
-                port: 1,
-                code: 33,
-            },
-            channel: {
-                port: 1,
-                code: 33,
-            },
-        },
-        popup: Popups.PC,
+        channel: Channels.SOURCE.PC,
+        popup: "Sources - PC",
+        switcherInput: 3,
+        displayInput: "HDMI,1",
     },
     {
-        name: "Laptops",
-        button: {
-            address: {
-                port: 1,
-                code: 31,
-            },
-            channel: {
-                port: 1,
-                code: 31,
-            },
-        },
-        popup: Popups.Laptop,
-    },
-    {
-        name: "Visualiser",
-        button: {
-            address: {
-                port: 1,
-                code: 32,
-            },
-            channel: {
-                port: 1,
-                code: 32,
-            },
-        },
-        popup: Popups.Visualiser,
-    },
-    {
+        id: uuid(),
         name: "BYOD",
-        button: {
-            address: {
-                port: 1,
-                code: 34,
-            },
-            channel: {
-                port: 1,
-                code: 34,
-            },
-        },
-        popup: Popups.BYOD,
+        channel: Channels.SOURCE.BYOD,
+        popup: "Sources - Wireless",
+        switcherInput: 4,
+        displayInput: "HDMI,1",
     },
 ];

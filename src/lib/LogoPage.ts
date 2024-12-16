@@ -1,4 +1,4 @@
-import { UIViewController } from "./lib/UIViewController";
+import { UIViewController } from "./UIViewController";
 
 export class LogoPage extends UIViewController {
     constructor() {

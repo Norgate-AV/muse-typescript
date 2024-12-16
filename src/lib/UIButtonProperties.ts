@@ -20,17 +20,17 @@ export interface IGeneralProps {
     hidden: boolean;
 }
 
-export class UIGeneralProps implements IGeneralProps {
-    private type: ButtonType;
-    disabled: boolean;
-    hidden: boolean;
+// export class UIGeneralProps implements IGeneralProps {
+//     private type: ButtonType;
+//     disabled: boolean;
+//     hidden: boolean;
 
-    constructor(type: ButtonType, disabled: boolean, hidden: boolean) {
-        this.type = type;
-        this.disabled = disabled;
-        this.hidden = hidden;
-    }
-}
+//     constructor(type: ButtonType, disabled: boolean, hidden: boolean) {
+//         this.type = type;
+//         this.disabled = disabled;
+//         this.hidden = hidden;
+//     }
+// }
 
 export type UIButtonProgrammingProperties = {
     feedback:
@@ -51,8 +51,8 @@ export type UIButtonStateProperties = {
     icon?: string;
 };
 
-export type UIButtonProperties = {
-    general: UIButtonGeneralProperties;
-    programming: UIButtonProgrammingProperties;
-    state: any;
-};
+// export type UIButtonProperties = {
+//     general: UIButtonGeneralProperties;
+//     programming: UIButtonProgrammingProperties;
+//     state: any;
+// };

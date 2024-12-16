@@ -1,6 +1,10 @@
 export {};
 
 declare global {
+    var MuseControlSystem: typeof import("./MuseControlSystem").MuseControlSystem;
+
+    interface MuseControlSystemOptions {}
+
     var context: Muse.Context;
 
     namespace Muse {

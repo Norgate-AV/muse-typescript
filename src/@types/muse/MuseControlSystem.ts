@@ -1,4 +1,4 @@
-import { name, plugins } from "../../program.json";
+import { name, plugins } from "../../../program.json";
 
 export interface MuseControlSystemOptions {}
 

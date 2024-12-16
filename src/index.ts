@@ -32,7 +32,6 @@ import "core-js/es/typed-array/float32-array";
 import "core-js/es/typed-array/float64-array";
 import "core-js/es/weak-map";
 import "core-js/es/weak-set";
-// import "core-js/es/symbol";
 // import "lodash";
 
 import { main } from "./main";
@@ -83,13 +82,13 @@ import { main } from "./main";
 // console.error("Error program...");
 // console.trace("Tracing program...");
 
-// context.log.level = "TRACE";
+context.log.level = "TRACE";
 // context.log("Starting program...");
-// context.log.trace("Starting program...");
-// context.log.debug("Starting program...");
-// context.log.info("Starting program...");
+context.log.trace("Starting program...");
+context.log.debug("Starting program...");
+context.log.info("Starting program...");
 // context.log.warning("Starting program...");
-// context.log.error("Starting program...");
+context.log.error("Starting program...");
 
 // Start the program
 main();
