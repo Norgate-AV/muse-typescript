@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+set -e
+
+read -p "Transfer files now? (Y/n): " REPLY
+if [[ ! $REPLY =~ ^[Yy]$ ]] && [ ! -z "$REPLY" ]; then
+    exit 0
+fi
+
+echo
+
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 source $SCRIPT_DIR/../.env 2>/dev/null
 
@@ -38,7 +47,7 @@ if [ -z "$files" ]; then
     exit 1
 fi
 
-echo "Transferring files to $HOST"
+echo "Transferring files to $HOST..."
 scp -r $files $USER@$HOST:/mojo/program/$name/
 
 echo -e "\nRestarting program..."

@@ -1,5 +1,5 @@
 import {
-    MuseControlSystem,
+    // MuseControlSystem,
     MuseControlSystemOptions,
 } from "./@types/muse/MuseControlSystem";
 import { TouchPanelCommand, getConfig } from "./lib";
