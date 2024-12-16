@@ -13,8 +13,8 @@ if [ -z "$HOST" ]; then
     exit 1
 fi
 
-if [ -z "$USERNAME" ]; then
-    echo "Error: USERNAME not found in .env file"
+if [ -z "$USER" ]; then
+    echo "Error: USER not found in .env file"
     exit 1
 fi
 
@@ -39,7 +39,7 @@ if [ -z "$files" ]; then
 fi
 
 echo "Transferring files to $HOST"
-scp -r $files $USERNAME@$HOST:/mojo/program/$name/
+scp -r $files $USER@$HOST:/mojo/program/$name/
 
 echo -e "\nRestarting program..."
-ssh $USERNAME@$HOST "program:restart $name"
+ssh $USER@$HOST "program:restart $name"
