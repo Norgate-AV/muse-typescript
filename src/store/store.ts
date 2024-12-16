@@ -1,5 +1,5 @@
 import { Page, Pages } from "../ui/Pages";
-import { Popup, Popups } from "../ui/popups";
+import { Popup, Popups } from "../ui/Popups";
 import { Source } from "../ui/sources";
 // import { Config } from "../utils/getConfig";
 

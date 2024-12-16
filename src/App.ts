@@ -1,12 +1,9 @@
-import ControlSystem, { ControlSystemOptions } from "./lib/ControlSystem";
+import MuseControlSystem, {
+    MuseControlSystemOptions,
+} from "./lib/MuseControlSystem";
 import TouchPanelCommand from "./lib/TouchPanelCommand";
-import Channels from "./Channels";
-import { AppConfig } from "./AppConfig";
-
-const SOURCE_LAPTOP = 1;
-const SOURCE_DOC_CAM = 2;
-const SOURCE_PC = 3;
-const SOURCE_BYOD = 4;
+import { Channels } from "./Channels";
+import { Sources } from "./Sources";
 
 const PAGE_LOGO = 0;
 const PAGE_MAIN = 1;
@@ -21,20 +18,22 @@ const POPUP_NAMES = [
     "Sources - Wireless",
 ];
 
-interface AppOptions extends ControlSystemOptions {}
+interface AppOptions extends MuseControlSystemOptions {}
 
-class App extends ControlSystem {
+class App extends MuseControlSystem {
     private panel: Muse.ICSPDriver;
     private feedback: Muse.TimelineService;
 
-    // private config = AppConfig.getInstance();
-
-    private currentSource: number = 0;
+    private selectedSource: number = null;
+    private currentSource: number = null;
 
     private requiredPage: number = PAGE_LOGO;
-    private requiredPopup: number = 0;
+    private requiredPopup: number = null;
 
-    constructor(options: AppOptions = {}) {
+    private switcher: any = {};
+    private display: any = {};
+
+    public constructor(options: AppOptions = {}) {
         super(options);
     }
 
@@ -52,43 +51,64 @@ class App extends ControlSystem {
     private onFeedbackEvent(): void {
         Object.values(Channels.SOURCE).forEach((channel, index) => {
             this.panel.port[1].channel[channel] =
-                this.currentSource === index + 1;
+                this.selectedSource === index + 1;
         });
     }
 
     private onPanelOnlineEvent(): void {
-        this.panel.port[1].button[Channels.TOUCH_TO_START].watch(() => {
+        this.panel.port[1].button[Channels.TOUCH_TO_START].watch((event) => {
+            if (!event.value) {
+                return;
+            }
+
             this.requiredPage = PAGE_MAIN;
             this.panelRefresh();
         });
 
-        this.panel.port[1].button[Channels.SHUT_DOWN].watch(() => {
+        this.panel.port[1].button[Channels.SHUT_DOWN].watch((event) => {
+            if (!event.value) {
+                return;
+            }
+
             this.panel.port[1].send_command(
                 TouchPanelCommand.popupShow({ name: "Dialogs - Shut Down" }),
             );
         });
 
-        this.panel.port[1].button[Channels.SHUT_DOWN_OK].watch(() => {
+        this.panel.port[1].button[Channels.SHUT_DOWN_OK].watch((event) => {
+            if (!event.value) {
+                return;
+            }
+
             this.shutDown();
         });
 
         for (const button of Object.values(Channels.SOURCE)) {
-            this.panel.port[1].button[button].watch((event) =>
-                this.onSourceButtonEvent(event),
-            );
+            this.panel.port[1].button[button].watch((event) => {
+                if (!event.value) {
+                    return;
+                }
+
+                const source =
+                    Object.values(Channels.SOURCE).findIndex(
+                        (channel) => channel === parseInt(event.id),
+                    ) + 1;
+
+                this.selectSource(source);
+            });
         }
+
+        // this.panel.port[1].button[Channels.AV_MUTE].watch(
+        //     handleAVMuteButtonEvent,
+        // );
+        // this.panel.port[1].button[Channels.RESET_AUDIO].watch(
+        //     handleAudioResetButtonEvent,
+        // );
 
         this.panelReset();
     }
 
     private panelReset(): void {
-        // this.panel.port[1].send_command(
-        //     TouchPanelCommand.text({
-        //         address: 1,
-        //         text: this.config.name,
-        //     }),
-        // );
-
         this.panel.port[1].send_command(TouchPanelCommand.closeAllPopups());
         this.panel.port[1].send_command(TouchPanelCommand.doubleBeep());
 
@@ -113,26 +133,30 @@ class App extends ControlSystem {
         }
     }
 
-    private onSourceButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
-        if (!event.value) {
-            return;
-        }
-
-        const source =
-            Object.values(Channels.SOURCE).findIndex(
-                (channel) => channel === parseInt(event.id),
-            ) + 1;
-
-        this.currentSource = source;
+    private selectSource(source: number): void {
+        this.selectedSource = source;
         this.requiredPopup = source;
 
+        this.sendSource(source);
+
         this.panelRefresh();
+    }
+
+    private sendSource(source: number): void {
+        this.currentSource = source;
+        print(`Sending ${source} to Display`);
+
+        this.switcher.input = Sources[source - 1].switcherInput;
+        this.display.input = Sources[source - 1].displayInput;
     }
 
     private shutDown(): void {
         this.currentSource = 0;
         this.requiredPopup = 0;
         this.requiredPage = PAGE_LOGO;
+
+        this.switcher.input = 0;
+        this.display.powerOff();
 
         this.panelRefresh();
     }

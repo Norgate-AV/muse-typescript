@@ -1,13 +1,13 @@
 import { name, plugins } from "../../program.json";
 
-export interface ControlSystemOptions {}
+export interface MuseControlSystemOptions {}
 
-export abstract class ControlSystem {
+export abstract class MuseControlSystem {
     public services = {
         platform: context.services.get<Muse.PlatformService>("platform"),
     };
 
-    constructor(options: ControlSystemOptions) {
+    public constructor(options: MuseControlSystemOptions) {
         const System = Java.type<typeof java.lang.System>("java.lang.System");
 
         System.setProperty(
@@ -36,4 +36,4 @@ export abstract class ControlSystem {
     }
 }
 
-export default ControlSystem;
+export default MuseControlSystem;

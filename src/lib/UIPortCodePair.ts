@@ -1,4 +1,4 @@
 export type UIPortCodePair = {
-    port: number | string;
-    code: number | string;
+    port?: number;
+    code?: number;
 };
