@@ -37,10 +37,6 @@ The deploy script uses `jq`. You can install it with `brew install jq`.
 bash ./scripts/deploy.sh
 ```
 
-## LICENSE :balance_scales:
+## LICENSE :balance_scale:
 
 [MIT](./LICENSE)
-
-```
-
-```
