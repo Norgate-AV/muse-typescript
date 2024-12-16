@@ -140,7 +140,7 @@ class App extends MuseControlSystem {
 
         const [config, error] = getConfig("./config/config.json");
         if (error !== null) {
-            context.log.error(`Error reading config: ${error}`);
+            console.error(`Error reading config: ${error}`);
         }
 
         const programInfo = {

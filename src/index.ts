@@ -1,3 +1,26 @@
+if (!globalThis.console) {
+    // @ts-ignore
+    globalThis.console = {};
+
+    // @ts-ignore
+    globalThis.console.log = context.log;
+
+    // @ts-ignore
+    globalThis.console.trace = context.log.trace;
+
+    // @ts-ignore
+    globalThis.console.debug = context.log.debug;
+
+    // @ts-ignore
+    globalThis.console.info = context.log.info;
+
+    // @ts-ignore
+    globalThis.console.warn = context.log.warn;
+
+    // @ts-ignore
+    globalThis.console.error = context.log.error;
+}
+
 import "core-js/es/array/find";
 import "core-js/es/array/find-index";
 import "core-js/es/array/from";
@@ -32,63 +55,8 @@ import "core-js/es/typed-array/float32-array";
 import "core-js/es/typed-array/float64-array";
 import "core-js/es/weak-map";
 import "core-js/es/weak-set";
-// import "lodash";
 
 import { main } from "./main";
-
-// if (!globalThis.console) {
-//     // @ts-ignore
-//     globalThis.console = {};
-
-//     // @ts-ignore
-//     globalThis.console.level = context.log.level;
-
-//     // @ts-ignore
-//     globalThis.console.log = context.log.info;
-
-//     // @ts-ignore
-//     globalThis.console.error = context.log.error;
-
-//     // @ts-ignore
-//     globalThis.console.debug = context.log.debug;
-
-//     // @ts-ignore
-//     globalThis.console.info = context.log.info;
-
-//     // @ts-ignore
-//     globalThis.console.warn = context.log.warning;
-
-//     // @ts-ignore
-//     globalThis.console.trace = context.log.trace;
-
-//     // @ts-ignore
-//     // globalThis.console.dir = function (obj: any) {
-//     //     for (const key in obj) {
-//     //         if (typeof obj[key] !== "object") {
-//     //             continue;
-//     //         }
-
-//     //         console.log(`${key}`);
-//     //     }
-//     // };
-// }
-
-// @ts-ignore
-// console.level = "TRACE";
-// console.log("Starting program...");
-// console.info("Program started");
-// console.debug("Debugging program...");
-// console.warn("Warning program...");
-// console.error("Error program...");
-// console.trace("Tracing program...");
-
-context.log.level = "TRACE";
-// context.log("Starting program...");
-context.log.trace("Starting program...");
-context.log.debug("Starting program...");
-context.log.info("Starting program...");
-// context.log.warning("Starting program...");
-context.log.error("Starting program...");
 
 // Start the program
 main();

@@ -15,5 +15,5 @@ export function main() {
         panic(error.message);
     }
 
-    context.log("Program Started");
+    console.log("Program Started");
 }

@@ -31,7 +31,7 @@ export abstract class MuseControlSystem {
                 load(`${System.getProperty("PROGRAM_DIR")}/${plugin}`);
             }
         } catch (error: unknown) {
-            context.log.error(`Error loding plugins: ${error}`);
+            console.error(`Error loding plugins: ${error}`);
         }
     }
 }
