@@ -15,8 +15,8 @@ importers:
         version: 4.17.21
     devDependencies:
       "@commitlint/cli":
-        specifier: ^19.6.0
-        version: 19.6.0(@types/node@22.10.2)(typescript@5.7.2)
+        specifier: ^19.6.1
+        version: 19.6.1(@types/node@22.10.2)(typescript@5.7.2)
       "@commitlint/config-conventional":
         specifier: ^19.6.0
         version: 19.6.0
@@ -43,7 +43,7 @@ importers:
         version: 5.37.0
       tsup:
         specifier: ^8.3.5
-        version: 8.3.5(@swc/core@1.10.1)(jiti@1.21.6)(typescript@5.7.2)(yaml@2.6.1)
+        version: 8.3.5(@swc/core@1.10.1)(jiti@2.4.1)(typescript@5.7.2)(yaml@2.6.1)
       typescript:
         specifier: ^5.7.2
         version: 5.7.2
@@ -63,10 +63,10 @@ packages:
       }
     engines: { node: ">=6.9.0" }
 
-  "@commitlint/cli@19.6.0":
+  "@commitlint/cli@19.6.1":
     resolution:
       {
-        integrity: sha512-v17BgGD9w5KnthaKxXnEg6KLq6DYiAxyiN44TpiRtqyW8NSq+Kx99mkEG8Qo6uu6cI5eMzMojW2muJxjmPnF8w==,
+        integrity: sha512-8hcyA6ZoHwWXC76BoC8qVOSr8xHy00LZhZpauiD0iO0VYbVhMnED0da85lTfIULxl7Lj4c6vZgF0Wu/ed1+jlQ==,
       }
     engines: { node: ">=v18" }
     hasBin: true
@@ -120,10 +120,10 @@ packages:
       }
     engines: { node: ">=v18" }
 
-  "@commitlint/load@19.5.0":
+  "@commitlint/load@19.6.1":
     resolution:
       {
-        integrity: sha512-INOUhkL/qaKqwcTUvCE8iIUf5XHsEPCLY9looJ/ipzi7jtGhgmtH7OOFiNvwYgH7mA8osUWOUDV8t4E2HAi4xA==,
+        integrity: sha512-kE4mRKWWNju2QpsCWt428XBvUH55OET2N4QKQ0bF85qS/XbsRGG1MiTByDNlEVpEPceMkDr46LNH95DtRwcsfA==,
       }
     engines: { node: ">=v18" }
 
@@ -977,16 +977,16 @@ packages:
         integrity: sha512-raM0ew0/jJUqkJ0E6e8UDtl+y/7ktFivgWvqw8dNSQeNWoSDLvQ1H/RN3aPXB9tBd4/FhyR4RDPGhsNIMsAn7g==,
       }
 
-  cosmiconfig-typescript-loader@5.1.0:
+  cosmiconfig-typescript-loader@6.1.0:
     resolution:
       {
-        integrity: sha512-7PtBB+6FdsOvZyJtlF3hEPpACq7RQX6BVGsgC7/lfVXnKMvNCu/XY3ykreqG5w/rBNdu2z8LCIKoF3kpHHdHlA==,
+        integrity: sha512-tJ1w35ZRUiM5FeTzT7DtYWAFFv37ZLqSRkGi2oeCK1gPhvaWjkAtfXvLmvE1pRfxxp9aQo6ba/Pvg1dKj05D4g==,
       }
-    engines: { node: ">=v16" }
+    engines: { node: ">=v18" }
     peerDependencies:
       "@types/node": "*"
-      cosmiconfig: ">=8.2"
-      typescript: ">=4"
+      cosmiconfig: ">=9"
+      typescript: ">=5"
 
   cosmiconfig@9.0.0:
     resolution:
@@ -1314,10 +1314,10 @@ packages:
         integrity: sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw==,
       }
 
-  jiti@1.21.6:
+  jiti@2.4.1:
     resolution:
       {
-        integrity: sha512-2yTgeWTWzMWkHu6Jp9NKgePDaYHbntiwvYuuJLbbN9vl7DC9DvXKOB2BC3ZZ92D3cvV/aflH0osDfwpHepQ53w==,
+        integrity: sha512-yPBThwecp1wS9DmoA4x4KR2h3QoslacnDR8ypuFM962kI4/456Iy1oHx2RAgh4jfZNdn0bctsdadceiBUgpU1g==,
       }
     hasBin: true
 
@@ -2092,11 +2092,11 @@ snapshots:
 
   "@babel/helper-validator-identifier@7.25.9": {}
 
-  "@commitlint/cli@19.6.0(@types/node@22.10.2)(typescript@5.7.2)":
+  "@commitlint/cli@19.6.1(@types/node@22.10.2)(typescript@5.7.2)":
     dependencies:
       "@commitlint/format": 19.5.0
       "@commitlint/lint": 19.6.0
-      "@commitlint/load": 19.5.0(@types/node@22.10.2)(typescript@5.7.2)
+      "@commitlint/load": 19.6.1(@types/node@22.10.2)(typescript@5.7.2)
       "@commitlint/read": 19.5.0
       "@commitlint/types": 19.5.0
       tinyexec: 0.3.1
@@ -2143,7 +2143,7 @@ snapshots:
       "@commitlint/rules": 19.6.0
       "@commitlint/types": 19.5.0
 
-  "@commitlint/load@19.5.0(@types/node@22.10.2)(typescript@5.7.2)":
+  "@commitlint/load@19.6.1(@types/node@22.10.2)(typescript@5.7.2)":
     dependencies:
       "@commitlint/config-validator": 19.5.0
       "@commitlint/execute-rule": 19.5.0
@@ -2151,7 +2151,7 @@ snapshots:
       "@commitlint/types": 19.5.0
       chalk: 5.3.0
       cosmiconfig: 9.0.0(typescript@5.7.2)
-      cosmiconfig-typescript-loader: 5.1.0(@types/node@22.10.2)(cosmiconfig@9.0.0(typescript@5.7.2))(typescript@5.7.2)
+      cosmiconfig-typescript-loader: 6.1.0(@types/node@22.10.2)(cosmiconfig@9.0.0(typescript@5.7.2))(typescript@5.7.2)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -2542,11 +2542,11 @@ snapshots:
 
   core-js@3.39.0: {}
 
-  cosmiconfig-typescript-loader@5.1.0(@types/node@22.10.2)(cosmiconfig@9.0.0(typescript@5.7.2))(typescript@5.7.2):
+  cosmiconfig-typescript-loader@6.1.0(@types/node@22.10.2)(cosmiconfig@9.0.0(typescript@5.7.2))(typescript@5.7.2):
     dependencies:
       "@types/node": 22.10.2
       cosmiconfig: 9.0.0(typescript@5.7.2)
-      jiti: 1.21.6
+      jiti: 2.4.1
       typescript: 5.7.2
 
   cosmiconfig@9.0.0(typescript@5.7.2):
@@ -2729,7 +2729,7 @@ snapshots:
     optionalDependencies:
       "@pkgjs/parseargs": 0.11.0
 
-  jiti@1.21.6: {}
+  jiti@2.4.1: {}
 
   joycon@3.1.1: {}
 
@@ -2898,11 +2898,11 @@ snapshots:
 
   pirates@4.0.6: {}
 
-  postcss-load-config@6.0.1(jiti@1.21.6)(yaml@2.6.1):
+  postcss-load-config@6.0.1(jiti@2.4.1)(yaml@2.6.1):
     dependencies:
       lilconfig: 3.1.2
     optionalDependencies:
-      jiti: 1.21.6
+      jiti: 2.4.1
       yaml: 2.6.1
 
   punycode@2.3.1: {}
@@ -3059,7 +3059,7 @@ snapshots:
 
   ts-interface-checker@0.1.13: {}
 
-  tsup@8.3.5(@swc/core@1.10.1)(jiti@1.21.6)(typescript@5.7.2)(yaml@2.6.1):
+  tsup@8.3.5(@swc/core@1.10.1)(jiti@2.4.1)(typescript@5.7.2)(yaml@2.6.1):
     dependencies:
       bundle-require: 5.0.0(esbuild@0.24.0)
       cac: 6.7.14
@@ -3069,7 +3069,7 @@ snapshots:
       esbuild: 0.24.0
       joycon: 3.1.1
       picocolors: 1.1.1
-      postcss-load-config: 6.0.1(jiti@1.21.6)(yaml@2.6.1)
+      postcss-load-config: 6.0.1(jiti@2.4.1)(yaml@2.6.1)
       resolve-from: 5.0.0
       rollup: 4.27.3
       source-map: 0.8.0-beta.0
