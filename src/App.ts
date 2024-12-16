@@ -63,7 +63,7 @@ export class App extends MuseControlSystem {
         });
 
         this.panel.port[1].channel[Channels.AV_MUTE] = this.currentAvMute;
-        this.panel.port[2].channel[Channels.VOLUME.VOL_MUTE] = this.currentMute;
+        // this.panel.port[2].channel[Channels.VOLUME.VOL_MUTE] = this.currentMute;
     }
 
     private onPanelOnlineEvent(): void {
@@ -124,15 +124,15 @@ export class App extends MuseControlSystem {
             this.audioReset();
         });
 
-        this.panel.port[2].button[Channels.VOLUME.VOL_UP].watch((event) =>
-            this.volumeButtonEvent(event),
-        );
-        this.panel.port[2].button[Channels.VOLUME.VOL_DN].watch((event) =>
-            this.volumeButtonEvent(event),
-        );
-        this.panel.port[2].button[Channels.VOLUME.VOL_MUTE].watch((event) =>
-            this.volumeButtonEvent(event),
-        );
+        // this.panel.port[2].button[Channels.VOLUME.VOL_UP].watch((event) =>
+        //     this.volumeButtonEvent(event),
+        // );
+        // this.panel.port[2].button[Channels.VOLUME.VOL_DN].watch((event) =>
+        //     this.volumeButtonEvent(event),
+        // );
+        // this.panel.port[2].button[Channels.VOLUME.VOL_MUTE].watch((event) =>
+        //     this.volumeButtonEvent(event),
+        // );
 
         const [config, error] = getConfig("./config/config.json");
         if (error !== null) {
@@ -166,7 +166,7 @@ export class App extends MuseControlSystem {
         this.panel.port[1].send_command(TouchPanelCommand.closeAllPopups());
         this.panel.port[1].send_command(TouchPanelCommand.doubleBeep());
 
-        this.updateVolume(this.currentVolume);
+        // this.updateVolume(this.currentVolume);
         this.panelRefresh();
     }
 
@@ -198,60 +198,60 @@ export class App extends MuseControlSystem {
         }
     }
 
-    private rampVolume(): void {
-        const { button } = this.panel.port[2];
+    // private rampVolume(): void {
+    //     const { button } = this.panel.port[2];
 
-        if (button[Channels.VOLUME.VOL_UP].toString() === "true") {
-            if (this.currentVolume >= 255) {
-                return;
-            }
+    //     if (button[Channels.VOLUME.VOL_UP].toString() === "true") {
+    //         if (this.currentVolume >= 255) {
+    //             return;
+    //         }
 
-            this.currentVolume++;
-            this.updateVolume(this.currentVolume);
-            return;
-        }
+    //         this.currentVolume++;
+    //         this.updateVolume(this.currentVolume);
+    //         return;
+    //     }
 
-        if (button[Channels.VOLUME.VOL_DN].toString() === "true") {
-            if (this.currentVolume <= 0) {
-                return;
-            }
+    //     if (button[Channels.VOLUME.VOL_DN].toString() === "true") {
+    //         if (this.currentVolume <= 0) {
+    //             return;
+    //         }
 
-            this.currentVolume--;
-            this.updateVolume(this.currentVolume);
-            return;
-        }
-    }
+    //         this.currentVolume--;
+    //         this.updateVolume(this.currentVolume);
+    //         return;
+    //     }
+    // }
 
-    private volumeButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
-        switch (parseInt(event.id)) {
-            case Channels.VOLUME.VOL_UP:
-            case Channels.VOLUME.VOL_DN: {
-                if (!event.value) {
-                    this.volumeRamper.stop();
-                    return;
-                }
+    // private volumeButtonEvent(event: Muse.ParameterUpdate<boolean>): void {
+    //     switch (parseInt(event.id)) {
+    //         case Channels.VOLUME.VOL_UP:
+    //         case Channels.VOLUME.VOL_DN: {
+    //             if (!event.value) {
+    //                 this.volumeRamper.stop();
+    //                 return;
+    //             }
 
-                this.volumeRamper.start([50], false, -1);
+    //             this.volumeRamper.start([50], false, -1);
 
-                break;
-            }
-            case Channels.VOLUME.VOL_MUTE: {
-                if (!event.value) {
-                    return;
-                }
+    //             break;
+    //         }
+    //         case Channels.VOLUME.VOL_MUTE: {
+    //             if (!event.value) {
+    //                 return;
+    //             }
 
-                this.currentMute = !this.currentMute;
+    //             this.currentMute = !this.currentMute;
 
-                if (this.currentMute) {
-                    this.updateVolume(0);
-                } else {
-                    this.updateVolume(this.currentVolume);
-                }
+    //             if (this.currentMute) {
+    //                 this.updateVolume(0);
+    //             } else {
+    //                 this.updateVolume(this.currentVolume);
+    //             }
 
-                break;
-            }
-        }
-    }
+    //             break;
+    //         }
+    //     }
+    // }
 
     private selectSource(source: Source): void {
         this.selectedSource = source;
@@ -289,15 +289,14 @@ export class App extends MuseControlSystem {
     }
 
     private audioReset(): void {
-        this.currentMute = false;
-        this.currentVolume = 127;
-
-        this.updateVolume(this.currentVolume);
+        // this.currentMute = false;
+        // this.currentVolume = 127;
+        // this.updateVolume(this.currentVolume);
     }
 
-    private updateVolume(volume: number): void {
-        this.panel.port[2].level[1] = volume;
-    }
+    // private updateVolume(volume: number): void {
+    //     this.panel.port[2].level[1] = volume;
+    // }
 }
 
 export default App;
