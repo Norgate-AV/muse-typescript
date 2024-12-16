@@ -13,7 +13,7 @@ pnpm install
 Create a `.env` file in the root of the project with the following content:
 
 ```bash
-USERNAME=your-username
+USER=your-username
 HOST=your-host
 ```
 
@@ -37,7 +37,7 @@ The deploy script uses `jq`. You can install it with `brew install jq`.
 bash ./scripts/deploy.sh
 ```
 
-## License
+## LICENSE :balance_scales:
 
 [MIT](./LICENSE)
 
