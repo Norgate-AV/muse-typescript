@@ -3,42 +3,37 @@ import {
     MuseControlSystemOptions,
 } from "./@types/muse/MuseControlSystem";
 import { TouchPanelCommand, getConfig } from "./lib";
-import { Channels, Sources } from "./ui";
+import { Channels, sources } from "./ui";
+import type { Source } from "./lib";
 import { version } from "../program.json";
+import { VolumeController } from "./lib/VolumeController";
 
 const PAGE_LOGO = 0;
 const PAGE_MAIN = 1;
 
 const PAGE_NAMES = ["Logo", "Main"];
 
-const POPUP_NAMES = [
-    "Sources - Off",
-    "Sources - Laptop",
-    "Sources - Doc Cam",
-    "Sources - PC",
-    "Sources - Wireless",
-];
-
 interface AppOptions extends MuseControlSystemOptions {}
 
-class App extends MuseControlSystem {
+export class App extends MuseControlSystem {
     private panel: Muse.ICSPDriver;
     private feedback: Muse.TimelineService;
 
-    private selectedSource: number = null;
-    private currentSource: number = null;
+    private selectedSource: Source = null;
+    private currentSource: Source = null;
 
     private requiredPage: number = PAGE_LOGO;
-    private requiredPopup: number = null;
+    private requiredPopup: string = null;
 
     private switcher: any = {};
     private display: any = {};
 
     private currentAvMute: boolean = false;
 
-    private currentMute: boolean = false;
-    private currentVolume: number = 127;
-    private volumeRamper: Muse.TimelineService;
+    // private currentMute: boolean = false;
+    // private currentVolume: number = 127;
+    // private volumeRamper: Muse.TimelineService;
+    private volumeController: VolumeController;
 
     public constructor(options: AppOptions = {}) {
         super(options);
@@ -52,17 +47,19 @@ class App extends MuseControlSystem {
         this.feedback.expired.listen(() => this.onFeedbackEvent());
         this.feedback.start([100], false, -1);
 
-        this.volumeRamper =
-            context.services.get<Muse.TimelineService>("timeline");
-        this.volumeRamper.expired.listen(() => this.rampVolume());
+        // this.volumeRamper =
+        //     context.services.get<Muse.TimelineService>("timeline");
+        // this.volumeRamper.expired.listen(() => this.rampVolume());
+
+        this.volumeController = new VolumeController(this);
 
         return this;
     }
 
     private onFeedbackEvent(): void {
-        Object.values(Channels.SOURCE).forEach((channel, index) => {
-            this.panel.port[1].channel[channel] =
-                this.selectedSource === index + 1;
+        sources.forEach((source) => {
+            this.panel.port[1].channel[source.channel] =
+                this.selectedSource === source;
         });
 
         this.panel.port[1].channel[Channels.AV_MUTE] = this.currentAvMute;
@@ -97,16 +94,15 @@ class App extends MuseControlSystem {
             this.shutDown();
         });
 
-        for (const source of Sources) {
+        for (const source of sources) {
             this.panel.port[1].button[source.channel].watch((event) => {
                 if (!event.value) {
                     return;
                 }
 
-                const source =
-                    Sources.findIndex(
-                        (source) => source.channel === parseInt(event.id),
-                    ) + 1;
+                const source = sources.find(
+                    (source) => source.channel === parseInt(event.id),
+                );
 
                 this.selectSource(source);
             });
@@ -184,7 +180,7 @@ class App extends MuseControlSystem {
                 if (this.requiredPopup === null) {
                     this.panel.port[1].send_command(
                         TouchPanelCommand.popupShow({
-                            name: POPUP_NAMES[0],
+                            name: "Sources - Off",
                         }),
                     );
 
@@ -193,7 +189,7 @@ class App extends MuseControlSystem {
 
                 this.panel.port[1].send_command(
                     TouchPanelCommand.popupShow({
-                        name: POPUP_NAMES[this.requiredPopup],
+                        name: this.requiredPopup,
                     }),
                 );
 
@@ -257,26 +253,28 @@ class App extends MuseControlSystem {
         }
     }
 
-    private selectSource(source: number): void {
+    private selectSource(source: Source): void {
         this.selectedSource = source;
-        this.requiredPopup = source;
+        this.requiredPopup = source.popup;
+
+        console.log(`Selected ${source.id} - ${source.name}`);
 
         this.sendSource(source);
 
         this.panelRefresh();
     }
 
-    private sendSource(source: number): void {
+    private sendSource(source: Source): void {
         this.currentSource = source;
-        print(`Sending ${source} to Display`);
+        console.log(`Sending ${source.name} to Display`);
 
-        this.switcher.input = Sources[source - 1].switcherInput;
-        this.display.input = Sources[source - 1].displayInput;
+        this.switcher.input = source.switcherInput;
+        this.display.input = source.displayInput;
     }
 
     private shutDown(): void {
-        this.currentSource = 0;
-        this.requiredPopup = 0;
+        this.currentSource = null;
+        this.requiredPopup = null;
         this.requiredPage = PAGE_LOGO;
 
         this.switcher.input = 0;

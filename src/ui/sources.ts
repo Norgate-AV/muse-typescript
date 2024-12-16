@@ -1,37 +1,33 @@
 import { Channels } from "./Channels";
-import { uuid } from "../lib/utils";
+import { Source } from "../lib";
 
-export const Sources = [
-    {
-        id: uuid(),
+export const sources: Array<Source> = [
+    new Source({
         name: "Laptop",
         channel: Channels.SOURCE.LAPTOP,
-        popup: "Sources - Laptops",
+        popup: "Sources - Laptop",
         switcherInput: 1,
         displayInput: "HDMI,1",
-    },
-    {
-        id: uuid(),
+    }),
+    new Source({
         name: "Doc Cam",
         channel: Channels.SOURCE.DOC_CAM,
         popup: "Sources - Doc Cam",
         switcherInput: 2,
         displayInput: "HDMI,1",
-    },
-    {
-        id: uuid(),
+    }),
+    new Source({
         name: "PC",
         channel: Channels.SOURCE.PC,
         popup: "Sources - PC",
         switcherInput: 3,
         displayInput: "HDMI,1",
-    },
-    {
-        id: uuid(),
+    }),
+    new Source({
         name: "BYOD",
         channel: Channels.SOURCE.BYOD,
         popup: "Sources - Wireless",
         switcherInput: 4,
         displayInput: "HDMI,1",
-    },
+    }),
 ];

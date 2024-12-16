@@ -7,9 +7,9 @@ export const Channels = {
     SHUT_DOWN_CANCEL: 4,
 
     VOLUME: {
-        VOL_UP: Snapi.VOL_UP,
-        VOL_DN: Snapi.VOL_DN,
-        VOL_MUTE: Snapi.VOL_MUTE,
+        VOL_UP: Snapi.Channels.VOL_UP,
+        VOL_DN: Snapi.Channels.VOL_DN,
+        VOL_MUTE: Snapi.Channels.VOL_MUTE,
     },
 
     SOURCE: {

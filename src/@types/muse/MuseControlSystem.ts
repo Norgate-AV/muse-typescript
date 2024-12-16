@@ -15,19 +15,20 @@ export abstract class MuseControlSystem {
             `${System.getProperty("karaf.mojo")}/program/${name}`,
         );
 
-        print(`Platform Name: ${this.services.platform.name}`);
-        print(`Platform Serial: ${this.services.platform.serialnumber}`);
-        print(`Platform Version: ${this.services.platform.version}`);
+        console.log(`Platform Name: ${this.services.platform.name}`);
+        console.log(`Platform Model: ${this.services.platform.model}`);
+        console.log(`Platform Serial: ${this.services.platform.serialnumber}`);
+        console.log(`Platform Version: ${this.services.platform.version}`);
 
         if (!plugins.length) {
             return;
         }
 
         try {
-            print("Loading plugins...");
+            console.log("Loading plugins...");
 
             for (const plugin of plugins) {
-                print(`Loading ${plugin}...`);
+                console.log(`Loading ${plugin}...`);
                 load(`${System.getProperty("PROGRAM_DIR")}/${plugin}`);
             }
         } catch (error: unknown) {
