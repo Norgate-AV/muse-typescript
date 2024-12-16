@@ -2,13 +2,6 @@
 
 set -e
 
-read -p "Transfer files now? (Y/n): " REPLY
-if [[ ! $REPLY =~ ^[Yy]$ ]] && [ ! -z "$REPLY" ]; then
-    exit 0
-fi
-
-echo
-
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 source $SCRIPT_DIR/../.env 2>/dev/null
 

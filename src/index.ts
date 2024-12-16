@@ -24,11 +24,11 @@ if (!globalThis.console) {
     globalThis.console.error = context.log.error;
 }
 
-import "core-js/es/array/find";
-import "core-js/es/array/find-index";
-import "core-js/es/array/from";
-import "core-js/es/array/includes";
-// import "core-js/es/array";
+// import "core-js/es/array/find";
+// import "core-js/es/array/find-index";
+// import "core-js/es/array/from";
+// import "core-js/es/array/includes";
+import "core-js/es/array";
 import "core-js/es/array-buffer";
 import "core-js/es/date";
 // import "core-js/es/error";

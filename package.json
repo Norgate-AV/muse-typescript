@@ -15,6 +15,7 @@
         "prebuild": "pnpm lint",
         "build": "tsup",
         "lint": "tsc --noEmit",
+        "ask": "bash ./scripts/ask.sh",
         "upload": "bash ./scripts/upload.sh"
     },
     "devDependencies": {

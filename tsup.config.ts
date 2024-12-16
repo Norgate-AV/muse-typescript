@@ -15,6 +15,6 @@ export default defineConfig({
     treeshake: true,
     cjsInterop: true,
     clean: true,
-    onSuccess: "pnpm upload",
+    onSuccess: "pnpm ask",
     noExternal: [/(.*)/],
 });
