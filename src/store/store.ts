@@ -3,6 +3,8 @@
 // import { Source } from "../ui/sources";
 // import { Config } from "../utils/getConfig";
 
+import { Store } from "./Store.1";
+
 // type State = {
 //     selectedSource: Source | null;
 //     currentSource: Source | null;
@@ -41,9 +43,9 @@
 
 // export type GlobalState = ReturnType<typeof getState>;
 
-// const store = createStore({
-//     reducer: {},
-// });
+const store = Store.createStore({
+    reducer: {},
+});
 
 // export function combineReducers(reducers: any) {
 //     const nextState: any = {};
@@ -89,5 +91,3 @@
 
 //     return { getState, dispatch, subscribe };
 // }
-
-// export type RootState = ReturnType<typeof store.getState>;
