@@ -1,3 +1,11 @@
 {
-    "name": "PR MB 1099"
+    "name": "PR MB 1099",
+    "sources": [
+        {
+            "name": "Laptop",
+            "popup": "Sources - Laptop",
+            "switcherInput": 1,
+            "displayInput": "HDMI,1"
+        }
+    ]
 }

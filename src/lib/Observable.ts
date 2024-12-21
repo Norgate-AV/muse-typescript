@@ -1,4 +1,7 @@
-export interface Observable<T = any> {
-    addObserver(observer: T): void;
-    removeObserver(observer: T): void;
+import { Observer } from "./Observer";
+
+export interface Observable<T = void> {
+    addObserver(observer: Observer<T>): void;
+    removeObserver(observer: Observer<T>): void;
+    notifyObservers(): void;
 }

@@ -1,5 +1,5 @@
 import {
-    // MuseControlSystem,
+    MuseControlSystem,
     MuseControlSystemOptions,
 } from "./@types/muse/MuseControlSystem";
 import { TouchPanelCommand, getConfig } from "./lib";
@@ -7,6 +7,7 @@ import { Channels, sources } from "./ui";
 import type { Source } from "./lib";
 import { version } from "../program.json";
 import { VolumeController } from "./lib/VolumeController";
+import { VolumeUIController } from "./lib/VolumeUIController";
 
 const PAGE_LOGO = 0;
 const PAGE_MAIN = 1;
@@ -34,6 +35,7 @@ export class App extends MuseControlSystem {
     // private currentVolume: number = 127;
     // private volumeRamper: Muse.TimelineService;
     private volumeController: VolumeController;
+    private volumeUIController: VolumeUIController;
 
     public constructor(options: AppOptions = {}) {
         super(options);
@@ -51,7 +53,11 @@ export class App extends MuseControlSystem {
         //     context.services.get<Muse.TimelineService>("timeline");
         // this.volumeRamper.expired.listen(() => this.rampVolume());
 
-        this.volumeController = new VolumeController(this);
+        this.volumeController = new VolumeController();
+        this.volumeUIController = new VolumeUIController({
+            panel: this.panel,
+            volumeController: this.volumeController,
+        });
 
         return this;
     }

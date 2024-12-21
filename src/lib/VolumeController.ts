@@ -1,60 +1,55 @@
-import { App } from "../App";
 import { Observable } from "./Observable";
-import { Snapi } from ".";
-import { Channels } from "../ui";
+// import { Snapi } from ".";
+// import { Channels } from "../ui";
+import { Observer } from "./Observer";
 
 export class VolumeController implements Observable {
-    private readonly panel: Muse.ICSPDriver;
     private readonly ramper: Muse.TimelineService;
-
-    private readonly app: App;
 
     private level: number;
     private mute: boolean;
 
-    private observers: Array<any> = [];
+    private observers: Array<Observer> = [];
 
-    public constructor(app: App) {
-        this.app = app;
-
+    public constructor() {
         this.ramper = context.services.get<Muse.TimelineService>("timeline");
         this.ramper.expired.listen(() => this.ramp());
     }
 
-    public removeObserver(observer: any): void {
+    public removeObserver(observer: Observer): void {
         this.observers = this.observers.filter((o) => o !== observer);
     }
 
-    public addObserver(observer: any): void {
+    public addObserver(observer: Observer): void {
         this.observers.push(observer);
     }
 
+    public notifyObservers(): void {
+        this.observers.forEach((o) => o.update());
+    }
+
     private ramp(): void {
-        const { button } = this.panel.port[2];
-
-        if (button[Channels.VOLUME.VOL_UP].toString() === "true") {
-            if (this.level >= 255) {
-                return;
-            }
-
-            this.level++;
-            this.update();
-            return;
-        }
-
-        if (button[Channels.VOLUME.VOL_DN].toString() === "true") {
-            if (this.level <= 0) {
-                return;
-            }
-
-            this.level--;
-            this.update();
-            return;
-        }
+        // const { button } = this.panel.port[2];
+        // if (button[Channels.VOLUME.VOL_UP].toString() === "true") {
+        //     if (this.level >= 255) {
+        //         return;
+        //     }
+        //     this.level++;
+        //     this.update();
+        //     return;
+        // }
+        // if (button[Channels.VOLUME.VOL_DN].toString() === "true") {
+        //     if (this.level <= 0) {
+        //         return;
+        //     }
+        //     this.level--;
+        //     this.update();
+        //     return;
+        // }
     }
 
     private update(): void {
-        this.panel.port[2].level[Snapi.Levels.VOL_LVL] = this.level;
+        // this.panel.port[2].level[Snapi.Levels.VOL_LVL] = this.level;
     }
 
     public setLevel(level: number): void {
