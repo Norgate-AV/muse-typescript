@@ -1,93 +1,61 @@
-// import { Page, Pages } from "../ui/Pages";
-// import { Popup, Popups } from "../ui/Popups";
-// import { Source } from "../ui/sources";
-// import { Config } from "../utils/getConfig";
+export class Store<T = any> {
+    private state: T;
+    private listeners: Array<any> = [];
+    private reducer: any;
 
-import { Store } from "./Store.1";
+    public static createStore<T = any>({
+        reducer,
+        initialState = {} as T,
+    }): Store<T> {
+        return new Store<T>({ reducer, initialState });
+    }
 
-// type State = {
-//     selectedSource: Source | null;
-//     currentSource: Source | null;
+    private constructor({
+        reducer,
+        initialState = {} as T,
+    }: {
+        reducer: any;
+        initialState?: T;
+    }) {
+        this.reducer = reducer;
+        this.state = initialState;
+    }
 
-//     requiredPage: Page;
-//     requiredPopup: Popup;
+    public getState(): T {
+        return this.state;
+    }
 
-//     currentVolume: number;
-//     currentMute: boolean;
+    public dispatch(action: any): void {
+        this.state = this.reducer(this.state, action);
+        this.listeners.forEach((listener) => listener(this.state));
+    }
 
-//     currentAVMute: boolean;
+    public subscribe(listener: any): () => void {
+        this.listeners.push(listener);
+        return () => {
+            this.listeners = this.listeners.filter((l) => l !== listener);
+        };
+    }
+}
 
-//     // config: Config | null;
-// };
+export function combineReducers(reducers: any) {
+    const nextState: any = {};
+    const reducerFunctions: any = {};
+    const reducerKeys = Object.keys(reducers);
 
-// let state: State = {
-//     selectedSource: null,
-//     currentSource: null,
+    for (const key of reducerKeys) {
+        if (typeof reducers[key] === "function") {
+            reducerFunctions[key] = reducers[key];
+        }
+    }
 
-//     requiredPage: Pages.Logo,
-//     requiredPopup: Popups.Off,
+    const reducerFunctionKeys = Object.keys(reducerFunctions);
 
-//     currentVolume: 0,
-//     currentMute: false,
+    return (state = {}, action: any) => {
+        for (const key of reducerFunctionKeys) {
+            nextState[key] = reducerFunctions[key](state[key], action);
+        }
 
-//     currentAVMute: false,
-// };
-
-// export function getState(): Readonly<State> {
-//     return state;
-// }
-
-// export function setState(callback: (state: State) => State): void {
-//     state = callback(state);
-// }
-
-// export type GlobalState = ReturnType<typeof getState>;
-
-const store = Store.createStore({
-    reducer: {},
-});
-
-// export function combineReducers(reducers: any) {
-//     const nextState: any = {};
-//     const reducerFunctions: any = {};
-//     const reducerKeys = Object.keys(reducers);
-
-//     for (const key of reducerKeys) {
-//         if (typeof reducers[key] === "function") {
-//             reducerFunctions[key] = reducers[key];
-//         }
-//     }
-
-//     const reducerFunctionKeys = Object.keys(reducerFunctions);
-
-//     return (state = {}, action: any) => {
-//         for (const key of reducerFunctionKeys) {
-//             nextState[key] = reducerFunctions[key](state[key], action);
-//         }
-
-//         return nextState;
-//     };
-// }
-
-// export function createStore(rootReducer: any, initialState: any = {}) {
-//     let state = initialState;
-//     let listeners: any[] = [];
-
-//     const getState = () => state;
-
-//     const dispatch = (action: any) => {
-//         state = rootReducer(state, action);
-//         listeners.forEach((listener) => listener(state));
-//     };
-
-//     const subscribe = (listener: any) => {
-//         listeners.push(listener);
-//         return () => {
-//             listeners = listeners.filter((l) => l !== listener);
-//         };
-//     };
-
-//     dispatch({});
-
-//     return { getState, dispatch, subscribe };
-// }
+        return nextState;
+    };
+}
