@@ -1,13 +1,13 @@
 import { Store } from "../lib/Store";
-
-export type State = {
-    count: number;
-};
+import { volumeReducer } from "./volume";
 
 const store = Store.createStore({
-    reducer: {},
+    reducer: {
+        volume: volumeReducer,
+    },
 });
 
-export type GlobalState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 export default store;
