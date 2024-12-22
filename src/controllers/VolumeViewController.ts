@@ -1,6 +1,6 @@
 import { VolumeState } from "../store/volume";
-import { Observer } from "./Observer";
-import SNAPI from "./SNAPI";
+import { Observer } from "../@types/Observer";
+import SNAPI from "../lib/constants/SNAPI";
 import { VolumeController } from "./VolumeController";
 
 export class VolumeViewController implements Observer<VolumeState> {

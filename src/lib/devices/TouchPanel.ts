@@ -1,4 +1,4 @@
-import { DeviceRegistrationStatus } from "../@types/muse/DeviceRegistrationStatus";
+import { DeviceRegistrationStatus } from "../../@types/muse/DeviceRegistrationStatus";
 
 interface TouchPanelOptions {
     id?: string;

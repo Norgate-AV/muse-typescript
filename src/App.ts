@@ -4,10 +4,10 @@ import {
 } from "./@types/muse/MuseControlSystem";
 import { TouchPanelCommand, getConfig } from "./lib";
 import { Channels, sources } from "./ui";
-import type { Source } from "./lib";
+import type { Source } from "./models/Source";
 import { version } from "../program.json";
-import { VolumeController } from "./lib/VolumeController";
-import { VolumeViewController } from "./lib/VolumeViewController";
+import { VolumeController } from "./controllers/VolumeController";
+import { VolumeViewController } from "./controllers/VolumeViewController";
 
 const PAGE_LOGO = 0;
 const PAGE_MAIN = 1;

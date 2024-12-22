@@ -1,7 +1,7 @@
 import { UIPage } from "./UIPage";
 import { UIPopup } from "./UIPopup";
-import type TouchPanel from "./TouchPanel";
-import TouchPanelCommand from "./TouchPanelCommand";
+import type TouchPanel from "../devices/TouchPanel";
+import TouchPanelCommand from "../devices/TouchPanelCommand";
 
 interface UIManagerOptions {
     panel: TouchPanel;

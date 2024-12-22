@@ -1,4 +1,4 @@
-import { Store } from "../lib/Store";
+import { Store } from "../lib/state/Store";
 import volumeReducer from "./volume";
 
 const store = Store.createStore({

@@ -1,6 +1,6 @@
 import { RootState } from ".";
 import { PayloadAction } from "../@types/PayloadAction";
-import { Slice } from "../lib/Slice";
+import { Slice } from "../lib/state/Slice";
 
 export type VolumeState = {
     level: number;

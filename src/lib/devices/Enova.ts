@@ -1,5 +1,5 @@
-import { Timeline } from "./Timeline";
-import type { Switcher } from "../@types";
+import { Timeline } from "../services/Timeline";
+import type { Switcher } from "../../@types";
 
 const MAX_OUTPUT = 16;
 const MAX_LEVELS = 3;

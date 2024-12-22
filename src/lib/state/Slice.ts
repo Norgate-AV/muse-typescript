@@ -1,4 +1,4 @@
-import { PayloadAction } from "../@types/PayloadAction";
+import { PayloadAction } from "../../@types/PayloadAction";
 
 export class Slice<T> {
     public name: string;

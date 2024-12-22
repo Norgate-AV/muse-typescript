@@ -1,4 +1,4 @@
-import { getConfig } from "./utils/getConfig";
+import { getConfig } from "../utils/getConfig";
 
 export class AppConfig {
     private static instance: AppConfig = null;

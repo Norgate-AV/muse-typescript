@@ -1,6 +1,6 @@
 import { VolumeState } from "../store/volume";
-import { Observable } from "./Observable";
-import { Observer } from "./Observer";
+import { Observable } from "../@types/Observable";
+import { Observer } from "../@types/Observer";
 
 export class VolumeController implements Observable {
     private readonly ramper: Muse.TimelineService;

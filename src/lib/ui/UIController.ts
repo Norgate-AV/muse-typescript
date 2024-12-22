@@ -1,4 +1,4 @@
-import TouchPanel from "./TouchPanel";
+import TouchPanel from "../devices/TouchPanel";
 
 export interface UIControllerOptions {
     panel: TouchPanel;

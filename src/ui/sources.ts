@@ -1,5 +1,5 @@
 import { Channels } from "./Channels";
-import { Source } from "../lib";
+import { Source } from "../models/Source";
 
 export const sources: Array<Source> = [
     new Source({

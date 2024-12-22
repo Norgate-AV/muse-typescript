@@ -1,4 +1,4 @@
-import { Timeline } from "../lib";
+import { Timeline } from "../services/Timeline";
 
 const Thread = Java.type("java.lang.Thread");
 
