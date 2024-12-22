@@ -9,6 +9,7 @@ export default defineConfig({
     format: ["cjs"],
     target: "es5",
     minify: "terser",
+    splitting: false,
     minifyWhitespace: true,
     minifyIdentifiers: true,
     minifySyntax: true,
@@ -19,4 +20,14 @@ export default defineConfig({
     noExternal: [/(.*)/],
     inject: ["polyfills.ts"],
     replaceNodeEnv: true,
+    esbuildPlugins: [
+        {
+            name: "process-polyfill",
+            setup(build) {
+                build.onResolve({ filter: /^process$/ }, () => ({
+                    path: "./polyfills.ts",
+                }));
+            },
+        },
+    ],
 });

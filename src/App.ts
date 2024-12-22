@@ -8,6 +8,7 @@ import type { Source } from "./models/Source";
 import { version } from "../program.json";
 import { VolumeController } from "./controllers/VolumeController";
 import { VolumeViewController } from "./views/VolumeViewController";
+import store from "./store";
 
 const PAGE_LOGO = 0;
 const PAGE_MAIN = 1;
@@ -30,6 +31,8 @@ export class App extends MuseControlSystem {
     private display: any = {};
 
     private currentAvMute: boolean = false;
+
+    // private store = store;
 
     // private currentMute: boolean = false;
     // private currentVolume: number = 127;
@@ -58,6 +61,8 @@ export class App extends MuseControlSystem {
             panel: this.panel,
             controller: this.volumeController,
         });
+
+        // console.log(store.getState());
 
         return this;
     }

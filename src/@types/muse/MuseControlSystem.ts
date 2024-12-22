@@ -8,7 +8,7 @@ export interface MuseControlSystemOptions {
 }
 
 export abstract class MuseControlSystem {
-    // public readonly store: Store<RootState> = null;
+    // public readonly store: Store<RootState>;
     public readonly services = {
         platform: context.services.get<Muse.PlatformService>("platform"),
     };

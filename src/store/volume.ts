@@ -1,7 +1,5 @@
-import { RootState } from ".";
-// import { PayloadAction } from "../@types/PayloadAction";
-// import { Slice } from "../lib/state/Slice";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from ".";
 
 export type VolumeState = {
     level: number;
@@ -21,12 +19,34 @@ export const volumeSlice = createSlice({
             state.level = action.payload;
             console.log(`Volume level set to ${action.payload}`);
         },
+        incrementVolume: (state: VolumeState) => {
+            state.level = Math.min(state.level + 1, 100);
+            console.log(`Volume level incremented to ${state.level}`);
+        },
+        decrementVolume: (state: VolumeState) => {
+            state.level = Math.max(state.level - 1, 0);
+            console.log(`Volume level decremented to ${state.level}`);
+        },
+        toggleMute: (state: VolumeState) => {
+            state.mute = !state.mute;
+            console.log(`Volume mute toggled to ${state.mute}`);
+        },
+        setMute: (state: VolumeState, action: PayloadAction<boolean>) => {
+            state.mute = action.payload;
+            console.log(`Volume mute set to ${action.payload}`);
+        },
     },
 });
 
-export const { setVolume } = volumeSlice.actions;
+export const {
+    setVolume,
+    incrementVolume,
+    decrementVolume,
+    setMute,
+    toggleMute,
+} = volumeSlice.actions;
 
-export const selectVolume = (state: RootState) => state.volume;
 export const selectVolumeLevel = (state: RootState) => state.volume.level;
+export const selectVolumeMute = (state: RootState) => state.volume.mute;
 
 export default volumeSlice.reducer;
