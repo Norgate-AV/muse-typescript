@@ -1,3 +1,3 @@
-export interface Observer<T = void> {
-    update(args: T): void;
+export interface Observer<T> {
+    update: (state: T) => void;
 }

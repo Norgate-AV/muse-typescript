@@ -1,22 +1,24 @@
-export class Slice {
+import { PayloadAction } from "../@types/PayloadAction";
+
+export class Slice<T> {
     public name: string;
-    public initialState: any;
+    public initialState: T;
     public reducers: any;
 
-    public static createSlice({
+    public static createSlice<T>({
         name,
         initialState,
         reducers,
     }: {
         name: string;
-        initialState: any;
-        reducers: any;
+        initialState: T;
+        reducers: Record<string, ReducerFunction<T>>;
     }) {
-        return new Slice({ name, initialState, reducers });
+        return new Slice<T>({ name, initialState, reducers });
     }
 
-    public get actions(): any {
-        const actions: any = {};
+    public get actions(): Record<string, (payload: any) => PayloadAction> {
+        const actions: Record<string, (payload: any) => PayloadAction> = {};
 
         for (const key of Object.keys(this.reducers)) {
             actions[key] = (payload: any) => ({
@@ -28,8 +30,8 @@ export class Slice {
         return actions;
     }
 
-    public get reducer(): any {
-        return (state = this.initialState, action: any) => {
+    public get reducer(): ReducerFunction<T> {
+        return (state = this.initialState, action: PayloadAction) => {
             const reducerFunction = this.reducers[action.type];
 
             if (reducerFunction) {
@@ -46,11 +48,13 @@ export class Slice {
         reducers,
     }: {
         name: string;
-        initialState: any;
-        reducers: any;
+        initialState: T;
+        reducers: Record<string, ReducerFunction<T>>;
     }) {
         this.name = name;
         this.initialState = initialState;
         this.reducers = reducers;
     }
 }
+
+export type ReducerFunction<T> = (state: T, action: PayloadAction) => void;

@@ -2,7 +2,7 @@ import { RootState } from ".";
 import { PayloadAction } from "../@types/PayloadAction";
 import { Slice } from "../lib/Slice";
 
-type VolumeState = {
+export type VolumeState = {
     level: number;
     mute: boolean;
 };
@@ -16,7 +16,7 @@ export const volumeSlice = Slice.createSlice({
     name: "volume",
     initialState,
     reducers: {
-        setVolume: (state: VolumeState, action: PayloadAction<number>) => {
+        setVolume: (state, action: PayloadAction<number>) => {
             state.level = action.payload;
             console.log(`Volume level set to ${action.payload}`);
         },
@@ -28,4 +28,4 @@ export const { setVolume } = volumeSlice.actions;
 export const selectVolume = (state: RootState) => state.volume;
 export const selectVolumeLevel = (state: RootState) => state.volume.level;
 
-export const volumeReducer = volumeSlice.reducer;
+export default volumeSlice.reducer;

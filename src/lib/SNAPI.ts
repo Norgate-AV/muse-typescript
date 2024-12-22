@@ -1,4 +1,4 @@
-export const Snapi = {
+export const SNAPI = {
     Channels: {
         PLAY: 1,
         STOP: 2,
@@ -54,6 +54,6 @@ export const Snapi = {
     },
 } as const;
 
-export default Snapi;
+export default SNAPI;
 
-// export type Snapi = typeof Snapi;
+// export type SNAPI = typeof SNAPI;

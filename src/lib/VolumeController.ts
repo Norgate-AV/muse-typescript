@@ -1,6 +1,4 @@
 import { Observable } from "./Observable";
-// import { Snapi } from ".";
-// import { Channels } from "../ui";
 import { Observer } from "./Observer";
 
 export class VolumeController implements Observable {

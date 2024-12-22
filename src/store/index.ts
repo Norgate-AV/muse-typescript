@@ -1,5 +1,5 @@
 import { Store } from "../lib/Store";
-import { volumeReducer } from "./volume";
+import volumeReducer from "./volume";
 
 const store = Store.createStore({
     reducer: {

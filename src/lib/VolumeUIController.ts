@@ -1,17 +1,70 @@
-import { UIViewController } from "./UIViewController";
+import { VolumeState } from "../store/volume";
+import { Observer } from "./Observer";
+import Snapi from "./SNAPI";
 import { VolumeController } from "./VolumeController";
 
-export class VolumeUIController extends UIViewController {
-    private volumeController: VolumeController;
+type VolumeObserver = Observer<VolumeState>;
+
+export class VolumeViewController implements VolumeObserver {
+    private panel: Muse.ICSPDriver;
+    private port: number;
+    private controller: VolumeController;
 
     public constructor({
         panel,
-        volumeController,
+        port = 1,
+        controller,
     }: {
         panel: Muse.ICSPDriver;
-        volumeController: VolumeController;
+        port?: number;
+        controller: VolumeController;
     }) {
-        super({ panel });
-        this.volumeController = volumeController;
+        this.panel = panel;
+        this.port = port;
+        this.controller = controller;
+
+        this.subscribe();
+    }
+
+    private subscribe(): void {
+        const { panel, port, controller } = this;
+
+        panel.online(() => this.panelOnline());
+        panel.offline(() => this.panelOffline());
+
+        panel.port[port].button[Snapi.Channels.VOL_UP].watch((event) =>
+            this.buttonEvent(event),
+        );
+        panel.port[port].button[Snapi.Channels.VOL_DN].watch((event) =>
+            this.buttonEvent(event),
+        );
+        panel.port[port].button[Snapi.Channels.VOL_MUTE].watch((event) =>
+            this.buttonEvent(event),
+        );
+
+        controller.addObserver(this);
+    }
+
+    private panelOnline(): void {
+        this.panel.port[this.port].channel[1] = this.controller.getMute();
+    }
+
+    private panelOffline(): void {
+        this.panel.port[this.port].channel[1] = false;
+    }
+
+    private buttonEvent(event: any): void {
+        if (!event.value) {
+            return;
+        }
+
+        // this.controller.setVolume(this.controller.getVolume() + 1);
+    }
+
+    public update({ level, mute }): void {
+        const { panel, port } = this;
+
+        panel.port[port].channel[Snapi.Channels.VOL_MUTE_FB] = mute;
+        panel.port[port].level[Snapi.Levels.VOL_LVL] = level % 256;
     }
 }
