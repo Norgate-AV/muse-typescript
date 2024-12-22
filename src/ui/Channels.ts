@@ -1,4 +1,4 @@
-import { Snapi } from "../lib";
+import { SNAPI } from "../lib";
 
 export const Channels = {
     TOUCH_TO_START: 1,
@@ -7,9 +7,9 @@ export const Channels = {
     SHUT_DOWN_CANCEL: 4,
 
     VOLUME: {
-        VOL_UP: Snapi.Channels.VOL_UP,
-        VOL_DN: Snapi.Channels.VOL_DN,
-        VOL_MUTE: Snapi.Channels.VOL_MUTE,
+        VOL_UP: SNAPI.Channels.VOL_UP,
+        VOL_DN: SNAPI.Channels.VOL_DN,
+        VOL_MUTE: SNAPI.Channels.VOL_MUTE,
     },
 
     SOURCE: {

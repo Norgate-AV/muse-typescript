@@ -7,7 +7,7 @@ import { Channels, sources } from "./ui";
 import type { Source } from "./lib";
 import { version } from "../program.json";
 import { VolumeController } from "./lib/VolumeController";
-import { VolumeUIController } from "./lib/VolumeUIController";
+import { VolumeViewController } from "./lib/VolumeViewController";
 
 const PAGE_LOGO = 0;
 const PAGE_MAIN = 1;
@@ -37,7 +37,7 @@ export class App extends MuseControlSystem {
     // private currentVolume: number = 127;
     // private volumeRamper: Muse.TimelineService;
     private volumeController: VolumeController;
-    private volumeUIController: VolumeUIController;
+    private volumeViewController: VolumeViewController;
 
     public constructor(options: AppOptions = {}) {
         super(options);
@@ -56,9 +56,9 @@ export class App extends MuseControlSystem {
         // this.volumeRamper.expired.listen(() => this.rampVolume());
 
         this.volumeController = new VolumeController();
-        this.volumeUIController = new VolumeUIController({
+        this.volumeViewController = new VolumeViewController({
             panel: this.panel,
-            volumeController: this.volumeController,
+            controller: this.volumeController,
         });
 
         return this;

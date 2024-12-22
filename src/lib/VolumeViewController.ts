@@ -1,11 +1,9 @@
 import { VolumeState } from "../store/volume";
 import { Observer } from "./Observer";
-import Snapi from "./SNAPI";
+import SNAPI from "./SNAPI";
 import { VolumeController } from "./VolumeController";
 
-type VolumeObserver = Observer<VolumeState>;
-
-export class VolumeViewController implements VolumeObserver {
+export class VolumeViewController implements Observer<VolumeState> {
     private panel: Muse.ICSPDriver;
     private port: number;
     private controller: VolumeController;
@@ -32,13 +30,13 @@ export class VolumeViewController implements VolumeObserver {
         panel.online(() => this.panelOnline());
         panel.offline(() => this.panelOffline());
 
-        panel.port[port].button[Snapi.Channels.VOL_UP].watch((event) =>
+        panel.port[port].button[SNAPI.Channels.VOL_UP].watch((event) =>
             this.buttonEvent(event),
         );
-        panel.port[port].button[Snapi.Channels.VOL_DN].watch((event) =>
+        panel.port[port].button[SNAPI.Channels.VOL_DN].watch((event) =>
             this.buttonEvent(event),
         );
-        panel.port[port].button[Snapi.Channels.VOL_MUTE].watch((event) =>
+        panel.port[port].button[SNAPI.Channels.VOL_MUTE].watch((event) =>
             this.buttonEvent(event),
         );
 
@@ -64,7 +62,7 @@ export class VolumeViewController implements VolumeObserver {
     public update({ level, mute }): void {
         const { panel, port } = this;
 
-        panel.port[port].channel[Snapi.Channels.VOL_MUTE_FB] = mute;
-        panel.port[port].level[Snapi.Levels.VOL_LVL] = level % 256;
+        panel.port[port].channel[SNAPI.Channels.VOL_MUTE_FB] = mute;
+        panel.port[port].level[SNAPI.Levels.VOL_LVL] = level % 256;
     }
 }

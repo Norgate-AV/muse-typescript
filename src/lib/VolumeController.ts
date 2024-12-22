@@ -54,7 +54,7 @@ export class VolumeController implements Observable {
     }
 
     private update(): void {
-        // this.panel.port[2].level[Snapi.Levels.VOL_LVL] = this.level;
+        // this.panel.port[2].level[SNAPI.Levels.VOL_LVL] = this.level;
     }
 
     public setLevel(level: number): void {
