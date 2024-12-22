@@ -62,7 +62,7 @@ export class App extends MuseControlSystem {
             controller: this.volumeController,
         });
 
-        // console.log(store.getState());
+        console.log(`Current state: ${store.getState()}`);
 
         return this;
     }
