@@ -1,91 +1,83 @@
-export class Store<T = any> {
-    private static instance: Store = null;
+// import { ReducerFunction } from "../../@types/ReducerFunction";
 
-    private state: T;
-    private listeners: Array<any> = [];
-    private reducer: any;
-    private dispatching: boolean = false;
+// export class Store<T = any> {
+//     private static instance: Store = null;
 
-    public static createStore<T = any>({
-        reducer,
-        initialState = {} as T,
-    }): Store<T> {
-        if (!this.instance) {
-            this.instance = new Store<T>({
-                reducer: this.combineReducers(reducer),
-                initialState,
-            });
-        }
+//     private state: T;
+//     private listeners: Array<any> = [];
+//     private reducer: ReducerFunction<T>;
+//     private dispatching: boolean = false;
 
-        return this.instance;
-    }
+//     public static createStore<T = any>({ reducer }): Store<T> {
+//         if (!this.instance) {
+//             this.instance = new Store<T>({
+//                 reducer: this.combineReducers(reducer),
+//             });
+//         }
 
-    private static combineReducers(reducers: any) {
-        const nextState: any = {};
-        const reducerFunctions: any = {};
-        const reducerKeys = Object.keys(reducers);
+//         return this.instance;
+//     }
 
-        for (const key of reducerKeys) {
-            if (typeof reducers[key] === "function") {
-                reducerFunctions[key] = reducers[key];
-            }
-        }
+//     private static combineReducers(reducers: any) {
+//         const nextState: any = {};
+//         const reducerFunctions: any = {};
+//         const reducerKeys = Object.keys(reducers);
 
-        const reducerFunctionKeys = Object.keys(reducerFunctions);
+//         for (const key of reducerKeys) {
+//             if (typeof reducers[key] === "function") {
+//                 reducerFunctions[key] = reducers[key];
+//             }
+//         }
 
-        return (state = {}, action: any) => {
-            for (const key of reducerFunctionKeys) {
-                nextState[key] = reducerFunctions[key](state[key], action);
-            }
+//         const reducerFunctionKeys = Object.keys(reducerFunctions);
 
-            return nextState;
-        };
-    }
+//         return (state = {}, action: any) => {
+//             for (const key of reducerFunctionKeys) {
+//                 nextState[key] = reducerFunctions[key](state[key], action);
+//             }
 
-    private constructor({
-        reducer,
-        initialState = {} as T,
-    }: {
-        reducer: any;
-        initialState?: T;
-    }) {
-        this.reducer = reducer;
-        this.state = initialState;
+//             return nextState;
+//         };
+//     }
 
-        this.dispatch({ type: "INIT" });
-    }
+//     private constructor({ reducer }: { reducer: any }) {
+//         this.reducer = reducer;
 
-    public getState(): T {
-        if (this.dispatching) {
-            throw new Error("Cannot get state in the middle of a dispatch");
-        }
+//         this.dispatch({ type: "INIT" });
+//     }
 
-        return this.state;
-    }
+//     public getState(): T {
+//         if (this.dispatching) {
+//             throw new Error("Cannot get state in the middle of a dispatch");
+//         }
 
-    public dispatch(action: any): void {
-        if (this.dispatching) {
-            throw new Error("Cannot dispatch in the middle of a dispatch");
-        }
+//         return this.state;
+//     }
 
-        this.dispatching = true;
+//     public dispatch(action: any): void {
+//         if (this.dispatching) {
+//             throw new Error("Cannot dispatch in the middle of a dispatch");
+//         }
 
-        try {
-            this.state = this.reducer(this.state, action);
-            this.listeners.forEach((listener) => listener(this.state));
-        } finally {
-            this.dispatching = false;
-        }
-    }
+//         this.dispatching = true;
 
-    public subscribe(listener: any): () => void {
-        if (this.dispatching) {
-            throw new Error("Cannot subscribe in the middle of a dispatch");
-        }
+//         try {
+//             this.state = this.reducer(this.state, action);
+//             this.listeners.forEach((listener) => listener(this.state));
+//         } finally {
+//             this.dispatching = false;
+//         }
+//     }
 
-        this.listeners.push(listener);
-        return () => {
-            this.listeners = this.listeners.filter((l) => l !== listener);
-        };
-    }
-}
+//     public subscribe(listener: any): () => void {
+//         if (this.dispatching) {
+//             throw new Error("Cannot subscribe in the middle of a dispatch");
+//         }
+
+//         this.listeners.push(listener);
+
+//         return () => {
+//             this.listeners = this.listeners.filter((l) => l !== listener);
+//         };
+//     }
+// }

@@ -24,6 +24,14 @@ if (!globalThis.console) {
     globalThis.console.error = context.log.error;
 }
 
+if (!globalThis.process) {
+    // @ts-ignore
+    globalThis.process = {};
+
+    // @ts-ignore
+    globalThis.process.env = {};
+}
+
 // Polyfills
 import "core-js/es/array";
 import "core-js/es/array-buffer";

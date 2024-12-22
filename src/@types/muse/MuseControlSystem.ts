@@ -1,19 +1,20 @@
 import { name, plugins } from "../../../program.json";
-import { Store } from "../../lib/state/Store";
-import { RootState } from "../../store";
+// import { Store } from "../../lib/state/Store";
+// import { RootState } from "../../store";
+// import type { Store } from "redux";
 
 export interface MuseControlSystemOptions {
-    store?: Store<RootState>;
+    // store?: Store;
 }
 
 export abstract class MuseControlSystem {
-    public readonly store: Store<RootState> = null;
-    public services = {
+    // public readonly store: Store<RootState> = null;
+    public readonly services = {
         platform: context.services.get<Muse.PlatformService>("platform"),
     };
 
     public constructor(options: MuseControlSystemOptions) {
-        this.store = options.store;
+        // this.store = options.store;
 
         const System = Java.type<typeof java.lang.System>("java.lang.System");
 

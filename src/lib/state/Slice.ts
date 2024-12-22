@@ -1,60 +1,59 @@
-import { PayloadAction } from "../../@types/PayloadAction";
+// import { PayloadAction } from "../../@types/PayloadAction";
+// import { ReducerFunction } from "../../@types/ReducerFunction";
 
-export class Slice<T> {
-    public name: string;
-    public initialState: T;
-    public reducers: any;
+// export class Slice<T> {
+//     public name: string;
+//     public initialState: T;
+//     public reducers: any;
 
-    public static createSlice<T>({
-        name,
-        initialState,
-        reducers,
-    }: {
-        name: string;
-        initialState: T;
-        reducers: Record<string, ReducerFunction<T>>;
-    }) {
-        return new Slice<T>({ name, initialState, reducers });
-    }
+//     public static createSlice<T>({
+//         name,
+//         initialState,
+//         reducers,
+//     }: {
+//         name: string;
+//         initialState: T;
+//         reducers: Record<string, ReducerFunction<T>>;
+//     }) {
+//         return new Slice<T>({ name, initialState, reducers });
+//     }
 
-    public get actions(): Record<string, (payload: any) => PayloadAction> {
-        const actions: Record<string, (payload: any) => PayloadAction> = {};
+//     public get actions(): Record<string, (payload: any) => PayloadAction> {
+//         const actions: Record<string, (payload: any) => PayloadAction> = {};
 
-        for (const key of Object.keys(this.reducers)) {
-            actions[key] = (payload: any) => ({
-                type: `${this.name}/${key}`,
-                payload,
-            });
-        }
+//         for (const key of Object.keys(this.reducers)) {
+//             actions[key] = (payload: any) => ({
+//                 type: `${this.name}/${key}`,
+//                 payload,
+//             });
+//         }
 
-        return actions;
-    }
+//         return actions;
+//     }
 
-    public get reducer(): ReducerFunction<T> {
-        return (state = this.initialState, action: PayloadAction) => {
-            const reducerFunction = this.reducers[action.type];
+//     public get reducer(): ReducerFunction<T> {
+//         return (state = this.initialState, action: PayloadAction) => {
+//             const reducerFunction = this.reducers[action.type];
 
-            if (reducerFunction) {
-                return reducerFunction(state, action);
-            }
+//             if (reducerFunction) {
+//                 return reducerFunction(state, action);
+//             }
 
-            return state;
-        };
-    }
+//             return state;
+//         };
+//     }
 
-    private constructor({
-        name,
-        initialState,
-        reducers,
-    }: {
-        name: string;
-        initialState: T;
-        reducers: Record<string, ReducerFunction<T>>;
-    }) {
-        this.name = name;
-        this.initialState = initialState;
-        this.reducers = reducers;
-    }
-}
-
-export type ReducerFunction<T> = (state: T, action: PayloadAction) => void;
+//     private constructor({
+//         name,
+//         initialState,
+//         reducers,
+//     }: {
+//         name: string;
+//         initialState: T;
+//         reducers: Record<string, ReducerFunction<T>>;
+//     }) {
+//         this.name = name;
+//         this.initialState = initialState;
+//         this.reducers = reducers;
+//     }
+// }

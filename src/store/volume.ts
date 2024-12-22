@@ -1,6 +1,7 @@
 import { RootState } from ".";
-import { PayloadAction } from "../@types/PayloadAction";
-import { Slice } from "../lib/state/Slice";
+// import { PayloadAction } from "../@types/PayloadAction";
+// import { Slice } from "../lib/state/Slice";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type VolumeState = {
     level: number;
@@ -12,11 +13,11 @@ const initialState: VolumeState = {
     mute: false,
 };
 
-export const volumeSlice = Slice.createSlice({
+export const volumeSlice = createSlice({
     name: "volume",
     initialState,
     reducers: {
-        setVolume: (state, action: PayloadAction<number>) => {
+        setVolume: (state: VolumeState, action: PayloadAction<number>) => {
             state.level = action.payload;
             console.log(`Volume level set to ${action.payload}`);
         },
