@@ -1,3 +1,4 @@
+import { VolumeState } from "../store/volume";
 import { Observable } from "./Observable";
 import { Observer } from "./Observer";
 
@@ -7,23 +8,29 @@ export class VolumeController implements Observable {
     private level: number;
     private mute: boolean;
 
-    private observers: Array<Observer> = [];
+    private observers: Array<Observer<VolumeState>> = [];
 
     public constructor() {
         this.ramper = context.services.get<Muse.TimelineService>("timeline");
         this.ramper.expired.listen(() => this.ramp());
     }
 
-    public removeObserver(observer: Observer): void {
+    public removeObserver(observer: Observer<VolumeState>): void {
         this.observers = this.observers.filter((o) => o !== observer);
     }
 
-    public addObserver(observer: Observer): void {
+    public addObserver(observer: Observer<VolumeState>): void {
+        if (this.observers.includes(observer)) {
+            return;
+        }
+
         this.observers.push(observer);
     }
 
     public notifyObservers(): void {
-        this.observers.forEach((o) => o.update());
+        this.observers.forEach((o) =>
+            o.update({ level: this.level, mute: this.mute }),
+        );
     }
 
     private ramp(): void {
