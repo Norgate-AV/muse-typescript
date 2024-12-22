@@ -17,4 +17,6 @@ export default defineConfig({
     clean: true,
     onSuccess: "pnpm ask",
     noExternal: [/(.*)/],
+    inject: ["polyfills.ts"],
+    replaceNodeEnv: true,
 });

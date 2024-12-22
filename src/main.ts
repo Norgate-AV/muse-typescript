@@ -7,6 +7,7 @@ function panic(message: string) {
 
 export function main() {
     try {
+        // const app = new App({ store }).init();
         const app = new App().init();
 
         if (!app) {
