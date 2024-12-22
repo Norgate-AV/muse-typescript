@@ -14,9 +14,7 @@ const PAGE_MAIN = 1;
 
 const PAGE_NAMES = ["Logo", "Main"];
 
-interface AppOptions extends MuseControlSystemOptions {
-    // store?: Store<State>;
-}
+interface AppOptions extends MuseControlSystemOptions {}
 
 export class App extends MuseControlSystem {
     private panel: Muse.ICSPDriver;
@@ -43,7 +41,7 @@ export class App extends MuseControlSystem {
         super(options);
     }
 
-    public init(): this {
+    public override init(): this {
         this.panel = context.devices.get<Muse.ICSPDriver>("AMX-10001");
         this.panel.online(() => this.onPanelOnlineEvent());
 

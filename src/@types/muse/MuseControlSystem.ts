@@ -1,13 +1,20 @@
 import { name, plugins } from "../../../program.json";
+import { Store } from "../../lib/state/Store";
+import { RootState } from "../../store";
 
-export interface MuseControlSystemOptions {}
+export interface MuseControlSystemOptions {
+    store?: Store<RootState>;
+}
 
 export abstract class MuseControlSystem {
+    public readonly store: Store<RootState> = null;
     public services = {
         platform: context.services.get<Muse.PlatformService>("platform"),
     };
 
     public constructor(options: MuseControlSystemOptions) {
+        this.store = options.store;
+
         const System = Java.type<typeof java.lang.System>("java.lang.System");
 
         System.setProperty(
@@ -35,6 +42,8 @@ export abstract class MuseControlSystem {
             console.error(`Error loding plugins: ${error}`);
         }
     }
+
+    public abstract init(): this;
 }
 
 export default MuseControlSystem;
