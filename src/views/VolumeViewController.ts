@@ -1,7 +1,7 @@
 import { VolumeState } from "../store/volume";
 import { Observer } from "../@types/Observer";
 import SNAPI from "../lib/constants/SNAPI";
-import { VolumeController } from "./VolumeController";
+import { VolumeController } from "../controllers/VolumeController";
 
 export class VolumeViewController implements Observer<VolumeState> {
     private panel: Muse.ICSPDriver;

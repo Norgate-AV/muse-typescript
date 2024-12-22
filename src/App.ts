@@ -7,7 +7,7 @@ import { Channels, sources } from "./ui";
 import type { Source } from "./models/Source";
 import { version } from "../program.json";
 import { VolumeController } from "./controllers/VolumeController";
-import { VolumeViewController } from "./controllers/VolumeViewController";
+import { VolumeViewController } from "./views/VolumeViewController";
 
 const PAGE_LOGO = 0;
 const PAGE_MAIN = 1;
