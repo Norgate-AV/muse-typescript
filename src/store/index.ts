@@ -1,10 +1,10 @@
-import { Store } from "./Store";
+import { Store } from "../lib/Store";
 
-type State = {
+export type State = {
     count: number;
 };
 
-const store = Store.createStore<State>({
+const store = Store.createStore({
     reducer: {},
 });
 

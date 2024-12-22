@@ -8,17 +8,23 @@ import type { Source } from "./lib";
 import { version } from "../program.json";
 import { VolumeController } from "./lib/VolumeController";
 import { VolumeUIController } from "./lib/VolumeUIController";
+import type { Store } from "./lib/Store";
+import { State } from "./store";
 
 const PAGE_LOGO = 0;
 const PAGE_MAIN = 1;
 
 const PAGE_NAMES = ["Logo", "Main"];
 
-interface AppOptions extends MuseControlSystemOptions {}
+interface AppOptions extends MuseControlSystemOptions {
+    store?: Store<State>;
+}
 
 export class App extends MuseControlSystem {
     private panel: Muse.ICSPDriver;
     private feedback: Muse.TimelineService;
+
+    private store: Store<State>;
 
     private selectedSource: Source = null;
     private currentSource: Source = null;
@@ -39,6 +45,8 @@ export class App extends MuseControlSystem {
 
     public constructor(options: AppOptions = {}) {
         super(options);
+
+        this.store = options.store;
     }
 
     public init(): this {

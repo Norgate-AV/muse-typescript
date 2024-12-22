@@ -1,4 +1,5 @@
 import App from "./App";
+import store from "./store";
 
 function panic(message: string) {
     throw new Error(message);
@@ -6,7 +7,7 @@ function panic(message: string) {
 
 export function main() {
     try {
-        const app = new App().init();
+        const app = new App({ store }).init();
 
         if (!app) {
             throw new Error("App failed to initialize");
