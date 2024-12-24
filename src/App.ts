@@ -8,7 +8,6 @@ import type { Source } from "./models/Source";
 import { version } from "../program.json";
 import { VolumeController } from "./controllers/VolumeController";
 import { VolumeViewController } from "./views/VolumeViewController";
-// import store from "./store";
 
 const PAGE_LOGO = 0;
 const PAGE_MAIN = 1;
@@ -17,7 +16,7 @@ const PAGE_NAMES = ["Logo", "Main"];
 
 interface AppOptions extends MuseControlSystemOptions {}
 
-export class App extends MuseControlSystem {
+class App extends MuseControlSystem {
     private panel: Muse.ICSPDriver;
     private feedback: Muse.TimelineService;
 
@@ -31,8 +30,6 @@ export class App extends MuseControlSystem {
     private display: any = {};
 
     private currentAvMute: boolean = false;
-
-    // private store = store;
 
     // private currentMute: boolean = false;
     // private currentVolume: number = 127;
