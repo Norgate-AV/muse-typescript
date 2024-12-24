@@ -30,25 +30,79 @@ if (!globalThis.console) {
     globalThis.console = {};
 
     // @ts-ignore
-    globalThis.console.log = context.log;
+    globalThis.console.log = function (value: any) {
+        if (typeof value === "object") {
+            // @ts-ignore
+            context.log(JSON.stringify(value, null, 2));
+            return;
+        }
+
+        // @ts-ignore
+        context.log(value);
+    };
 
     // @ts-ignore
     globalThis.console.log.level = context.log.level;
 
     // @ts-ignore
-    globalThis.console.trace = context.log.trace;
+    globalThis.console.trace = function (value: any) {
+        if (typeof value === "object") {
+            // @ts-ignore
+            context.log.trace(JSON.stringify(value, null, 2));
+            return;
+        }
+
+        // @ts-ignore
+        context.log.trace(value);
+    };
 
     // @ts-ignore
-    globalThis.console.debug = context.log.debug;
+    globalThis.console.debug = function (value: any) {
+        if (typeof value === "object") {
+            // @ts-ignore
+            context.log.debug(JSON.stringify(value, null, 2));
+            return;
+        }
+
+        // @ts-ignore
+        context.log.debug(value);
+    };
 
     // @ts-ignore
-    globalThis.console.info = context.log.info;
+    globalThis.console.info = function (value: any) {
+        if (typeof value === "object") {
+            // @ts-ignore
+            context.log.info(JSON.stringify(value, null, 2));
+            return;
+        }
+
+        // @ts-ignore
+        context.log.info(value);
+    };
 
     // @ts-ignore
-    globalThis.console.warn = context.log.warn;
+    globalThis.console.warn = function (value: any) {
+        if (typeof value === "object") {
+            // @ts-ignore
+            context.log.warn(JSON.stringify(value, null, 2));
+            return;
+        }
+
+        // @ts-ignore
+        context.log.warn(value);
+    };
 
     // @ts-ignore
-    globalThis.console.error = context.log.error;
+    globalThis.console.error = function (value: any) {
+        if (typeof value === "object") {
+            // @ts-ignore
+            context.log.error(JSON.stringify(value, null, 2));
+            return;
+        }
+
+        // @ts-ignore
+        context.log.error(value);
+    };
 }
 
 if (!globalThis.process) {
@@ -57,4 +111,93 @@ if (!globalThis.process) {
 
     // @ts-ignore
     globalThis.process.env = {};
+}
+
+// @ts-ignore
+var executor = java.util.concurrent.Executors.newScheduledThreadPool(1);
+// @ts-ignore
+var timeouts = new java.util.HashMap();
+
+if (!globalThis.setTimeout) {
+    // @ts-ignore
+    globalThis.setTimeout = function (
+        callback: Function,
+        delay: number,
+        ...args: any[]
+    ) {
+        // @ts-ignore
+        var id = java.util.UUID.randomUUID().toString();
+        // @ts-ignore
+        var runnable = new java.lang.Runnable({
+            run: function () {
+                try {
+                    callback.apply(null, args);
+                } finally {
+                    timeouts.remove(id);
+                }
+            },
+        });
+
+        var task = executor.schedule(
+            runnable,
+            delay,
+            // @ts-ignore
+            java.util.concurrent.TimeUnit.MILLISECONDS,
+        );
+
+        timeouts.put(id, task);
+        return id;
+    };
+}
+
+if (!globalThis.clearTimeout) {
+    // @ts-ignore
+    globalThis.clearTimeout = function (id: string) {
+        var task = timeouts.get(id);
+
+        if (!task) {
+            return;
+        }
+
+        task.cancel(false);
+        timeouts.remove(id);
+    };
+}
+
+if (!globalThis.setInterval) {
+    // @ts-ignore
+    globalThis.setInterval = function (
+        callback: Function,
+        delay: number,
+        ...args: any[]
+    ) {
+        // @ts-ignore
+        var id = java.util.UUID.randomUUID().toString();
+        // @ts-ignore
+        var runnable = new java.lang.Runnable({
+            run: function () {
+                try {
+                    callback.apply(null, args);
+                } finally {
+                    setTimeout(runnable, delay);
+                }
+            },
+        });
+
+        var task = executor.scheduleAtFixedRate(
+            runnable,
+            delay,
+            delay,
+            // @ts-ignore
+            java.util.concurrent.TimeUnit.MILLISECONDS,
+        );
+
+        timeouts.put(id, task);
+        return id;
+    };
+}
+
+if (!globalThis.clearInterval) {
+    // @ts-ignore
+    globalThis.clearInterval = globalThis.clearTimeout;
 }

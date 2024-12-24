@@ -1,5 +1,5 @@
 import App from "./App";
-import store from "./store";
+import store from "./state/store";
 
 function panic(message: string) {
     throw new Error(message);

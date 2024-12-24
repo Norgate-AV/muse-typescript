@@ -1,5 +1,6 @@
+import { clear } from "console";
 import { name, plugins } from "../../../program.json";
-import { RootState } from "../../store";
+import { RootState } from "../../state/store";
 import type { Store } from "redux";
 
 export interface MuseControlSystemOptions {
@@ -11,6 +12,7 @@ export abstract class MuseControlSystem {
     public readonly services = {
         platform: context.services.get<Muse.PlatformService>("platform"),
     };
+    public interval: string = "";
 
     public constructor(options: MuseControlSystemOptions) {
         this.store = options.store;
@@ -26,6 +28,29 @@ export abstract class MuseControlSystem {
         console.log(`Platform Model: ${this.services.platform.model}`);
         console.log(`Platform Serial: ${this.services.platform.serialnumber}`);
         console.log(`Platform Version: ${this.services.platform.version}`);
+
+        console.log(`Typeof Platform: ${typeof this.services.platform}`);
+        // console.log(this.services.platform);
+
+        this.store.subscribe(() => console.log(this.store.getState()));
+
+        setTimeout(
+            (args) => {
+                console.log("After timeout..." + args);
+                clearInterval(this.interval);
+            },
+            30000,
+            [1, 2, 3],
+        );
+
+        // @ts-ignore
+        this.interval = setInterval(
+            (args) => {
+                console.log("Every second..." + args);
+            },
+            1000,
+            [1, 2, 3],
+        );
 
         if (!plugins.length) {
             return;

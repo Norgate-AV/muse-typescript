@@ -1,4 +1,4 @@
-import { VolumeState } from "../store/volume";
+import { VolumeState } from "../state/reducers/volume";
 import { Observable } from "../@types/Observable";
 import { Observer } from "../@types/Observer";
 

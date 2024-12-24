@@ -180,7 +180,7 @@ export class App extends MuseControlSystem {
         // console.log(
         //     `Current state: ${JSON.stringify(store.getState(), null, 4)}`,
         // );
-        // store.dispatch({ type: "SET_VOLUME", payload: 127 });
+        this.store.dispatch({ type: "SET_VOLUME", payload: 127 });
         // console.log(
         //     `Current state: ${JSON.stringify(store.getState(), null, 4)}`,
         // );

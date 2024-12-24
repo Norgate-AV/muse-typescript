@@ -1,4 +1,4 @@
-import { VolumeState } from "../store/volume";
+import { VolumeState } from "../state/reducers/volume";
 import { Observer } from "../@types/Observer";
 import SNAPI from "../lib/constants/SNAPI";
 import { VolumeController } from "../controllers/VolumeController";

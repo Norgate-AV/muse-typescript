@@ -1,6 +1,6 @@
 import { createStore } from "redux";
 // import logger from "redux-logger";
-import volumeReducer from "./volume";
+import reducer from "../reducers";
 
 // const store = createStore({
 //     reducer: {
@@ -12,10 +12,9 @@ import volumeReducer from "./volume";
 //             serializableCheck: false,
 //         }).concat(logger),
 // });
+const store = createStore(reducer);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-
-const store = createStore(volumeReducer);
 
 export default store;
