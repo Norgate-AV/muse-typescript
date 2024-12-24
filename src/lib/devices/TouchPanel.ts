@@ -43,7 +43,7 @@ class TouchPanel {
             this.device.online(() => this.onlineEvent());
             this.device.offline(() => this.offlineEvent());
         } catch (error: unknown) {
-            context.log.error(`Failed to register Touch Panel: ${error}`);
+            console.error(`Failed to register Touch Panel: ${error}`);
             return DeviceRegistrationStatus.Failure;
         }
 
@@ -66,13 +66,13 @@ class TouchPanel {
     }
 
     private onlineEvent(): void {
-        context.log.info(`Touch Panel ${this.id} Online`);
+        console.info(`Touch Panel ${this.id} Online`);
         this.onOnlineEvent.forEach((callback) => callback());
         this.setupListeners();
     }
 
     private offlineEvent(): void {
-        context.log.info(`Touch Panel ${this.id} Offline`);
+        console.info(`Touch Panel ${this.id} Offline`);
         this.onOfflineEvent.forEach((callback) => callback());
     }
 

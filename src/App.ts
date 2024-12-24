@@ -8,7 +8,7 @@ import type { Source } from "./models/Source";
 import { version } from "../program.json";
 import { VolumeController } from "./controllers/VolumeController";
 import { VolumeViewController } from "./views/VolumeViewController";
-import store from "./store";
+// import store from "./store";
 
 const PAGE_LOGO = 0;
 const PAGE_MAIN = 1;
@@ -61,8 +61,6 @@ export class App extends MuseControlSystem {
             panel: this.panel,
             controller: this.volumeController,
         });
-
-        console.log(`Current state: ${store.getState()}`);
 
         return this;
     }
@@ -179,6 +177,13 @@ export class App extends MuseControlSystem {
 
         // this.updateVolume(this.currentVolume);
         this.panelRefresh();
+        // console.log(
+        //     `Current state: ${JSON.stringify(store.getState(), null, 4)}`,
+        // );
+        // store.dispatch({ type: "SET_VOLUME", payload: 127 });
+        // console.log(
+        //     `Current state: ${JSON.stringify(store.getState(), null, 4)}`,
+        // );
     }
 
     private panelRefresh(): void {
