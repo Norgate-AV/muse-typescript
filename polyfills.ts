@@ -272,3 +272,17 @@ if (!globalThis.fetch) {
         });
     };
 }
+
+if (!globalThis.toJSObject) {
+    globalThis.toJSObject = function (value: any) {
+        var result = {};
+        var fields = value.getClass().getDeclaredFields();
+        for (var i = 0; i < fields.length; i++) {
+            var field = fields[i];
+            field.setAccessible(true);
+            result[field.getName()] = field.get(value);
+        }
+
+        return result;
+    };
+}
