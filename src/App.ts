@@ -62,8 +62,7 @@ export class App extends MuseControlSystem {
             controller: this.volumeController,
         });
 
-        const response = await fetch("https://ifconfig.io");
-        console.log(response.json());
+        // console.log((await fetch("https://ifconfig.io")).json());
 
         return this;
     }
