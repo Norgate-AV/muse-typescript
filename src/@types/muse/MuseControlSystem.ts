@@ -1,4 +1,3 @@
-import { clear } from "console";
 import { name, plugins } from "../../../program.json";
 import { RootState } from "../../state/store";
 import type { Store } from "redux";
@@ -34,24 +33,6 @@ export abstract class MuseControlSystem {
 
         this.store.subscribe(() => console.log(this.store.getState()));
 
-        setTimeout(
-            (args) => {
-                console.log("After timeout..." + args);
-                clearInterval(this.interval);
-            },
-            30000,
-            [1, 2, 3],
-        );
-
-        // @ts-ignore
-        this.interval = setInterval(
-            (args) => {
-                console.log("Every second..." + args);
-            },
-            1000,
-            [1, 2, 3],
-        );
-
         if (!plugins.length) {
             return;
         }
@@ -68,7 +49,7 @@ export abstract class MuseControlSystem {
         }
     }
 
-    public abstract init(): this;
+    public abstract init(): Promise<this>;
 }
 
 export default MuseControlSystem;

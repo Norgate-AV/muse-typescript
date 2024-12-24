@@ -44,7 +44,7 @@ export class App extends MuseControlSystem {
         super(options);
     }
 
-    public override init(): this {
+    public override async init(): Promise<this> {
         this.panel = context.devices.get<Muse.ICSPDriver>("AMX-10001");
         this.panel.online(() => this.onPanelOnlineEvent());
 
@@ -61,6 +61,9 @@ export class App extends MuseControlSystem {
             panel: this.panel,
             controller: this.volumeController,
         });
+
+        const response = await fetch("https://ifconfig.io");
+        console.log(response.json());
 
         return this;
     }

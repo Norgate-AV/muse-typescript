@@ -201,3 +201,74 @@ if (!globalThis.clearInterval) {
     // @ts-ignore
     globalThis.clearInterval = globalThis.clearTimeout;
 }
+
+if (!globalThis.fetch) {
+    // @ts-ignore
+    globalThis.fetch = function (url: string, options: any) {
+        options = options || {};
+
+        // @ts-ignore
+        var client = java.net.http.HttpClient.newHttpClient();
+
+        // @ts-ignore
+        var builder = java.net.http.HttpRequest.newBuilder()
+            // @ts-ignore
+            .uri(java.net.URI.create(url))
+            // @ts-ignore
+            .timeout(java.time.Duration.ofSeconds(10));
+
+        var method = options.method || "GET";
+        builder.method(
+            method.toUpperCase(),
+            options.body
+                ? // @ts-ignore
+                  java.net.http.HttpRequest.BodyPublishers.ofString(
+                      options.body,
+                  )
+                : // @ts-ignore
+                  java.net.http.HttpRequest.BodyPublishers.noBody(),
+        );
+
+        if (options.headers) {
+            for (var key in options.headers) {
+                builder.header(key, options.headers[key]);
+            }
+        }
+
+        var request = builder.build();
+
+        return new Promise(function (resolve, reject) {
+            try {
+                // @ts-ignore
+                client
+                    .sendAsync(
+                        request,
+                        // @ts-ignore
+                        java.net.http.HttpResponse.BodyHandlers.ofString(),
+                    )
+                    .thenAccept(function (response) {
+                        resolve({
+                            ok:
+                                response.statusCode() >= 200 &&
+                                response.statusCode() < 300,
+                            status: response.statusCode(),
+                            statusText:
+                                response.statusCode() === 200 ? "OK" : "Error",
+                            text: function () {
+                                return response.body();
+                            },
+                            json: function () {
+                                return JSON.parse(response.body());
+                            },
+                        });
+                    })
+                    .exceptionally(function (error) {
+                        reject(error);
+                        return null;
+                    });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    };
+}
