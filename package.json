@@ -15,8 +15,12 @@
         "prebuild": "pnpm lint",
         "build": "tsup",
         "lint": "tsc --noEmit",
-        "ask": "bash ./scripts/ask.sh",
-        "upload": "bash ./scripts/upload.sh"
+        "ask": "run-script-os",
+        "ask:win32": "pwsh ./scripts/ask.ps1",
+        "ask:darwin:linux": "bash ./scripts/ask.sh",
+        "upload": "run-script-os",
+        "upload:win32": "pwsh ./scripts/upload.ps1",
+        "upload:darwin:linux": "bash ./scripts/upload.sh"
     },
     "devDependencies": {
         "@commitlint/cli": "^19.6.1",
@@ -27,6 +31,7 @@
         "@types/node": "^22.10.2",
         "husky": "^9.1.7",
         "lint-staged": "^15.2.11",
+        "run-script-os": "^1.1.6",
         "terser": "^5.37.0",
         "tsup": "^8.3.5",
         "typescript": "^5.7.2"
