@@ -202,6 +202,18 @@ if (!globalThis.clearInterval) {
     globalThis.clearInterval = globalThis.clearTimeout;
 }
 
+if (!globalThis.setImmediate) {
+    // @ts-ignore
+    globalThis.setImmediate = function (callback: Function, ...args: any[]) {
+        return setTimeout(callback, 0, ...args);
+    };
+}
+
+if (!globalThis.clearImmediate) {
+    // @ts-ignore
+    globalThis.clearImmediate = globalThis.clearTimeout;
+}
+
 if (!globalThis.fetch) {
     // @ts-ignore
     globalThis.fetch = function (url: string, options: any) {
