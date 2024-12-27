@@ -1,24 +1,23 @@
-// // import { UIButtonProperties } from "./UIButtonProperties";
+// import { UIButtonProperties } from "./UIButtonProperties";
 
-// // const defaultProps: UIButtonProperties = {
-// //     general: { type: "general", disabled: false, hidden: false },
-// //     programming: {
-// //         feedback: "none",
-// //         address: { port: 1 },
-// //         channel: { port: 1 },
-// //         level: { port: 1 },
-// //     },
-// //     state: { on: false, off: false },
-// // };
+import { UIObject } from "./UIObject";
 
-// export class UIButton {
-//     public props: UIButtonProperties;
+const options = {
+    general: { type: "general", disabled: false, hidden: false },
+    programming: {
+        feedback: "none",
+        address: { port: 1 },
+        channel: { port: 1 },
+        level: { port: 1 },
+    },
+};
 
-//     constructor(props: UIButtonProperties = defaultProps) {
-//         this.props = props;
-//     }
+export class UIButton extends UIObject {
+    constructor(options) {
+        super(options);
+    }
 
-//     public static create(props: UIButtonProperties = defaultProps): UIButton {
-//         return new UIButton(props);
-//     }
-// }
+    protected onChangeEvent(event: any): void {
+        throw new Error("Method not implemented.");
+    }
+}
