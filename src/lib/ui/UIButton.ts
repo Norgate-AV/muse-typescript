@@ -1,19 +1,21 @@
 // import { UIButtonProperties } from "./UIButtonProperties";
 
-import { UIObject } from "./UIObject";
+import { UIObject, UIObjectOptions } from "./UIObject";
 
-const options = {
-    general: { type: "general", disabled: false, hidden: false },
-    programming: {
-        feedback: "none",
-        address: { port: 1 },
-        channel: { port: 1 },
-        level: { port: 1 },
-    },
-};
+// const options = {
+//     general: { type: "general", disabled: false, hidden: false },
+//     programming: {
+//         feedback: "none",
+//         address: { port: 1 },
+//         channel: { port: 1 },
+//         level: { port: 1 },
+//     },
+// };
+
+export interface UIButtonOptions extends UIObjectOptions {}
 
 export class UIButton extends UIObject {
-    constructor(options) {
+    constructor(options: UIButtonOptions) {
         super(options);
     }
 

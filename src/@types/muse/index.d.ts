@@ -1,9 +1,9 @@
 export {};
 
 declare global {
-    var MuseControlSystem: typeof import("./MuseControlSystem").MuseControlSystem;
+    // var MuseControlSystem: typeof import("./MuseControlSystem").MuseControlSystem;
 
-    interface MuseControlSystemOptions {}
+    // interface MuseControlSystemOptions {}
 
     var context: Muse.Context;
 
@@ -156,10 +156,10 @@ declare global {
 
         type ICSPPort = {
             button: Array<Readonly<ICSPButton>>;
-            channel: Array<boolean>;
+            channel: Array<boolean & ICSPChannel>;
             command: (callback: ICSPEventCallback) => void;
             custom: (callback: ICSPCustomEventCallback) => void;
-            level: Array<number>;
+            level: Array<number & ICSPLevel>;
             send_command: (data: string) => void;
             send_string: (data: string) => void;
             string: (callback: ICSPEventCallback) => void;

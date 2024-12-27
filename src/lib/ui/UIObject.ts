@@ -1,4 +1,3 @@
-import { UICode } from "./UICode";
 import { UIGeneralOptions } from "./UIGeneralOptions";
 import { UIProgrammingOptions } from "./UIProgrammingOptions";
 import { UIStateOptions } from "./UIStateOptions";
@@ -51,4 +50,35 @@ export abstract class UIObject implements Disposable {
     }
 
     protected abstract onChangeEvent(event: any): void;
+
+    protected subscribe(): void {
+        this.subscribeToChannel();
+        this.subscribeToLevel();
+    }
+
+    private subscribeToChannel(): void {
+        const { device } = this;
+        const { port, code } = this.programming.channel;
+
+        if (!port || !code) {
+            return;
+        }
+
+        device.port[port].button[code].watch((event) =>
+            this.onChangeEvent(event),
+        );
+    }
+
+    private subscribeToLevel(): void {
+        const { device } = this;
+        const { port, code } = this.programming.level;
+
+        if (!port || !code) {
+            return;
+        }
+
+        device.port[port].level[code].watch((event) =>
+            this.onChangeEvent(event),
+        );
+    }
 }

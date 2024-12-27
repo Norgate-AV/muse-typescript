@@ -34,8 +34,8 @@ class App extends MuseControlSystem {
     // private currentMute: boolean = false;
     // private currentVolume: number = 127;
     // private volumeRamper: Muse.TimelineService;
-    private volumeController: VolumeController;
-    private volumeView: VolumeView;
+    // private volumeController: VolumeController;
+    // private volumeView: VolumeView;
 
     public constructor(options: AppOptions = {}) {
         super(options);
@@ -53,10 +53,10 @@ class App extends MuseControlSystem {
         //     context.services.get<Muse.TimelineService>("timeline");
         // this.volumeRamper.expired.listen(() => this.rampVolume());
 
-        this.volumeController = new VolumeController();
-        this.volumeView = new VolumeView({
-            panel: this.panel,
-        });
+        // this.volumeController = new VolumeController();
+        // this.volumeView = new VolumeView({
+        //     panel: this.panel,
+        // });
 
         // console.log((await fetch("https://ifconfig.io")).json());
 
@@ -64,12 +64,11 @@ class App extends MuseControlSystem {
     }
 
     private onFeedbackEvent(): void {
-        sources.forEach((source) => {
-            this.panel.port[1].channel[source.channel] =
-                this.selectedSource === source;
-        });
-
-        this.panel.port[1].channel[Channels.AV_MUTE] = this.currentAvMute;
+        // sources.forEach((source) => {
+        //     this.panel.port[1].channel[source.channel] =
+        //         this.selectedSource === source;
+        // });
+        // this.panel.port[1].channel[Channels.AV_MUTE] = this.currentAvMute;
         // this.panel.port[2].channel[Channels.VOLUME.VOL_MUTE] = this.currentMute;
     }
 
