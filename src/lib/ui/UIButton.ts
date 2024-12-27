@@ -1,15 +1,15 @@
-// import { UIButtonProperties } from "./UIButtonProperties";
+// // import { UIButtonProperties } from "./UIButtonProperties";
 
-// const defaultProps: UIButtonProperties = {
-//     general: { type: "general", disabled: false, hidden: false },
-//     programming: {
-//         feedback: "none",
-//         address: { port: 1 },
-//         channel: { port: 1 },
-//         level: { port: 1 },
-//     },
-//     state: { on: false, off: false },
-// };
+// // const defaultProps: UIButtonProperties = {
+// //     general: { type: "general", disabled: false, hidden: false },
+// //     programming: {
+// //         feedback: "none",
+// //         address: { port: 1 },
+// //         channel: { port: 1 },
+// //         level: { port: 1 },
+// //     },
+// //     state: { on: false, off: false },
+// // };
 
 // export class UIButton {
 //     public props: UIButtonProperties;

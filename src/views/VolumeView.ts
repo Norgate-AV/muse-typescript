@@ -1,31 +1,31 @@
-import { VolumeState } from "../state/reducers/volume";
-import { Observer } from "../@types/Observer";
 import SNAPI from "../lib/constants/SNAPI";
-import { VolumeController } from "../controllers/VolumeController";
+import { UIViewController } from "../lib/ui/UIViewController";
 
-export class VolumeViewController implements Observer<VolumeState> {
-    private panel: Muse.ICSPDriver;
+export class VolumeView extends UIViewController {
     private port: number;
-    private controller: VolumeController;
+
+    private volumeUpButton: any;
+    private volumeDownButton: any;
+    private muteButton: any;
+    private volumeLevel: any;
 
     public constructor({
         panel,
         port = 1,
-        controller,
     }: {
         panel: Muse.ICSPDriver;
         port?: number;
-        controller: VolumeController;
     }) {
-        this.panel = panel;
+        super({ panel });
         this.port = port;
-        this.controller = controller;
 
         this.subscribe();
     }
 
+    private updateVolumeLevel(level: number): void {}
+
     private subscribe(): void {
-        const { panel, port, controller } = this;
+        const { panel, port } = this;
 
         panel.online(() => this.panelOnline());
         panel.offline(() => this.panelOffline());
@@ -40,11 +40,11 @@ export class VolumeViewController implements Observer<VolumeState> {
             this.buttonEvent(event),
         );
 
-        controller.addObserver(this);
+        // controller.addObserver(this);
     }
 
     private panelOnline(): void {
-        this.panel.port[this.port].channel[1] = this.controller.getMute();
+        // this.panel.port[this.port].channel[1] = this.controller.getMute();
     }
 
     private panelOffline(): void {

@@ -1,21 +1,24 @@
-import { UIPortCodePair } from "./UIPortCodePair";
+import { UICode } from "./UICode";
+import { UIGeneralOptions } from "./UIGeneralOptions";
+import { UIProgrammingOptions } from "./UIProgrammingOptions";
+import { UIStateOptions } from "./UIStateOptions";
+
+export interface UIObjectOptions {
+    device: Muse.ICSPDriver;
+}
 
 export abstract class UIObject implements Disposable {
-    private name: string;
     private disposed: boolean = false;
     private registered: boolean = false;
 
-    private type: string = "button";
-    private id: UIPortCodePair;
+    private readonly device: Muse.ICSPDriver;
 
-    private readonly _device: Muse.ICSPDriver | null = null;
+    protected general: UIGeneralOptions;
+    protected programming: UIProgrammingOptions;
+    protected state: UIStateOptions;
 
-    public get Device(): Muse.ICSPDriver {
-        return this._device;
-    }
-
-    protected constructor(device: Muse.ICSPDriver) {
-        this._device = device;
+    public constructor(options: UIObjectOptions) {
+        this.device = options.device;
     }
 
     [Symbol.dispose](): void {

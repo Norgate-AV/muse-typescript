@@ -1,4 +1,4 @@
-export type UIPortCodePair = {
+export type UICode = {
     port?: number;
     code?: number;
 };
