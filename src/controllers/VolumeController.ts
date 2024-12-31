@@ -11,7 +11,7 @@ export class VolumeController implements Observable {
     private observers: Array<Observer<VolumeState>> = [];
 
     public constructor() {
-        this.ramper = context.services.get<Muse.TimelineService>("timeline");
+        this.ramper = context.services.get("timeline");
         this.ramper.expired.listen(() => this.ramp());
     }
 

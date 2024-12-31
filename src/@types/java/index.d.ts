@@ -14,7 +14,7 @@ declare global {
     namespace Java {
         function type<T = any>(t: string): T;
         function from<T = any>(list: java.util.List<T>): Array<T>;
-        // function extend<T = any>(obj: T, ...args: any[]): T;
+        function extend<T = any>(obj: T, ...args: any[]): T;
         function to(array: Array<any>, type: string): Array<any>;
     }
 

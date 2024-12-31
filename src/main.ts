@@ -1,7 +1,7 @@
 import App from "./App";
 import store from "./state/store";
 
-function panic(message: string) {
+function panic(message: string): never {
     throw new Error(message);
 }
 

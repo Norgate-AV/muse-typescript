@@ -14,7 +14,7 @@ export class VolumeView extends UIViewController {
         panel,
         port = 1,
     }: {
-        panel: Muse.ICSPDriver;
+        panel: Muse.ICSP.Driver;
         port?: number;
     }) {
         super({ panel });

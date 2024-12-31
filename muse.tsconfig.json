@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "strict": false,
+        "esModuleInterop": false,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "noUncheckedIndexedAccess": true,
+        "resolveJsonModule": true,
+        "typeRoots": ["node_modules/@types"],
+        "allowSyntheticDefaultImports": true,
+        "noEmit": true,
+        "allowJs": true
+    },
+    "include": ["index.d.ts", "polyfills.ts"]
+}

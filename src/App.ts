@@ -1,7 +1,3 @@
-import {
-    MuseControlSystem,
-    MuseControlSystemOptions,
-} from "./@types/muse/MuseControlSystem";
 import { TouchPanelCommand, getConfig } from "./lib";
 import { Channels, sources } from "./ui";
 import type { Source } from "./models/Source";
@@ -17,8 +13,11 @@ const PAGE_NAMES = ["Logo", "Main"];
 interface AppOptions extends MuseControlSystemOptions {}
 
 class App extends MuseControlSystem {
-    private panel: Muse.ICSPDriver;
+    private panel: Muse.ICSP.Driver;
     private feedback: Muse.TimelineService;
+
+    private exbCom2: Muse.ICSP.Driver;
+    private exbMp1: Muse.ICSP.Driver;
 
     private selectedSource: Source = null;
     private currentSource: Source = null;
@@ -42,10 +41,16 @@ class App extends MuseControlSystem {
     }
 
     public override async init(): Promise<this> {
-        this.panel = context.devices.get<Muse.ICSPDriver>("AMX-10001");
+        this.panel = context.devices.get("AMX-10001");
         this.panel.online(() => this.onPanelOnlineEvent());
 
-        this.feedback = context.services.get<Muse.TimelineService>("timeline");
+        this.exbCom2 = context.devices.get("AMX-6001");
+        this.exbCom2.online(() => this.onDeviceOnlineEvent("AMX-6001"));
+
+        this.exbMp1 = context.devices.get("AMX-7001");
+        this.exbMp1.online(() => this.onDeviceOnlineEvent("AMX-7001"));
+
+        this.feedback = context.services.get("timeline");
         this.feedback.expired.listen(() => this.onFeedbackEvent());
         this.feedback.start([100], false, -1);
 
@@ -61,6 +66,10 @@ class App extends MuseControlSystem {
         // console.log((await fetch("https://ifconfig.io")).json());
 
         return this;
+    }
+
+    private onDeviceOnlineEvent(id: string): void {
+        console.log(`Device Online: ${id}`);
     }
 
     private onFeedbackEvent(): void {
@@ -157,7 +166,6 @@ class App extends MuseControlSystem {
         this.panel.port[1].send_command(
             TouchPanelCommand.text({ address: 1, text: programInfo.name }),
         );
-        this.panel.port[1].send_command(`^TXT-100,0,${programInfo.getInfo()}`);
         this.panel.port[1].send_command(
             TouchPanelCommand.text({
                 address: 100,
@@ -177,7 +185,7 @@ class App extends MuseControlSystem {
         // console.log(
         //     `Current state: ${JSON.stringify(store.getState(), null, 4)}`,
         // );
-        this.store.dispatch({ type: "SET_VOLUME", payload: 127 });
+        // this.store.dispatch({ type: "SET_VOLUME", payload: 127 });
         // console.log(
         //     `Current state: ${JSON.stringify(store.getState(), null, 4)}`,
         // );

@@ -3,14 +3,14 @@ import { UIProgrammingOptions } from "./UIProgrammingOptions";
 import { UIStateOptions } from "./UIStateOptions";
 
 export interface UIObjectOptions {
-    device: Muse.ICSPDriver;
+    device: Muse.ICSP.Driver;
 }
 
 export abstract class UIObject implements Disposable {
     private disposed: boolean = false;
     private registered: boolean = false;
 
-    private readonly device: Muse.ICSPDriver;
+    private readonly device: Muse.ICSP.Driver;
 
     protected general: UIGeneralOptions;
     protected programming: UIProgrammingOptions;

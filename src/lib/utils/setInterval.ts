@@ -13,7 +13,7 @@ export function setInterval(
     // });
     // thread.start();
 
-    const timeline = context.services.get<Muse.TimelineService>("timeline");
+    const timeline = context.services.get("timeline");
 
     timeline.expired.listen(() => {
         callback(...args);

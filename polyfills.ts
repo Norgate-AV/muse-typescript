@@ -25,6 +25,8 @@ import "core-js/es/typed-array";
 import "core-js/es/weak-map";
 import "core-js/es/weak-set";
 
+// import { MuseControlSystem } from "./src/@types/muse/MuseControlSystem";
+
 if (!globalThis.console) {
     // @ts-ignore
     globalThis.console = {};
@@ -297,4 +299,8 @@ if (!globalThis.toJSObject) {
 
         return result;
     };
+}
+
+if (!globalThis.MuseControlSystem) {
+    (globalThis as any).MuseControlSystem = MuseControlSystem;
 }

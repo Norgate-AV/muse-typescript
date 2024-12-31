@@ -91,7 +91,7 @@ export class Enova implements Switcher {
         this.engine.create();
     }
 
-    private tick(_: Muse.TimelineEvent): void {
+    private tick(_: Muse.Event<Muse.TimelineEvent>): void {
         if (this.busy) {
             return;
         }

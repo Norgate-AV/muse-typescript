@@ -9,15 +9,16 @@ class TouchPanel {
     private readonly _id: string;
     private readonly _port: number;
 
-    private device: Muse.ICSPDriver;
+    private device: Muse.ICSP.Driver;
 
     // Events
-    public onOnlineEvent: Array<Muse.ICSPOnlineOfflineCallback> = [];
-    public onOfflineEvent: Array<Muse.ICSPOnlineOfflineCallback> = [];
-    public onButtonEvent: Array<Muse.ICSPParameterUpdateCallback<boolean>> = [];
-    public onChannelEvent: Array<Muse.ICSPParameterUpdateCallback<boolean>> =
+    public onOnlineEvent: Array<Muse.ICSP.OnlineOfflineCallback> = [];
+    public onOfflineEvent: Array<Muse.ICSP.OnlineOfflineCallback> = [];
+    public onButtonEvent: Array<Muse.ICSP.ParameterUpdateCallback<boolean>> =
         [];
-    public onLevelEvent: Array<Muse.ICSPParameterUpdateCallback<number>> = [];
+    public onChannelEvent: Array<Muse.ICSP.ParameterUpdateCallback<boolean>> =
+        [];
+    public onLevelEvent: Array<Muse.ICSP.ParameterUpdateCallback<number>> = [];
 
     // Getters
     public get id(): string {
@@ -39,7 +40,7 @@ class TouchPanel {
 
     public register(): DeviceRegistrationStatus {
         try {
-            this.device = context.devices.get<Muse.ICSPDriver>(this.id);
+            this.device = context.devices.get(this.id);
             this.device.online(() => this.onlineEvent());
             this.device.offline(() => this.offlineEvent());
         } catch (error: unknown) {

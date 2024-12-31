@@ -13,7 +13,7 @@ export function timelines(): void {
         service: context.services.get("timeline"),
     });
 
-    timeline.onExpired.push((event: Muse.TimelineEvent) => {
+    timeline.onExpired.push((event: Muse.Event<Muse.TimelineEvent>) => {
         log.info(`Timer ID: ${event.id}`);
         log.info(`Timer Path: ${event.path}`);
         log.info(`Timer Sequence: ${event.arguments.sequence}`);
