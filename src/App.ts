@@ -4,20 +4,28 @@ import type { Source } from "./models/Source";
 import { version } from "../program.json";
 import { VolumeController } from "./controllers/VolumeController";
 import { VolumeView } from "./views/VolumeView";
+import { Store } from "redux";
+import { RootState } from "./state/store";
 
 const PAGE_LOGO = 0;
 const PAGE_MAIN = 1;
 
 const PAGE_NAMES = ["Logo", "Main"];
 
-interface AppOptions extends MuseControlSystemOptions {}
+interface AppOptions extends MuseControlSystemOptions {
+    store?: Store<RootState>;
+}
 
 class App extends MuseControlSystem {
+    private store: Store<RootState>;
+
     private panel: Muse.ICSP.Driver;
     private feedback: Muse.TimelineService;
 
     private exbCom2: Muse.ICSP.Driver;
     private exbMp1: Muse.ICSP.Driver;
+
+    private netlinx: Muse.ICSP.Driver;
 
     private selectedSource: Source = null;
     private currentSource: Source = null;
@@ -38,6 +46,8 @@ class App extends MuseControlSystem {
 
     public constructor(options: AppOptions = {}) {
         super(options);
+
+        this.store = options.store;
     }
 
     public override async init(): Promise<this> {
@@ -49,6 +59,9 @@ class App extends MuseControlSystem {
 
         this.exbMp1 = context.devices.get("AMX-7001");
         this.exbMp1.online(() => this.onDeviceOnlineEvent("AMX-7001"));
+
+        this.netlinx = context.devices.get<Muse.ICSP.Driver>("netlinx");
+        this.netlinx.online(() => this.onDeviceOnlineEvent("NetLinx"));
 
         this.feedback = context.services.get("timeline");
         this.feedback.expired.listen(() => this.onFeedbackEvent());
@@ -64,6 +77,8 @@ class App extends MuseControlSystem {
         // });
 
         // console.log((await fetch("https://ifconfig.io")).json());
+
+        console.log("Hello, Muse!");
 
         return this;
     }

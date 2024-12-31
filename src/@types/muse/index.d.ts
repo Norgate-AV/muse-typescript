@@ -28,7 +28,7 @@ declare global {
             T extends `AMX-${number}` ? ICSP.Driver :
             T extends `idevice` ? IDevice :
             T extends `led` ? LED :
-            never;
+            any;
 
         interface Devices {
             /**

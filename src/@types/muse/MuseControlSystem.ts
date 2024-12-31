@@ -1,8 +1,8 @@
 import { name } from "../../../program.json";
 
 export abstract class MuseControlSystem {
-    public readonly idevice = context.devices.get("idevice");
-    public readonly led = context.devices.get("led");
+    public readonly idevice: Muse.IDevice | null = null;
+    public readonly led: Muse.LED | null = null;
 
     public readonly services = {
         platform: context.services.get("platform"),
@@ -12,6 +12,14 @@ export abstract class MuseControlSystem {
     };
 
     public constructor(options: MuseControlSystemOptions) {
+        if (context.devices.has("idevice")) {
+            this.idevice = context.devices.get("idevice");
+        }
+
+        if (context.devices.has("led")) {
+            this.led = context.devices.get("led");
+        }
+
         const System = Java.type<typeof java.lang.System>("java.lang.System");
 
         System.setProperty(

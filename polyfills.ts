@@ -24,95 +24,71 @@ import "core-js/es/string";
 import "core-js/es/typed-array";
 import "core-js/es/weak-map";
 import "core-js/es/weak-set";
-
-// import { MuseControlSystem } from "./src/@types/muse/MuseControlSystem";
+import { MuseControlSystem } from "./src/@types/muse/MuseControlSystem";
 
 if (!globalThis.console) {
-    // @ts-ignore
-    globalThis.console = {};
+    (globalThis as any).console = {};
 
-    // @ts-ignore
-    globalThis.console.log = function (value: any) {
+    (globalThis as any).console.log = function (value: any) {
         if (typeof value === "object") {
-            // @ts-ignore
             context.log(JSON.stringify(value, null, 2));
             return;
         }
 
-        // @ts-ignore
         context.log(value);
     };
 
-    // @ts-ignore
-    globalThis.console.log.level = context.log.level;
+    (globalThis as any).console.log.level = context.log.level;
 
-    // @ts-ignore
-    globalThis.console.trace = function (value: any) {
+    (globalThis as any).console.trace = function (value: any) {
         if (typeof value === "object") {
-            // @ts-ignore
             context.log.trace(JSON.stringify(value, null, 2));
             return;
         }
 
-        // @ts-ignore
         context.log.trace(value);
     };
 
-    // @ts-ignore
-    globalThis.console.debug = function (value: any) {
+    (globalThis as any).console.debug = function (value: any) {
         if (typeof value === "object") {
-            // @ts-ignore
             context.log.debug(JSON.stringify(value, null, 2));
             return;
         }
 
-        // @ts-ignore
         context.log.debug(value);
     };
 
-    // @ts-ignore
-    globalThis.console.info = function (value: any) {
+    (globalThis as any).console.info = function (value: any) {
         if (typeof value === "object") {
-            // @ts-ignore
             context.log.info(JSON.stringify(value, null, 2));
             return;
         }
 
-        // @ts-ignore
         context.log.info(value);
     };
 
-    // @ts-ignore
-    globalThis.console.warn = function (value: any) {
+    (globalThis as any).console.warn = function (value: any) {
         if (typeof value === "object") {
-            // @ts-ignore
             context.log.warn(JSON.stringify(value, null, 2));
             return;
         }
 
-        // @ts-ignore
         context.log.warn(value);
     };
 
-    // @ts-ignore
-    globalThis.console.error = function (value: any) {
+    (globalThis as any).console.error = function (value: any) {
         if (typeof value === "object") {
-            // @ts-ignore
             context.log.error(JSON.stringify(value, null, 2));
             return;
         }
 
-        // @ts-ignore
         context.log.error(value);
     };
 }
 
 if (!globalThis.process) {
-    // @ts-ignore
-    globalThis.process = {};
-
-    // @ts-ignore
-    globalThis.process.env = {};
+    (globalThis as any).process = {};
+    (globalThis as any).process.env = {};
 }
 
 // @ts-ignore
@@ -121,8 +97,7 @@ var executor = java.util.concurrent.Executors.newScheduledThreadPool(1);
 var timeouts = new java.util.HashMap();
 
 if (!globalThis.setTimeout) {
-    // @ts-ignore
-    globalThis.setTimeout = function (
+    (globalThis as any).setTimeout = function (
         callback: Function,
         delay: number,
         ...args: any[]
@@ -153,8 +128,7 @@ if (!globalThis.setTimeout) {
 }
 
 if (!globalThis.clearTimeout) {
-    // @ts-ignore
-    globalThis.clearTimeout = function (id: string) {
+    (globalThis as any).clearTimeout = function (id: string) {
         var task = timeouts.get(id);
 
         if (!task) {
@@ -167,8 +141,7 @@ if (!globalThis.clearTimeout) {
 }
 
 if (!globalThis.setInterval) {
-    // @ts-ignore
-    globalThis.setInterval = function (
+    (globalThis as any).setInterval = function (
         callback: Function,
         delay: number,
         ...args: any[]
@@ -200,25 +173,24 @@ if (!globalThis.setInterval) {
 }
 
 if (!globalThis.clearInterval) {
-    // @ts-ignore
-    globalThis.clearInterval = globalThis.clearTimeout;
+    (globalThis as any).clearInterval = globalThis.clearTimeout;
 }
 
 if (!globalThis.setImmediate) {
-    // @ts-ignore
-    globalThis.setImmediate = function (callback: Function, ...args: any[]) {
+    (globalThis as any).setImmediate = function (
+        callback: Function,
+        ...args: any[]
+    ) {
         return setTimeout(callback, 0, ...args);
     };
 }
 
 if (!globalThis.clearImmediate) {
-    // @ts-ignore
-    globalThis.clearImmediate = globalThis.clearTimeout;
+    (globalThis as any).clearImmediate = globalThis.clearTimeout;
 }
 
 if (!globalThis.fetch) {
-    // @ts-ignore
-    globalThis.fetch = function (url: string, options: any) {
+    (globalThis as any).fetch = function (url: string, options: any) {
         options = options || {};
 
         // @ts-ignore
@@ -288,7 +260,7 @@ if (!globalThis.fetch) {
 }
 
 if (!globalThis.toJSObject) {
-    globalThis.toJSObject = function (value: any) {
+    (globalThis as any).toJSObject = function (value: any) {
         var result = {};
         var fields = value.getClass().getDeclaredFields();
         for (var i = 0; i < fields.length; i++) {

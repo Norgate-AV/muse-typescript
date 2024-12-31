@@ -1,20 +1,20 @@
 {
-    "extends": "./muse.tsconfig.json",
+    // "extends": "./muse.tsconfig.json",
     "compilerOptions": {
-        // "module": "commonjs",
-        // "target": "es5",
-        // "strict": false,
-        // "esModuleInterop": false,
-        // "skipLibCheck": true,
-        // "forceConsistentCasingInFileNames": true,
-        // "noUncheckedIndexedAccess": true,
-        // "resolveJsonModule": true,
-        "typeRoots": ["src/@types/*"]
-        // "allowSyntheticDefaultImports": true,
-        // "noEmit": true,
-        // "allowJs": true
+        "module": "commonjs",
+        "target": "es5",
+        "strict": false,
+        "esModuleInterop": false,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "noUncheckedIndexedAccess": true,
+        "resolveJsonModule": true,
+        "typeRoots": ["src/@types/*", "node_modules/@types"],
+        "allowSyntheticDefaultImports": true,
+        "noEmit": true,
+        "allowJs": true
         // "noUnusedLocals": true,
         // "noUnusedParameters": true,
     },
-    "include": ["src/**/*"]
+    "include": ["src/**/*", "index.d.ts", "polyfills.ts"]
 }
