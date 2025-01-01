@@ -1,20 +1,17 @@
 import App from "./App";
 import store from "./state/store";
 
-function panic(message: string): never {
-    throw new Error(message);
-}
-
-export function main() {
+export async function main() {
     try {
-        const app = new App({ store }).init();
-
-        if (!app) {
-            throw new Error("App failed to initialize");
-        }
+        const app = new App({ store });
+        await app.init();
     } catch (error: any) {
-        panic(error.message);
+        panic(
+            `App initialization failed: ${
+                error.message ? error.message : error
+            }`,
+        );
     }
 
-    console.log("Program Started");
+    console.log("App Loaded");
 }

@@ -26,6 +26,7 @@ class App extends MuseControlSystem {
     private exbMp1: Muse.ICSP.Driver;
 
     private netlinx: Muse.ICSP.Driver;
+    private nx: Muse.LegacyNetLinxClientService;
 
     private selectedSource: Source = null;
     private currentSource: Source = null;
@@ -50,7 +51,7 @@ class App extends MuseControlSystem {
         this.store = options.store;
     }
 
-    public override async init(): Promise<this> {
+    public override async init(): Promise<void> {
         this.panel = context.devices.get("AMX-10001");
         this.panel.online(() => this.onPanelOnlineEvent());
 
@@ -62,6 +63,10 @@ class App extends MuseControlSystem {
 
         this.netlinx = context.devices.get<Muse.ICSP.Driver>("netlinx");
         this.netlinx.online(() => this.onDeviceOnlineEvent("NetLinx"));
+
+        this.nx = context.services.get("netlinxClient");
+        this.nx.online.listen(() => this.onDeviceOnlineEvent("nx"));
+        this.nx.connect("192.168.10.44", 7001, "", "");
 
         this.feedback = context.services.get("timeline");
         this.feedback.expired.listen(() => this.onFeedbackEvent());
@@ -79,8 +84,6 @@ class App extends MuseControlSystem {
         // console.log((await fetch("https://ifconfig.io")).json());
 
         console.log("Hello, Muse!");
-
-        return this;
     }
 
     private onDeviceOnlineEvent(id: string): void {

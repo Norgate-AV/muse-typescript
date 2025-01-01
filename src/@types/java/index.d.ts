@@ -18,6 +18,8 @@ declare global {
         function to(array: Array<any>, type: string): Array<any>;
     }
 
+    function panic(message: string): never;
+
     /**
      *
      * @param args

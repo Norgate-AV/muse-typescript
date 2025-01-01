@@ -9,7 +9,7 @@
         "forceConsistentCasingInFileNames": true,
         "noUncheckedIndexedAccess": true,
         "resolveJsonModule": true,
-        "typeRoots": ["src/@types/*", "node_modules/@types"],
+        "typeRoots": ["index.d.ts", "src/@types/*", "node_modules/@types"],
         "allowSyntheticDefaultImports": true,
         "noEmit": true,
         "allowJs": true

@@ -276,3 +276,10 @@ if (!globalThis.toJSObject) {
 if (!globalThis.MuseControlSystem) {
     (globalThis as any).MuseControlSystem = MuseControlSystem;
 }
+
+if (!globalThis.panic) {
+    (globalThis as any).panic = function (message: string): never {
+        // Crash n burn
+        throw new Error(message);
+    };
+}

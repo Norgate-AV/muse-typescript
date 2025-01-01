@@ -33,5 +33,5 @@ export abstract class MuseControlSystem {
         console.log(`Platform Version: ${this.services.platform.version}`);
     }
 
-    public abstract init(): Promise<this>;
+    public abstract init(): Promise<void>;
 }
